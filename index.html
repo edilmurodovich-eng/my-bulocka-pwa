@@ -600,6 +600,126 @@
       margin: 10px 0;
     }
 
+
+    /* ==========================
+       ОТСЛЕЖИВАНИЕ ЗАКАЗА
+    ========================== */
+
+    #orderTracking {
+      display: none;
+
+      margin-top: 24px;
+
+      padding: 18px;
+
+      background: white;
+
+      border-radius: 20px;
+
+      box-shadow:
+        0 4px 15px rgba(70,40,20,.08);
+    }
+
+    .tracking-order-number {
+      text-align: center;
+
+      margin-top: 8px;
+      margin-bottom: 22px;
+
+      color: #8a6c5a;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+    .tracking-step {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 12px;
+
+      border-radius: 14px;
+
+      background: #fff8ef;
+
+      transition:
+        opacity .3s ease,
+        transform .3s ease;
+    }
+
+    .tracking-step.active {
+      background: #fff0d9;
+
+      transform: scale(1.01);
+    }
+
+    .tracking-icon {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 13px;
+
+      background: white;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 22px;
+
+      flex-shrink: 0;
+    }
+
+    .tracking-step-text {
+      font-size: 15px;
+
+      font-weight: 700;
+    }
+
+    .tracking-line {
+      width: 2px;
+
+      height: 14px;
+
+      margin-left: 32px;
+
+      background: #ead9ca;
+    }
+
+    #trackingStatusText {
+      margin-top: 20px;
+
+      padding: 14px;
+
+      border-radius: 14px;
+
+      background: #3b2418;
+
+      color: white;
+
+      text-align: center;
+
+      font-weight: 800;
+
+      line-height: 1.4;
+    }
+
+    .tracking-refresh {
+      margin-top: 10px;
+
+      text-align: center;
+
+      color: #8a6c5a;
+
+      font-size: 11px;
+    }
+
   </style>
 </head>
 
@@ -841,6 +961,134 @@
       >
         📦 Оформить заказ
       </button>
+
+    </div>
+
+
+    <!-- ======================
+         ОТСЛЕЖИВАНИЕ ЗАКАЗА
+    ======================= -->
+
+    <div
+      id="orderTracking"
+    >
+
+      <div class="form-title">
+        🥐 Мой заказ
+      </div>
+
+
+      <div
+        id="trackingOrderNumber"
+        class="tracking-order-number"
+      ></div>
+
+
+      <div
+        class="tracking-step"
+        id="trackingNew"
+      >
+
+        <div class="tracking-icon">
+          📦
+        </div>
+
+        <div class="tracking-step-text">
+          Заказ получен
+        </div>
+
+      </div>
+
+
+      <div class="tracking-line"></div>
+
+
+      <div
+        class="tracking-step"
+        id="trackingAccepted"
+      >
+
+        <div class="tracking-icon">
+          🟢
+        </div>
+
+        <div class="tracking-step-text">
+          Заказ принят
+        </div>
+
+      </div>
+
+
+      <div class="tracking-line"></div>
+
+
+      <div
+        class="tracking-step"
+        id="trackingCooking"
+      >
+
+        <div class="tracking-icon">
+          🍳
+        </div>
+
+        <div class="tracking-step-text">
+          Готовится
+        </div>
+
+      </div>
+
+
+      <div class="tracking-line"></div>
+
+
+      <div
+        class="tracking-step"
+        id="trackingCourier"
+      >
+
+        <div class="tracking-icon">
+          🛵
+        </div>
+
+        <div class="tracking-step-text">
+          Передан курьеру
+        </div>
+
+      </div>
+
+
+      <div class="tracking-line"></div>
+
+
+      <div
+        class="tracking-step"
+        id="trackingDelivered"
+      >
+
+        <div class="tracking-icon">
+          ✅
+        </div>
+
+        <div class="tracking-step-text">
+          Доставлен
+        </div>
+
+      </div>
+
+
+      <div
+        id="trackingStatusText"
+      >
+        📦 Заказ получен
+      </div>
+
+
+      <div
+        id="trackingRefresh"
+        class="tracking-refresh"
+      >
+        🔄 Статус обновляется автоматически
+      </div>
 
     </div>
 
@@ -1537,6 +1785,408 @@ function closeByBackground(
 
 
 /* ==============================
+   ОТСЛЕЖИВАНИЕ ЗАКАЗА
+============================== */
+
+let trackingTimer = null;
+
+
+/*
+==========================================
+ПОЛУЧИТЬ СТАТУС
+==========================================
+*/
+
+async function updateOrderTracking(
+  orderId
+) {
+
+  if (!orderId) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/order-status?orderId=${encodeURIComponent(orderId)}`
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      console.error(
+        "ORDER STATUS ERROR:",
+        data
+      );
+
+      return;
+
+    }
+
+
+    const status =
+      data.status ||
+      "new";
+
+
+    /*
+    Показываем отслеживание
+    */
+
+    const tracking =
+      document.getElementById(
+        "orderTracking"
+      );
+
+
+    if (tracking) {
+
+      tracking.style.display =
+        "block";
+
+    }
+
+
+    /*
+    Номер заказа
+    */
+
+    const number =
+      document.getElementById(
+        "trackingOrderNumber"
+      );
+
+
+    if (number) {
+
+      number.textContent =
+        `Заказ ${data.orderId}`;
+
+    }
+
+
+    /*
+    Все этапы
+    */
+
+    const steps = {
+
+      new:
+        document.getElementById(
+          "trackingNew"
+        ),
+
+      accepted:
+        document.getElementById(
+          "trackingAccepted"
+        ),
+
+      cooking:
+        document.getElementById(
+          "trackingCooking"
+        ),
+
+      courier:
+        document.getElementById(
+          "trackingCourier"
+        ),
+
+      delivered:
+        document.getElementById(
+          "trackingDelivered"
+        )
+
+    };
+
+
+    /*
+    Названия статусов
+    */
+
+    const statusOrder = [
+
+      "new",
+
+      "accepted",
+
+      "cooking",
+
+      "courier",
+
+      "delivered"
+
+    ];
+
+
+    /*
+    Если статус неизвестен,
+    показываем new
+    */
+
+    let currentIndex =
+      statusOrder.indexOf(
+        status
+      );
+
+
+    if (currentIndex < 0) {
+
+      currentIndex = 0;
+
+    }
+
+
+    /*
+    Сбрасываем оформление
+    */
+
+    Object.values(steps)
+      .forEach(
+        step => {
+
+          if (!step) {
+            return;
+          }
+
+
+          step.style.opacity =
+            "0.35";
+
+
+          step.style.fontWeight =
+            "normal";
+
+
+          step.classList.remove(
+            "active"
+          );
+
+        }
+      );
+
+
+    /*
+    Активируем текущий
+    и пройденные этапы
+    */
+
+    statusOrder.forEach(
+      (item, index) => {
+
+        const step =
+          steps[item];
+
+
+        if (
+          step &&
+          index <= currentIndex
+        ) {
+
+          step.style.opacity =
+            "1";
+
+
+          step.style.fontWeight =
+            "800";
+
+
+          step.classList.add(
+            "active"
+          );
+
+        }
+
+      }
+    );
+
+
+    /*
+    Текст текущего статуса
+    */
+
+    const statusText =
+      document.getElementById(
+        "trackingStatusText"
+      );
+
+
+    const statusMessages = {
+
+      new:
+        "📦 Заказ получен",
+
+      accepted:
+        "🟢 Ваш заказ принят",
+
+      cooking:
+        "🍳 Ваш заказ готовится",
+
+      courier:
+        "🛵 Заказ передан курьеру",
+
+      delivered:
+        "✅ Заказ доставлен"
+
+    };
+
+
+    if (statusText) {
+
+      statusText.textContent =
+        statusMessages[status] ||
+        "📦 Заказ получен";
+
+    }
+
+
+    /*
+    После доставки прекращаем
+    постоянный опрос
+    */
+
+    if (
+      status === "delivered" &&
+      trackingTimer
+    ) {
+
+      clearInterval(
+        trackingTimer
+      );
+
+      trackingTimer = null;
+
+      const refresh =
+        document.getElementById(
+          "trackingRefresh"
+        );
+
+
+      if (refresh) {
+
+        refresh.textContent =
+          "✅ Заказ завершён";
+
+      }
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "TRACKING ERROR:",
+      error
+    );
+
+  }
+
+}
+
+
+/*
+==========================================
+ЗАПУСК ОТСЛЕЖИВАНИЯ
+==========================================
+*/
+
+function startOrderTracking(
+  orderId
+) {
+
+  if (!orderId) {
+    return;
+  }
+
+
+  /*
+  Сохраняем заказ
+  */
+
+  localStorage.setItem(
+    "myBulockaOrderId",
+    orderId
+  );
+
+
+  /*
+  Сразу проверяем
+  */
+
+  updateOrderTracking(
+    orderId
+  );
+
+
+  /*
+  Останавливаем старый таймер
+  */
+
+  if (trackingTimer) {
+
+    clearInterval(
+      trackingTimer
+    );
+
+  }
+
+
+  /*
+  Проверяем каждые 5 секунд
+  */
+
+  trackingTimer =
+    setInterval(
+      () => {
+
+        updateOrderTracking(
+          orderId
+        );
+
+      },
+      5000
+    );
+
+}
+
+
+/*
+==========================================
+ВОССТАНОВЛЕНИЕ ЗАКАЗА
+==========================================
+*/
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const savedOrderId =
+      localStorage.getItem(
+        "myBulockaOrderId"
+      );
+
+
+    if (savedOrderId) {
+
+      startOrderTracking(
+        savedOrderId
+      );
+
+    }
+
+  }
+);
+
+
+/* ==============================
    ЗАКАЗ
 ============================== */
 
@@ -1630,9 +2280,11 @@ async function placeOrder() {
       )
       .map(product => ({
 
-        id: product.id,
+        id:
+          product.id,
 
-        name: product.name,
+        name:
+          product.name,
 
         quantity:
           getQty(product.id),
@@ -1654,6 +2306,12 @@ async function placeOrder() {
       "telegramConnectCode"
     );
 
+
+  /*
+  ==========================================
+  ДАННЫЕ ЗАКАЗА
+  ==========================================
+  */
 
   const orderData = {
 
@@ -1697,17 +2355,22 @@ async function placeOrder() {
       await fetch(
         "/api/order",
         {
-          method: "POST",
+
+          method:
+            "POST",
 
           headers: {
+
             "Content-Type":
               "application/json"
+
           },
 
           body:
             JSON.stringify(
               orderData
             )
+
         }
       );
 
@@ -1729,9 +2392,32 @@ async function placeOrder() {
     }
 
 
+    /*
+    ==========================================
+    СОХРАНЯЕМ НОМЕР ЗАКАЗА
+    ==========================================
+    */
+
+    startOrderTracking(
+      data.orderId
+    );
+
+
+    /*
+    ==========================================
+    ИТОГОВАЯ СУММА
+    ==========================================
+    */
+
     const finalTotal =
       getTotal();
 
+
+    /*
+    ==========================================
+    УСПЕШНЫЙ ЗАКАЗ
+    ==========================================
+    */
 
     document.getElementById(
       "orderForm"
@@ -1771,18 +2457,47 @@ async function placeOrder() {
 
 
     /*
-    Очищаем корзину
+    ==========================================
+    ОЧИЩАЕМ КОРЗИНУ
+    ==========================================
     */
 
     Object.keys(cart)
-      .forEach(id => {
+      .forEach(
+        id => {
 
-        delete cart[id];
+          delete cart[id];
 
-      });
+        }
+      );
 
 
     render();
+
+
+    /*
+    ==========================================
+    ПОКАЗЫВАЕМ ОТСЛЕЖИВАНИЕ
+    ==========================================
+    */
+
+    const tracking =
+      document.getElementById(
+        "orderTracking"
+      );
+
+
+    if (tracking) {
+
+      tracking.style.display =
+        "block";
+
+      tracking.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
 
 
   } catch (error) {
