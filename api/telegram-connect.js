@@ -1,50 +1,94 @@
 export default async function handler(req, res) {
-  try {
-    const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (req.method !== "GET") {
+    return res.status(405).json({
+      ok: false,
+      error: "Method not allowed"
+    });
+  }
 
-    if (!token) {
+  try {
+    const redisUrl = process.env.KV_REST_API_URL;
+    const redisToken = process.env.KV_REST_API_TOKEN;
+
+    if (!redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error: "TELEGRAM_BOT_TOKEN is missing"
+        error: "Redis is not configured"
       });
     }
 
-    const host =
-      req.headers.host;
+    /*
+    ==========================================
+    СОЗДАЁМ УНИКАЛЬНЫЙ КОД
+    ==========================================
+    */
 
-    const protocol =
-      req.headers["x-forwarded-proto"] || "https";
+    const code =
+      Math.random()
+        .toString(36)
+        .substring(2, 10)
+        .toUpperCase();
 
-    const webhookUrl =
-      `${protocol}://${host}/api/telegram`;
+    /*
+    ==========================================
+    СОХРАНЯЕМ КОД В REDIS
+    ==========================================
+    */
 
-    const response = await fetch(
-      `https://api.telegram.org/bot${token}/setWebhook`,
+    const redisResponse = await fetch(
+      redisUrl,
       {
         method: "POST",
+
         headers: {
-          "Content-Type": "application/json"
+          Authorization:
+            `Bearer ${redisToken}`,
+
+          "Content-Type":
+            "application/json"
         },
-        body: JSON.stringify({
-          url: webhookUrl
-        })
+
+        body: JSON.stringify([
+          "SET",
+          `connect:${code}`,
+          "waiting",
+          "EX",
+          "600"
+        ])
       }
     );
 
-    const data = await response.json();
+    const redisData =
+      await redisResponse.json();
 
-    if (!data.ok) {
+    if (!redisResponse.ok) {
+      console.error(
+        "REDIS ERROR:",
+        redisData
+      );
+
       return res.status(500).json({
         ok: false,
-        error: data.description || "Webhook error"
+        error: "Could not save connection code"
       });
     }
 
+    /*
+    ==========================================
+    ССЫЛКА НА TELEGRAM
+    ==========================================
+    */
+
+    const botUsername =
+      "Thefirstbulochnaya_bot";
+
+    const telegramUrl =
+      `https://t.me/${botUsername}?start=${code}`;
+
     return res.status(200).json({
       ok: true,
-      webhookUrl,
-      telegramUrl:
-        "https://t.me/Thefirstbulochnaya_bot?start=connect"
+      code,
+      telegramUrl
     });
 
   } catch (error) {
