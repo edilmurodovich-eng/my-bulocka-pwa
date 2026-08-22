@@ -7,29 +7,40 @@ export default async function handler(req, res) {
   }
 
   try {
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const ownerChatId = process.env.TELEGRAM_OWNER_CHAT_ID;
+    const token =
+      process.env.TELEGRAM_BOT_TOKEN;
 
-    const redisUrl = process.env.KV_REST_API_URL;
-    const redisToken = process.env.KV_REST_API_TOKEN;
+    const ownerChatId =
+      process.env.TELEGRAM_OWNER_CHAT_ID;
+
+    const redisUrl =
+      process.env.KV_REST_API_URL;
+
+    const redisToken =
+      process.env.KV_REST_API_TOKEN;
 
     if (!token || !ownerChatId) {
       return res.status(500).json({
         ok: false,
-        error: "Telegram settings are not configured"
+        error:
+          "Telegram settings are not configured"
       });
     }
 
     if (!redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error: "Redis is not configured"
+        error:
+          "Redis is not configured"
       });
     }
 
     const order = req.body;
 
-    if (!order || typeof order !== "object") {
+    if (
+      !order ||
+      typeof order !== "object"
+    ) {
       return res.status(400).json({
         ok: false,
         error: "Invalid order"
@@ -43,8 +54,16 @@ export default async function handler(req, res) {
       comment,
       items,
       total,
-      promo
+      promo,
+      telegramConnectCode
     } = order;
+
+
+    /*
+    ==========================================
+    ПРОВЕРКА ЗАКАЗА
+    ==========================================
+    */
 
     if (
       !name ||
@@ -59,6 +78,7 @@ export default async function handler(req, res) {
       });
     }
 
+
     /*
     ==========================================
     СОЗДАЁМ НОМЕР ЗАКАЗА
@@ -67,50 +87,164 @@ export default async function handler(req, res) {
 
     const orderId =
       "MB-" +
-      Date.now().toString(36).toUpperCase();
+      Date.now()
+        .toString(36)
+        .toUpperCase();
+
 
     /*
     ==========================================
-    СОХРАНЯЕМ ЗАКАЗ В REDIS
+    ИЩЕМ TELEGRAM КЛИЕНТА
+    ==========================================
+    */
+
+    let customerTelegramId = null;
+
+    if (telegramConnectCode) {
+
+      console.log(
+        "TELEGRAM CONNECT CODE:",
+        telegramConnectCode
+      );
+
+
+      const telegramResult =
+        await redisCommand(
+          redisUrl,
+          redisToken,
+          [
+            "GET",
+            `telegram:code:${telegramConnectCode}`
+          ]
+        );
+
+
+      console.log(
+        "TELEGRAM CLIENT RESULT:",
+        telegramResult
+      );
+
+
+      if (telegramResult) {
+
+        customerTelegramId =
+          String(
+            telegramResult
+          );
+
+      }
+
+    }
+
+
+    /*
+    ==========================================
+    СОХРАНЯЕМ ЗАКАЗ
     ==========================================
     */
 
     const orderData = {
+
       orderId,
+
       name,
+
       phone,
+
       address,
-      comment: comment || "",
+
+      comment:
+        comment || "",
+
       items,
-      total: Number(total) || 0,
-      promo: Boolean(promo),
 
-      status: "new",
+      total:
+        Number(total) || 0,
 
-      createdAt: new Date().toISOString(),
+      promo:
+        Boolean(promo),
 
-      /*
-      Пока Telegram ID клиента не передаём.
-      Подключим его следующим этапом.
-      */
-      telegramId: null
+      status:
+        "new",
+
+      createdAt:
+        new Date().toISOString(),
+
+      telegramId:
+        customerTelegramId
+
     };
+
+
+    /*
+    Основная запись заказа
+    */
 
     await redisCommand(
       redisUrl,
       redisToken,
       [
         "SET",
+
         `order:${orderId}`,
-        JSON.stringify(orderData),
+
+        JSON.stringify(
+          orderData
+        ),
+
         "EX",
+
         "604800"
       ]
     );
 
+
     /*
     ==========================================
-    ТЕКСТ ЗАКАЗА
+    ПРИВЯЗЫВАЕМ ЗАКАЗ К TELEGRAM
+    ==========================================
+    */
+
+    if (customerTelegramId) {
+
+      await redisCommand(
+        redisUrl,
+        redisToken,
+        [
+          "SET",
+
+          `order:${orderId}:chat`,
+
+          String(
+            customerTelegramId
+          ),
+
+          "EX",
+
+          "604800"
+        ]
+      );
+
+
+      console.log(
+        "ORDER TELEGRAM LINKED:",
+        orderId,
+        customerTelegramId
+      );
+
+    } else {
+
+      console.log(
+        "TELEGRAM CLIENT NOT FOUND FOR ORDER:",
+        orderId
+      );
+
+    }
+
+
+    /*
+    ==========================================
+    ФОРМИРУЕМ ТОВАРЫ
     ==========================================
     */
 
@@ -123,13 +257,15 @@ export default async function handler(req, res) {
 
     });
 
+
     /*
     ==========================================
-    СООБЩЕНИЕ В TELEGRAM
+    СООБЩЕНИЕ ВЛАДЕЛЬЦУ
     ==========================================
     */
 
     let message =
+
       "🥐 НОВЫЙ ЗАКАЗ — «МОЯ БУЛОЧКА»\n\n" +
 
       `🔢 Заказ: ${orderId}\n` +
@@ -144,12 +280,14 @@ export default async function handler(req, res) {
 
       orderText;
 
+
     if (promo) {
 
       message +=
         "\n🎁 Кофе бесплатно по акции";
 
     }
+
 
     if (comment) {
 
@@ -158,14 +296,18 @@ export default async function handler(req, res) {
 
     }
 
+
     message +=
+
       `\n\n💰 Итого: ${
-        Number(total).toLocaleString("ru-RU")
+        Number(total)
+          .toLocaleString("ru-RU")
       } so'm`;
+
 
     /*
     ==========================================
-    КНОПКА «ПРИНЯТЬ»
+    КНОПКА ПРИНЯТЬ
     ==========================================
     */
 
@@ -174,51 +316,69 @@ export default async function handler(req, res) {
       inline_keyboard: [
 
         [
+
           {
-            text: "🟢 Принять заказ",
+
+            text:
+              "🟢 Принять заказ",
 
             callback_data:
               `status:accepted:${orderId}`
+
           }
+
         ]
 
       ]
 
     };
 
+
     /*
     ==========================================
-    ОТПРАВЛЯЕМ В TELEGRAM
+    ОТПРАВЛЯЕМ ЗАКАЗ В TELEGRAM
     ==========================================
     */
 
     const telegramResponse =
       await fetch(
+
         `https://api.telegram.org/bot${token}/sendMessage`,
+
         {
 
-          method: "POST",
+          method:
+            "POST",
 
           headers: {
+
             "Content-Type":
               "application/json"
+
           },
 
-          body: JSON.stringify({
+          body:
+            JSON.stringify({
 
-            chat_id: ownerChatId,
+              chat_id:
+                ownerChatId,
 
-            text: message,
+              text:
+                message,
 
-            reply_markup: keyboard
+              reply_markup:
+                keyboard
 
-          })
+            })
 
         }
+
       );
+
 
     const telegramData =
       await telegramResponse.json();
+
 
     if (!telegramData.ok) {
 
@@ -228,11 +388,17 @@ export default async function handler(req, res) {
       );
 
       return res.status(500).json({
-        ok: false,
-        error: "Telegram API error"
+
+        ok:
+          false,
+
+        error:
+          "Telegram API error"
+
       });
 
     }
+
 
     /*
     ==========================================
@@ -242,14 +408,21 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
 
-      ok: true,
+      ok:
+        true,
 
       orderId,
 
       messageId:
-        telegramData.result.message_id
+        telegramData.result.message_id,
+
+      telegramConnected:
+        Boolean(
+          customerTelegramId
+        )
 
     });
+
 
   } catch (error) {
 
@@ -260,13 +433,16 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
 
-      ok: false,
+      ok:
+        false,
 
-      error: error.message
+      error:
+        error.message
 
     });
 
   }
+
 }
 
 
@@ -287,7 +463,8 @@ async function redisCommand(
       url,
       {
 
-        method: "POST",
+        method:
+          "POST",
 
         headers: {
 
@@ -300,13 +477,17 @@ async function redisCommand(
         },
 
         body:
-          JSON.stringify(command)
+          JSON.stringify(
+            command
+          )
 
       }
     );
 
+
   const data =
     await response.json();
+
 
   if (!response.ok) {
 
@@ -320,6 +501,7 @@ async function redisCommand(
     );
 
   }
+
 
   return data.result;
 }
