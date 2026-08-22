@@ -11,8 +11,6 @@ export default async function handler(req, res) {
     const ownerChatId = process.env.TELEGRAM_OWNER_CHAT_ID;
 
     if (!token || !ownerChatId) {
-      console.error("Telegram environment variables are missing");
-
       return res.status(500).json({
         ok: false,
         error: "Telegram settings are not configured"
@@ -47,33 +45,40 @@ export default async function handler(req, res) {
 
     let orderText = "";
 
-    items.forEach(item => {
+    items.forEach((item) => {
       orderText +=
-        `${item.name} — ${item.quantity} шт.\n`;
+        `• ${item.name} — ${item.quantity} шт.\n`;
     });
 
     let message =
-      "🥐 НОВЫЙ ЗАКАЗ\n\n" +
+      "🥐 НОВЫЙ ЗАКАЗ — «МОЯ БУЛОЧКА»\n\n" +
       `👤 Имя: ${name}\n` +
       `📞 Телефон: ${phone}\n` +
-      `📍 Адрес: ${address}\n`;
-
-    if (comment) {
-      message += `📝 Комментарий: ${comment}\n`;
-    }
-
-    message +=
-      "\n🛒 ЗАКАЗ:\n" +
-      orderText +
-      "\n";
+      `📍 Адрес: ${address}\n\n` +
+      "🛒 ЗАКАЗ:\n" +
+      orderText;
 
     if (promo) {
-      message +=
-        "🎁 Кофе бесплатно по акции\n";
+      message += "\n🎁 Кофе бесплатно по акции";
+    }
+
+    if (comment) {
+      message += `\n\n📝 Комментарий: ${comment}`;
     }
 
     message +=
-      `\n💰 Итого: ${Number(total).toLocaleString("ru-RU")} so'm`;
+      `\n\n💰 Итого: ${Number(total).toLocaleString("ru-RU")} so'm`;
+
+    const keyboard = {
+      inline_keyboard: [
+        [
+          {
+            text: "🟢 Принять заказ",
+            callback_data: "status:accepted"
+          }
+        ]
+      ]
+    };
 
     const telegramResponse = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,
@@ -84,19 +89,16 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           chat_id: ownerChatId,
-          text: message
+          text: message,
+          reply_markup: keyboard
         })
       }
     );
 
-    const telegramData =
-      await telegramResponse.json();
+    const telegramData = await telegramResponse.json();
 
     if (!telegramData.ok) {
-      console.error(
-        "Telegram API error:",
-        telegramData
-      );
+      console.error("Telegram API error:", telegramData);
 
       return res.status(500).json({
         ok: false,
@@ -110,11 +112,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-
-    console.error(
-      "ORDER API ERROR:",
-      error
-    );
+    console.error("ORDER API ERROR:", error);
 
     return res.status(500).json({
       ok: false,
