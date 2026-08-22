@@ -1,474 +1,174 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      ok: false,
-      error: "Method not allowed"
-    });
-  }
-
   try {
     const token = process.env.TELEGRAM_BOT_TOKEN;
-    const redisUrl = process.env.KV_REST_API_URL;
-    const redisToken = process.env.KV_REST_API_TOKEN;
 
-    if (!token) {
+    const redisUrl =
+      process.env.KV_REST_API_URL;
+
+    const redisToken =
+      process.env.KV_REST_API_TOKEN;
+
+    if (!token || !redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error: "Telegram bot token is not configured"
+        error: "Telegram or Redis settings are missing"
       });
     }
-
-    if (!redisUrl || !redisToken) {
-      return res.status(500).json({
-        ok: false,
-        error: "Redis is not configured"
-      });
-    }
-
-    const body = req.body;
 
     /*
     ==========================================
-    ПОЛЬЗОВАТЕЛЬ НАЖАЛ START
+    TELEGRAM WEBHOOK
     ==========================================
     */
 
-    if (body?.message) {
-      const message = body.message;
-      const chatId = message.chat?.id;
-      const text = String(message.text || "").trim();
+    if (req.method !== "POST") {
+      return res.status(405).json({
+        ok: false,
+        error: "Method not allowed"
+      });
+    }
 
-      if (text.startsWith("/start")) {
+    const update = req.body;
 
-        const parts = text.split(/\s+/);
-        const code = parts[1] || null;
+    /*
+    ==========================================
+    ПРОВЕРЯЕМ MESSAGE
+    ==========================================
+    */
 
-        const user = message.from || {};
+    const message = update?.message;
 
-        /*
-        ------------------------------------------
-        ЕСЛИ ЕСТЬ КОД ПОДКЛЮЧЕНИЯ
-        ------------------------------------------
-        */
+    if (!message) {
+      return res.status(200).json({
+        ok: true
+      });
+    }
 
-        if (code) {
+    const chatId = message.chat?.id;
 
-          const connectKey =
-            `connect:${code}`;
+    const text =
+      typeof message.text === "string"
+        ? message.text.trim()
+        : "";
 
-          const connectValue =
-            await redisCommand(
-              redisUrl,
-              redisToken,
-              [
-                "GET",
-                connectKey
-              ]
-            );
+    if (!chatId || !text) {
+      return res.status(200).json({
+        ok: true
+      });
+    }
 
-          if (connectValue) {
+    /*
+    ==========================================
+    /start CODE
+    ==========================================
+    */
 
-            const clientData = {
-              telegramId: chatId,
-              firstName:
-                user.first_name || "",
-              lastName:
-                user.last_name || "",
-              username:
-                user.username || "",
-              connectedAt:
-                new Date().toISOString()
-            };
+    if (text.startsWith("/start")) {
 
-            /*
-            Сохраняем клиента
-            */
+      const parts =
+        text.split(/\s+/);
 
-            await redisCommand(
-              redisUrl,
-              redisToken,
-              [
-                "SET",
-                `telegram:client:${chatId}`,
-                JSON.stringify(clientData)
-              ]
-            );
+      const code =
+        parts[1];
 
-            /*
-            Связываем код с Telegram ID
-            */
-
-            await redisCommand(
-              redisUrl,
-              redisToken,
-              [
-                "SET",
-                connectKey,
-                JSON.stringify({
-                  telegramId: chatId,
-                  connected: true,
-                  connectedAt:
-                    new Date().toISOString()
-                }),
-                "EX",
-                "3600"
-              ]
-            );
-
-            await sendTelegram(
-              token,
-              chatId,
-              "🥐 «Моя Булочка»\n\n" +
-              "✅ Telegram успешно подключён!\n\n" +
-              "Теперь вы сможете получать уведомления " +
-              "о статусе своих заказов."
-            );
-
-            return res.status(200).json({
-              ok: true,
-              connected: true
-            });
-          }
-        }
-
-        /*
-        ------------------------------------------
-        Обычный /start без кода
-        ------------------------------------------
-        */
+      if (!code) {
 
         await sendTelegram(
           token,
           chatId,
-          "🥐 Добро пожаловать в «Моя Булочка»!\n\n" +
-          "Чтобы подключить уведомления о заказах, " +
-          "откройте кнопку подключения Telegram " +
-          "в приложении."
+          "🥐 Добро пожаловать в «Моя Булочка»!"
         );
 
         return res.status(200).json({
           ok: true
         });
+
       }
-    }
-
-    /*
-    ==========================================
-    КНОПКИ СТАТУСА ЗАКАЗА
-    ==========================================
-    */
-
-    if (body?.callback_query) {
-
-      const callback =
-        body.callback_query;
-
-      const callbackId =
-        callback.id;
-
-      const ownerChatId =
-        callback.message?.chat?.id;
-
-      const messageId =
-        callback.message?.message_id;
-
-      const callbackData =
-        String(callback.data || "");
-
-      const parts =
-        callbackData.split(":");
-
-      if (
-        parts.length < 3 ||
-        parts[0] !== "status"
-      ) {
-        return res.status(200).json({
-          ok: true
-        });
-      }
-
-      const action = parts[1];
-
-      const orderId =
-        parts.slice(2).join(":");
 
       /*
-      Получаем заказ
+      Ищем код подключения
       */
 
-      const orderRaw =
+      const connection =
         await redisCommand(
           redisUrl,
           redisToken,
           [
             "GET",
-            `order:${orderId}`
+            `telegram:connect:${code}`
           ]
         );
 
-      if (!orderRaw) {
+      if (!connection) {
 
-        await answerCallback(
+        await sendTelegram(
           token,
-          callbackId,
-          "Заказ не найден"
+          chatId,
+          "❌ Код подключения недействителен или устарел."
         );
 
         return res.status(200).json({
           ok: true
         });
-      }
 
-      let order;
-
-      try {
-        order =
-          typeof orderRaw === "string"
-            ? JSON.parse(orderRaw)
-            : orderRaw;
-      } catch {
-        return res.status(500).json({
-          ok: false,
-          error: "Invalid order data"
-        });
-      }
-
-      let statusCode = "";
-      let statusText = "";
-      let nextButton = null;
-
-      /*
-      ------------------------------------------
-      ПРИНЯТ
-      ------------------------------------------
-      */
-
-      if (action === "accepted") {
-
-        statusCode = "accepted";
-
-        statusText =
-          "🟢 Заказ принят";
-
-        nextButton = {
-          inline_keyboard: [
-            [
-              {
-                text: "👨‍🍳 Готовится",
-                callback_data:
-                  `status:preparing:${orderId}`
-              }
-            ]
-          ]
-        };
-      }
-
-      /*
-      ------------------------------------------
-      ГОТОВИТСЯ
-      ------------------------------------------
-      */
-
-      else if (action === "preparing") {
-
-        statusCode = "preparing";
-
-        statusText =
-          "🟡 Заказ готовится";
-
-        nextButton = {
-          inline_keyboard: [
-            [
-              {
-                text: "📦 Готов",
-                callback_data:
-                  `status:ready:${orderId}`
-              }
-            ]
-          ]
-        };
-      }
-
-      /*
-      ------------------------------------------
-      ГОТОВ
-      ------------------------------------------
-      */
-
-      else if (action === "ready") {
-
-        statusCode = "ready";
-
-        statusText =
-          "🔵 Заказ готов";
-
-        nextButton = {
-          inline_keyboard: [
-            [
-              {
-                text: "🚚 Доставлен",
-                callback_data:
-                  `status:delivered:${orderId}`
-              }
-            ]
-          ]
-        };
-      }
-
-      /*
-      ------------------------------------------
-      ДОСТАВЛЕН
-      ------------------------------------------
-      */
-
-      else if (action === "delivered") {
-
-        statusCode = "delivered";
-
-        statusText =
-          "🟣 Заказ доставлен";
-
-        nextButton = {
-          inline_keyboard: []
-        };
-      }
-
-      else {
-        return res.status(200).json({
-          ok: true
-        });
       }
 
       /*
       ==========================================
-      СОХРАНЯЕМ СТАТУС
+      СОХРАНЯЕМ TELEGRAM ID
       ==========================================
       */
-
-      order.status = statusCode;
-
-      order.updatedAt =
-        new Date().toISOString();
 
       await redisCommand(
         redisUrl,
         redisToken,
         [
           "SET",
-          `order:${orderId}`,
-          JSON.stringify(order),
-          "EX",
-          "604800"
+          `telegram:user:${chatId}`,
+          JSON.stringify({
+            telegramId: chatId,
+            connectedAt:
+              new Date().toISOString()
+          })
         ]
       );
 
       /*
-      ==========================================
-      ОТВЕЧАЕМ НА НАЖАТИЕ КНОПКИ
-      ==========================================
+      Также сохраняем связь
+      CODE → TELEGRAM ID
       */
 
-      await answerCallback(
-        token,
-        callbackId,
-        statusText
+      await redisCommand(
+        redisUrl,
+        redisToken,
+        [
+          "SET",
+          `telegram:connect:${code}`,
+          JSON.stringify({
+            telegramId: chatId,
+            connectedAt:
+              new Date().toISOString()
+          }),
+          "EX",
+          "86400"
+        ]
       );
-
-      /*
-      ==========================================
-      МЕНЯЕМ КНОПКУ У ВЛАДЕЛЬЦА
-      ==========================================
-      */
-
-      if (ownerChatId && messageId) {
-
-        await fetch(
-          `https://api.telegram.org/bot${token}/editMessageReplyMarkup`,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body: JSON.stringify({
-              chat_id: ownerChatId,
-              message_id: messageId,
-              reply_markup: nextButton
-            })
-          }
-        );
-      }
-
-      /*
-      ==========================================
-      УВЕДОМЛЯЕМ ВЛАДЕЛЬЦА
-      ==========================================
-      */
 
       await sendTelegram(
         token,
-        ownerChatId,
-        `${statusText}\n\n🔢 Заказ: ${orderId}`
+        chatId,
+        "🥐 «Моя Булочка»\n\n" +
+        "✅ Telegram успешно подключён!\n\n" +
+        "Теперь вы сможете получать уведомления " +
+        "о статусе вашего заказа."
       );
-
-      /*
-      ==========================================
-      УВЕДОМЛЯЕМ КЛИЕНТА
-      ==========================================
-      */
-
-      if (order.telegramId) {
-
-        let clientMessage = "";
-
-        if (statusCode === "accepted") {
-
-          clientMessage =
-            `🟢 Ваш заказ ${orderId} принят!\n\n` +
-            "🥐 Мы начинаем его готовить.";
-
-        }
-
-        else if (statusCode === "preparing") {
-
-          clientMessage =
-            `👨‍🍳 Ваш заказ ${orderId} готовится!\n\n` +
-            "Совсем скоро будет готов.";
-
-        }
-
-        else if (statusCode === "ready") {
-
-          clientMessage =
-            `📦 Ваш заказ ${orderId} готов!\n\n` +
-            "Можно забирать или ожидать доставку.";
-
-        }
-
-        else if (statusCode === "delivered") {
-
-          clientMessage =
-            `🚚 Ваш заказ ${orderId} доставлен!\n\n` +
-            "Спасибо, что выбрали «Моя Булочка»! 🥐❤️";
-        }
-
-        if (clientMessage) {
-
-          await sendTelegram(
-            token,
-            order.telegramId,
-            clientMessage
-          );
-        }
-      }
 
       return res.status(200).json({
         ok: true,
-        orderId,
-        status: statusCode
+        connected: true,
+        telegramId: chatId
       });
+
     }
 
     return res.status(200).json({
@@ -492,56 +192,7 @@ export default async function handler(req, res) {
 
 /*
 ==========================================
-REDIS
-==========================================
-*/
-
-async function redisCommand(
-  url,
-  token,
-  command
-) {
-
-  const response =
-    await fetch(
-      url,
-      {
-        method: "POST",
-
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-
-          "Content-Type":
-            "application/json"
-        },
-
-        body: JSON.stringify(command)
-      }
-    );
-
-  const data =
-    await response.json();
-
-  if (!response.ok) {
-
-    console.error(
-      "REDIS ERROR:",
-      data
-    );
-
-    throw new Error(
-      "Redis request failed"
-    );
-  }
-
-  return data.result;
-}
-
-
-/*
-==========================================
-TELEGRAM SEND
+TELEGRAM SEND MESSAGE
 ==========================================
 */
 
@@ -578,6 +229,11 @@ async function sendTelegram(
       "TELEGRAM SEND ERROR:",
       data
     );
+
+    throw new Error(
+      data.description ||
+      "Telegram sendMessage failed"
+    );
   }
 
   return data;
@@ -586,34 +242,50 @@ async function sendTelegram(
 
 /*
 ==========================================
-CALLBACK
+REDIS
 ==========================================
 */
 
-async function answerCallback(
+async function redisCommand(
+  url,
   token,
-  callbackId,
-  text
+  command
 ) {
 
-  await fetch(
-    `https://api.telegram.org/bot${token}/answerCallbackQuery`,
-    {
-      method: "POST",
+  const response =
+    await fetch(
+      url,
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type":
-          "application/json"
-      },
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
 
-      body: JSON.stringify({
-        callback_query_id:
-          callbackId,
+          "Content-Type":
+            "application/json"
+        },
 
-        text,
+        body:
+          JSON.stringify(command)
+      }
+    );
 
-        show_alert: false
-      })
-    }
-  );
+  const data =
+    await response.json();
+
+  if (!response.ok || data.error) {
+
+    console.error(
+      "REDIS ERROR:",
+      data
+    );
+
+    throw new Error(
+      data.error ||
+      "Redis request failed"
+    );
+  }
+
+  return data.result;
 }
