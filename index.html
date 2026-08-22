@@ -1206,25 +1206,19 @@ async function placeOrder() {
       }));
 
 
-  const orderData = {
+  const telegramId =
+  localStorage.getItem("telegramId") || null;
 
-    name,
-
-    phone,
-
-    address,
-
-    comment,
-
-    items,
-
-    total:
-      getTotal(),
-
-    promo:
-      coffeeFree()
-
-  };
+const orderData = {
+  name,
+  phone,
+  address,
+  comment,
+  items,
+  total: getTotal(),
+  promo: coffeeFree(),
+  telegramId
+};
 
 
   const button =
