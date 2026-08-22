@@ -30,13 +30,14 @@ export default async function handler(req, res) {
       });
     }
 
+
     /*
     ==========================================
-    ПОЛУЧАЕМ ЗАКАЗ ИЗ REDIS
+    ПОЛУЧАЕМ ЗАКАЗ
     ==========================================
     */
 
-    const result =
+    const orderResult =
       await redisCommand(
         redisUrl,
         redisToken,
@@ -46,36 +47,111 @@ export default async function handler(req, res) {
         ]
       );
 
-    if (!result) {
+
+    if (
+      !orderResult
+    ) {
       return res.status(404).json({
         ok: false,
         error: "Order not found"
       });
     }
 
-    const order =
-      typeof result === "string"
-        ? JSON.parse(result)
-        : result;
 
     /*
     ==========================================
-    ОТДАЁМ СТАТУС
+    РАЗБИРАЕМ ЗАКАЗ
+    ==========================================
+    */
+
+    let order;
+
+    try {
+
+      order =
+        typeof orderResult === "string"
+          ? JSON.parse(orderResult)
+          : orderResult;
+
+    } catch (error) {
+
+      console.error(
+        "ORDER JSON ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error: "Invalid order data"
+      });
+
+    }
+
+
+    /*
+    ==========================================
+    ПОЛУЧАЕМ ОТДЕЛЬНЫЙ СТАТУС
+    ==========================================
+    */
+
+    const statusResult =
+      await redisCommand(
+        redisUrl,
+        redisToken,
+        [
+          "GET",
+          `order:${orderId}:status`
+        ]
+      );
+
+
+    /*
+    ==========================================
+    ВЫБИРАЕМ АКТУАЛЬНЫЙ СТАТУС
+    ==========================================
+    */
+
+    const status =
+      statusResult ||
+      order.status ||
+      "new";
+
+
+    console.log(
+      "ORDER STATUS:",
+      orderId,
+      status
+    );
+
+
+    /*
+    ==========================================
+    ОТВЕТ
     ==========================================
     */
 
     return res.status(200).json({
+
       ok: true,
 
       orderId:
-        order.orderId,
+        order.orderId ||
+        orderId,
 
       status:
-        order.status || "new",
+
+        status,
 
       createdAt:
-        order.createdAt || null
+        order.createdAt ||
+        null,
+
+      updatedAt:
+        order.updatedAt ||
+        null
+
     });
+
 
   } catch (error) {
 
@@ -85,9 +161,14 @@ export default async function handler(req, res) {
     );
 
     return res.status(500).json({
+
       ok: false,
-      error: error.message
+
+      error:
+        error.message
+
     });
+
   }
 }
 
@@ -108,23 +189,29 @@ async function redisCommand(
     await fetch(
       url,
       {
+
         method: "POST",
 
         headers: {
+
           Authorization:
             `Bearer ${token}`,
 
           "Content-Type":
             "application/json"
+
         },
 
         body:
           JSON.stringify(command)
+
       }
     );
 
+
   const data =
     await response.json();
+
 
   if (!response.ok) {
 
@@ -136,7 +223,10 @@ async function redisCommand(
     throw new Error(
       "Redis request failed"
     );
+
   }
 
+
   return data.result;
+
 }
