@@ -49,6 +49,12 @@
         sans-serif;
     }
 
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
     header {
       text-align: center;
       padding: 28px 16px 18px;
@@ -68,7 +74,6 @@
       font-size: 14px;
     }
 
-
     /* ==========================
        TELEGRAM
     ========================== */
@@ -76,16 +81,11 @@
     .telegram-connect {
       margin: 0 16px 16px;
       padding: 14px;
-
       background: white;
-
       border-radius: 18px;
-
       display: flex;
       align-items: center;
-
       gap: 12px;
-
       box-shadow:
         0 4px 15px rgba(70,40,20,.08);
     }
@@ -93,17 +93,12 @@
     .telegram-icon {
       width: 48px;
       height: 48px;
-
       border-radius: 14px;
-
       background: #e8f4ff;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       font-size: 25px;
-
       flex-shrink: 0;
     }
 
@@ -119,27 +114,18 @@
 
     .telegram-status {
       margin-top: 3px;
-
       font-size: 12px;
-
       color: #8a6c5a;
-
       line-height: 1.3;
     }
 
     .telegram-button {
       border: none;
-
       border-radius: 12px;
-
       padding: 10px 12px;
-
       background: #229ed9;
-
       color: white;
-
       font-weight: 800;
-
       font-size: 13px;
     }
 
@@ -147,27 +133,21 @@
       opacity: .6;
     }
 
-
     /* ==========================
        АКЦИЯ
     ========================== */
 
     .promo {
       margin: 8px 16px 20px;
-
       padding: 17px;
-
       border-radius: 20px;
-
       background: #fff0d9;
-
       border: 1px solid #f1d1a4;
     }
 
     .promo-title {
       font-size: 18px;
       font-weight: 800;
-
       margin-bottom: 6px;
     }
 
@@ -176,40 +156,29 @@
       line-height: 1.5;
     }
 
-
     /* ==========================
        МЕНЮ
     ========================== */
 
     .section-title {
       margin: 18px 16px 12px;
-
       font-size: 22px;
-
       font-weight: 800;
     }
 
     #products {
       display: grid;
-
       gap: 12px;
-
       padding: 0 14px;
     }
 
     .product {
       background: white;
-
       border-radius: 20px;
-
       padding: 14px;
-
       display: flex;
-
       align-items: center;
-
       gap: 12px;
-
       box-shadow:
         0 4px 15px rgba(70,40,20,.08);
     }
@@ -217,17 +186,12 @@
     .icon {
       width: 58px;
       height: 58px;
-
       border-radius: 17px;
-
       background: #fff0dc;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       font-size: 30px;
-
       flex-shrink: 0;
     }
 
@@ -243,45 +207,32 @@
 
     .price {
       margin-top: 5px;
-
       color: #bd6b2f;
-
       font-weight: 750;
     }
 
     .quantity {
       display: flex;
-
       align-items: center;
-
       gap: 7px;
     }
 
     .quantity button {
       width: 36px;
       height: 36px;
-
       border: none;
-
       border-radius: 11px;
-
       background: #f0dfcd;
-
       color: #4b2c1a;
-
       font-size: 22px;
-
       font-weight: 700;
     }
 
     .number {
       min-width: 18px;
-
       text-align: center;
-
       font-weight: 700;
     }
-
 
     /* ==========================
        НИЖНЯЯ КОРЗИНА
@@ -289,64 +240,44 @@
 
     .cart-bar {
       position: fixed;
-
       left: 14px;
       right: 14px;
-
       bottom:
         calc(
           14px +
           env(safe-area-inset-bottom)
         );
-
       background: #3b2418;
-
       color: white;
-
       border-radius: 20px;
-
       padding: 12px 14px;
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       box-shadow:
         0 8px 28px rgba(0,0,0,.22);
-
       z-index: 10;
     }
 
     .cart-count {
       font-size: 12px;
-
       opacity: .75;
     }
 
     .cart-total {
       margin-top: 2px;
-
       font-size: 18px;
-
       font-weight: 800;
     }
 
     .cart-button {
       border: none;
-
       border-radius: 13px;
-
       padding: 12px 15px;
-
       background: #f2a65a;
-
       color: #3b2418;
-
       font-weight: 800;
     }
-
 
     /* ==========================
        КОРЗИНА
@@ -354,15 +285,10 @@
 
     .overlay {
       position: fixed;
-
       inset: 0;
-
       background: rgba(0,0,0,.45);
-
       display: none;
-
       align-items: flex-end;
-
       z-index: 100;
     }
 
@@ -372,16 +298,10 @@
 
     .sheet {
       width: 100%;
-
       max-height: 94vh;
-
       overflow-y: auto;
-
       background: #fff8ef;
-
-      border-radius:
-        25px 25px 0 0;
-
+      border-radius: 25px 25px 0 0;
       padding:
         20px
         16px
@@ -393,46 +313,32 @@
 
     .sheet-header {
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
     }
 
     .sheet-title {
       font-size: 24px;
-
       font-weight: 800;
     }
 
     .close {
       width: 38px;
       height: 38px;
-
       border: none;
-
       border-radius: 50%;
-
       background: #efdfcf;
-
       font-size: 22px;
     }
 
     .cart-item {
       background: white;
-
       border-radius: 16px;
-
       padding: 12px;
-
       margin-top: 10px;
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 10px;
     }
 
@@ -442,12 +348,9 @@
 
     .cart-item-price {
       margin-top: 4px;
-
       font-size: 13px;
-
       color: #8a6c5a;
     }
-
 
     /* ==========================
        АКЦИЯ В КОРЗИНЕ
@@ -455,54 +358,34 @@
 
     .promo-active {
       margin-top: 14px;
-
       padding: 12px;
-
       border-radius: 14px;
-
       background: #e5f6df;
-
       color: #2d6727;
-
       font-weight: 750;
-
       font-size: 14px;
     }
 
     .promo-inactive {
       margin-top: 14px;
-
       padding: 12px;
-
       border-radius: 14px;
-
       background: #eee6df;
-
       color: #765f50;
-
       font-size: 14px;
     }
 
     .summary {
       margin-top: 15px;
-
       padding: 16px;
-
       border-radius: 17px;
-
       background: #3b2418;
-
       color: white;
-
       display: flex;
-
       justify-content: space-between;
-
       font-size: 19px;
-
       font-weight: 800;
     }
-
 
     /* ==========================
        ФОРМА
@@ -510,44 +393,31 @@
 
     .form-title {
       margin-top: 22px;
-
       font-size: 20px;
-
       font-weight: 800;
     }
 
     label {
       display: block;
-
       margin-top: 13px;
-
       margin-bottom: 6px;
-
       font-weight: 700;
     }
 
     input,
     textarea {
       width: 100%;
-
       border: 1px solid #dfcdbc;
-
       border-radius: 13px;
-
       padding: 12px;
-
       background: white;
-
       color: #3b2418;
-
       font: inherit;
-
       outline: none;
     }
 
     textarea {
       min-height: 80px;
-
       resize: vertical;
     }
 
@@ -558,35 +428,148 @@
 
     .order-button {
       width: 100%;
-
       margin-top: 18px;
-
       padding: 15px;
-
       border: none;
-
       border-radius: 16px;
-
       background: #d9823b;
-
       color: white;
-
       font-size: 17px;
-
       font-weight: 800;
+    }
+
+    .order-button:disabled {
+      opacity: .65;
     }
 
     .empty {
       text-align: center;
-
       padding: 35px 10px;
-
       color: #8a6c5a;
     }
 
+    /* ==========================
+       ЭКРАН СТАТУСА
+    ========================== */
+
+    .order-tracking {
+      margin: 20px 16px;
+      padding: 20px 16px;
+      background: white;
+      border-radius: 24px;
+      box-shadow:
+        0 5px 20px rgba(70,40,20,.09);
+    }
+
+    .tracking-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 850;
+      margin-bottom: 5px;
+    }
+
+    .tracking-number {
+      text-align: center;
+      color: #8a6c5a;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .current-status {
+      text-align: center;
+      padding: 14px;
+      border-radius: 16px;
+      background: #fff0dc;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .status-list {
+      position: relative;
+    }
+
+    .status-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 58px;
+    }
+
+    .status-row:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 38px;
+      width: 3px;
+      height: 38px;
+      background: #eadfd5;
+      border-radius: 5px;
+    }
+
+    .status-row.done:not(:last-child)::after {
+      background: #d9823b;
+    }
+
+    .status-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #eee6df;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .status-row.done .status-dot {
+      background: #d9823b;
+      color: white;
+    }
+
+    .status-row.active .status-dot {
+      background: #3b2418;
+      color: white;
+      box-shadow:
+        0 0 0 5px #f5e5d5;
+    }
+
+    .status-label {
+      margin-left: 12px;
+      font-weight: 750;
+      color: #9b887b;
+    }
+
+    .status-row.done .status-label,
+    .status-row.active .status-label {
+      color: #3b2418;
+    }
+
+    .tracking-update {
+      text-align: center;
+      margin-top: 16px;
+      color: #9b887b;
+      font-size: 12px;
+    }
+
+    .tracking-complete {
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 14px;
+      background: #e5f6df;
+      color: #2d6727;
+      text-align: center;
+      font-weight: 750;
+    }
+
+    /* ==========================
+       УСПЕХ
+    ========================== */
+
     .success {
       text-align: center;
-
       padding: 25px 10px;
     }
 
@@ -596,140 +579,13 @@
 
     .success h3 {
       font-size: 24px;
-
       margin: 10px 0;
-    }
-
-
-    /* ==========================
-       ОТСЛЕЖИВАНИЕ ЗАКАЗА
-    ========================== */
-
-    #orderTracking {
-      display: none;
-
-      margin-top: 24px;
-
-      padding: 18px;
-
-      background: white;
-
-      border-radius: 20px;
-
-      box-shadow:
-        0 4px 15px rgba(70,40,20,.08);
-    }
-
-    .tracking-order-number {
-      text-align: center;
-
-      margin-top: 8px;
-      margin-bottom: 22px;
-
-      color: #8a6c5a;
-
-      font-size: 14px;
-
-      font-weight: 700;
-    }
-
-    .tracking-step {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px;
-
-      border-radius: 14px;
-
-      background: #fff8ef;
-
-      transition:
-        opacity .3s ease,
-        transform .3s ease;
-    }
-
-    .tracking-step.active {
-      background: #fff0d9;
-
-      transform: scale(1.01);
-    }
-
-    .tracking-icon {
-      width: 42px;
-      height: 42px;
-
-      border-radius: 13px;
-
-      background: white;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-size: 22px;
-
-      flex-shrink: 0;
-    }
-
-    .tracking-step-text {
-      font-size: 15px;
-
-      font-weight: 700;
-    }
-
-    .tracking-line {
-      width: 2px;
-
-      height: 14px;
-
-      margin-left: 32px;
-
-      background: #ead9ca;
-    }
-
-    #trackingStatusText {
-      margin-top: 20px;
-
-      padding: 14px;
-
-      border-radius: 14px;
-
-      background: #3b2418;
-
-      color: white;
-
-      text-align: center;
-
-      font-weight: 800;
-
-      line-height: 1.4;
-    }
-
-    .tracking-refresh {
-      margin-top: 10px;
-
-      text-align: center;
-
-      color: #8a6c5a;
-
-      font-size: 11px;
     }
 
   </style>
 </head>
 
-
 <body>
-
-
-<!-- ==========================
-     ШАПКА
-========================== -->
 
 <header>
 
@@ -747,10 +603,7 @@
 
 </header>
 
-
-<!-- ==========================
-     TELEGRAM
-========================== -->
+<!-- TELEGRAM -->
 
 <div class="telegram-connect">
 
@@ -782,10 +635,7 @@
 
 </div>
 
-
-<!-- ==========================
-     АКЦИЯ
-========================== -->
+<!-- АКЦИЯ -->
 
 <div class="promo">
 
@@ -809,10 +659,11 @@
 
 </div>
 
+<!-- ОТСЛЕЖИВАНИЕ -->
 
-<!-- ==========================
-     МЕНЮ
-========================== -->
+<div id="trackingContainer"></div>
+
+<!-- МЕНЮ -->
 
 <div class="section-title">
   Наше меню
@@ -820,10 +671,7 @@
 
 <div id="products"></div>
 
-
-<!-- ==========================
-     НИЖНЯЯ ПАНЕЛЬ
-========================== -->
+<!-- НИЖНЯЯ ПАНЕЛЬ -->
 
 <div class="cart-bar">
 
@@ -854,10 +702,7 @@
 
 </div>
 
-
-<!-- ==========================
-     КОРЗИНА
-========================== -->
+<!-- КОРЗИНА -->
 
 <div
   class="overlay"
@@ -882,11 +727,9 @@
 
     </div>
 
-
     <div id="cartItems"></div>
 
     <div id="promoStatus"></div>
-
 
     <div class="summary">
 
@@ -900,17 +743,13 @@
 
     </div>
 
-
-    <!-- ======================
-         ФОРМА ЗАКАЗА
-    ======================= -->
+    <!-- ФОРМА -->
 
     <div id="orderForm">
 
       <div class="form-title">
         📦 Данные для заказа
       </div>
-
 
       <label for="customerName">
         Ваше имя
@@ -922,7 +761,6 @@
         placeholder="Например: Muhammad"
       >
 
-
       <label for="customerPhone">
         Номер телефона
       </label>
@@ -932,7 +770,6 @@
         type="tel"
         placeholder="+998 90 123 45 67"
       >
-
 
       <label for="customerAddress">
         Адрес доставки
@@ -944,7 +781,6 @@
         placeholder="Улица, дом, квартира"
       >
 
-
       <label for="customerComment">
         Комментарий
       </label>
@@ -953,7 +789,6 @@
         id="customerComment"
         placeholder="Например: позвонить перед доставкой"
       ></textarea>
-
 
       <button
         class="order-button"
@@ -964,143 +799,13 @@
 
     </div>
 
-
-    <!-- ======================
-         ОТСЛЕЖИВАНИЕ ЗАКАЗА
-    ======================= -->
-
-    <div
-      id="orderTracking"
-    >
-
-      <div class="form-title">
-        🥐 Мой заказ
-      </div>
-
-
-      <div
-        id="trackingOrderNumber"
-        class="tracking-order-number"
-      ></div>
-
-
-      <div
-        class="tracking-step"
-        id="trackingNew"
-      >
-
-        <div class="tracking-icon">
-          📦
-        </div>
-
-        <div class="tracking-step-text">
-          Заказ получен
-        </div>
-
-      </div>
-
-
-      <div class="tracking-line"></div>
-
-
-      <div
-        class="tracking-step"
-        id="trackingAccepted"
-      >
-
-        <div class="tracking-icon">
-          🟢
-        </div>
-
-        <div class="tracking-step-text">
-          Заказ принят
-        </div>
-
-      </div>
-
-
-      <div class="tracking-line"></div>
-
-
-      <div
-        class="tracking-step"
-        id="trackingCooking"
-      >
-
-        <div class="tracking-icon">
-          🍳
-        </div>
-
-        <div class="tracking-step-text">
-          Готовится
-        </div>
-
-      </div>
-
-
-      <div class="tracking-line"></div>
-
-
-      <div
-        class="tracking-step"
-        id="trackingCourier"
-      >
-
-        <div class="tracking-icon">
-          🛵
-        </div>
-
-        <div class="tracking-step-text">
-          Передан курьеру
-        </div>
-
-      </div>
-
-
-      <div class="tracking-line"></div>
-
-
-      <div
-        class="tracking-step"
-        id="trackingDelivered"
-      >
-
-        <div class="tracking-icon">
-          ✅
-        </div>
-
-        <div class="tracking-step-text">
-          Доставлен
-        </div>
-
-      </div>
-
-
-      <div
-        id="trackingStatusText"
-      >
-        📦 Заказ получен
-      </div>
-
-
-      <div
-        id="trackingRefresh"
-        class="tracking-refresh"
-      >
-        🔄 Статус обновляется автоматически
-      </div>
-
-    </div>
-
   </div>
 
 </div>
 
-
 <script>
 
 "use strict";
-
 
 /* ==============================
    ТОВАРЫ
@@ -1191,9 +896,7 @@ const products = [
 
 ];
 
-
 const cart = {};
-
 
 /* ==============================
    TELEGRAM
@@ -1216,7 +919,6 @@ async function connectTelegram() {
   button.textContent =
     "⏳ Подключение...";
 
-
   try {
 
     const response =
@@ -1224,10 +926,8 @@ async function connectTelegram() {
         "/api/telegram-connect"
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -1241,28 +941,16 @@ async function connectTelegram() {
 
     }
 
-
-    /*
-    Сохраняем код
-    */
-
     localStorage.setItem(
       "telegramConnectCode",
       data.code
     );
 
-
     status.textContent =
       "Открываем Telegram...";
 
-
-    /*
-    Открываем Telegram
-    */
-
     window.location.href =
       data.telegramUrl;
-
 
   } catch (error) {
 
@@ -1271,22 +959,18 @@ async function connectTelegram() {
       error
     );
 
-
     alert(
       "Не удалось подключить Telegram.\n\n" +
       "Попробуйте ещё раз."
     );
 
-
     button.disabled = false;
 
     button.textContent =
       "Подключить";
-
   }
 
 }
-
 
 /* ==============================
    ДЕНЬГИ
@@ -1300,7 +984,6 @@ function money(value) {
 
 }
 
-
 /* ==============================
    КОЛИЧЕСТВО
 ============================== */
@@ -1310,7 +993,6 @@ function getQty(id) {
   return cart[id] || 0;
 
 }
-
 
 function getItems() {
 
@@ -1322,7 +1004,6 @@ function getItems() {
     );
 
 }
-
 
 function getBunCount() {
 
@@ -1339,7 +1020,6 @@ function getBunCount() {
 
 }
 
-
 /* ==============================
    АКЦИЯ
 ============================== */
@@ -1353,14 +1033,12 @@ function promoActive() {
     now.getHours() * 60 +
     now.getMinutes();
 
-
   return (
     minutes >= 540 &&
     minutes < 660
   );
 
 }
-
 
 function coffeeFree() {
 
@@ -1372,7 +1050,6 @@ function coffeeFree() {
 
 }
 
-
 /* ==============================
    ИТОГО
 ============================== */
@@ -1380,7 +1057,6 @@ function coffeeFree() {
 function getTotal() {
 
   let total = 0;
-
 
   products.forEach(
     product => {
@@ -1392,7 +1068,6 @@ function getTotal() {
     }
   );
 
-
   if (coffeeFree()) {
 
     total -=
@@ -1401,14 +1076,12 @@ function getTotal() {
 
   }
 
-
   return Math.max(
     total,
     0
   );
 
 }
-
 
 /* ==============================
    ДОБАВИТЬ
@@ -1423,7 +1096,6 @@ function add(id) {
 
 }
 
-
 /* ==============================
    УДАЛИТЬ
 ============================== */
@@ -1434,21 +1106,15 @@ function remove(id) {
     return;
   }
 
-
   cart[id]--;
 
-
   if (cart[id] <= 0) {
-
     delete cart[id];
-
   }
-
 
   render();
 
 }
-
 
 /* ==============================
    МЕНЮ
@@ -1460,7 +1126,6 @@ function renderProducts() {
     document.getElementById(
       "products"
     );
-
 
   container.innerHTML =
     products
@@ -1515,7 +1180,6 @@ function renderProducts() {
 
 }
 
-
 /* ==============================
    НИЖНЯЯ ПАНЕЛЬ
 ============================== */
@@ -1528,7 +1192,6 @@ function renderBottomBar() {
     getItems() +
     " товаров";
 
-
   document.getElementById(
     "cartTotal"
   ).textContent =
@@ -1537,7 +1200,6 @@ function renderBottomBar() {
     );
 
 }
-
 
 /* ==============================
    КОРЗИНА
@@ -1550,13 +1212,11 @@ function renderCart() {
       "cartItems"
     );
 
-
   const selected =
     products.filter(
       product =>
         getQty(product.id) > 0
     );
-
 
   if (
     selected.length === 0
@@ -1585,9 +1245,7 @@ function renderCart() {
           const quantity =
             getQty(product.id);
 
-
           let freeText = "";
-
 
           if (
             product.coffee &&
@@ -1598,7 +1256,6 @@ function renderCart() {
               `<br><b>🎁 Бесплатно по акции</b>`;
 
           }
-
 
           return `
 
@@ -1614,7 +1271,6 @@ function renderCart() {
 
                 </div>
 
-
                 <div class="cart-item-price">
 
                   ${quantity}
@@ -1626,7 +1282,6 @@ function renderCart() {
                 </div>
 
               </div>
-
 
               <div class="quantity">
 
@@ -1657,7 +1312,6 @@ function renderCart() {
 
   }
 
-
   document.getElementById(
     "modalTotal"
   ).textContent =
@@ -1665,12 +1319,10 @@ function renderCart() {
       getTotal()
     );
 
-
   const status =
     document.getElementById(
       "promoStatus"
     );
-
 
   if (coffeeFree()) {
 
@@ -1719,7 +1371,6 @@ function renderCart() {
 
 }
 
-
 /* ==============================
    ОБЩИЙ RENDER
 ============================== */
@@ -1734,7 +1385,6 @@ function render() {
 
 }
 
-
 /* ==============================
    ОТКРЫТЬ КОРЗИНУ
 ============================== */
@@ -1747,11 +1397,9 @@ function openCart() {
     )
     .classList.add("show");
 
-
   renderCart();
 
 }
-
 
 /* ==============================
    ЗАКРЫТЬ КОРЗИНУ
@@ -1767,10 +1415,7 @@ function closeCart() {
 
 }
 
-
-function closeByBackground(
-  event
-) {
+function closeByBackground(event) {
 
   if (
     event.target.id ===
@@ -1783,40 +1428,222 @@ function closeByBackground(
 
 }
 
+/* ==========================================================
+   ОТСЛЕЖИВАНИЕ ЗАКАЗА
+========================================================== */
+
+let orderStatusTimer = null;
+
+const STATUS_INFO = {
+
+  new: {
+    title: "🕐 Заказ получен",
+    index: 0
+  },
+
+  accepted: {
+    title: "✅ Заказ принят",
+    index: 1
+  },
+
+  cooking: {
+    title: "🍳 Заказ готовится",
+    index: 2
+  },
+
+  courier: {
+    title: "🛵 Передан курьеру",
+    index: 3
+  },
+
+  delivered: {
+    title: "✅ Заказ доставлен",
+    index: 4
+  }
+
+};
+
+function showOrderTracking(
+  orderId,
+  status
+) {
+
+  const container =
+    document.getElementById(
+      "trackingContainer"
+    );
+
+  const info =
+    STATUS_INFO[status] ||
+    STATUS_INFO.new;
+
+  const currentIndex =
+    info.index;
+
+  const statuses = [
+
+    {
+      label: "Заказ получен",
+      icon: "🕐"
+    },
+
+    {
+      label: "Заказ принят",
+      icon: "✅"
+    },
+
+    {
+      label: "Готовится",
+      icon: "🍳"
+    },
+
+    {
+      label: "Передан курьеру",
+      icon: "🛵"
+    },
+
+    {
+      label: "Доставлен",
+      icon: "🏠"
+    }
+
+  ];
+
+  let rows = "";
+
+  statuses.forEach(
+    (item, index) => {
+
+      let className = "status-row";
+
+      if (
+        index <
+        currentIndex
+      ) {
+
+        className += " done";
+
+      }
+
+      if (
+        index ===
+        currentIndex
+      ) {
+
+        className += " active";
+
+      }
+
+      rows += `
+
+        <div class="${className}">
+
+          <div class="status-dot">
+            ${item.icon}
+          </div>
+
+          <div class="status-label">
+            ${item.label}
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+  let completeText = "";
+
+  if (
+    status === "delivered"
+  ) {
+
+    completeText = `
+
+      <div class="tracking-complete">
+
+        ❤️ Спасибо за заказ!
+
+      </div>
+
+    `;
+
+  }
+
+  container.innerHTML = `
+
+    <div class="order-tracking">
+
+      <div class="tracking-title">
+
+        🥐 Ваш заказ
+
+      </div>
+
+      <div class="tracking-number">
+
+        № ${orderId}
+
+      </div>
+
+      <div class="current-status">
+
+        ${info.title}
+
+      </div>
+
+      <div class="status-list">
+
+        ${rows}
+
+      </div>
+
+      ${completeText}
+
+      <div class="tracking-update">
+
+        Статус обновляется автоматически
+
+      </div>
+
+    </div>
+
+  `;
+
+}
 
 /* ==============================
-   ОТСЛЕЖИВАНИЕ ЗАКАЗА
+   ПОЛУЧЕНИЕ СТАТУСА
 ============================== */
 
-let trackingTimer = null;
+async function checkOrderStatus() {
 
-
-/*
-==========================================
-ПОЛУЧИТЬ СТАТУС
-==========================================
-*/
-
-async function updateOrderTracking(
-  orderId
-) {
+  const orderId =
+    localStorage.getItem(
+      "activeOrderId"
+    );
 
   if (!orderId) {
     return;
   }
 
-
   try {
 
     const response =
       await fetch(
-        `/api/order-status?orderId=${encodeURIComponent(orderId)}`
+        "/api/order-status?orderId=" +
+        encodeURIComponent(
+          orderId
+        ),
+        {
+          method: "GET",
+          cache: "no-store"
+        }
       );
-
 
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -1824,7 +1651,7 @@ async function updateOrderTracking(
     ) {
 
       console.error(
-        "ORDER STATUS ERROR:",
+        "STATUS ERROR:",
         data
       );
 
@@ -1832,258 +1659,37 @@ async function updateOrderTracking(
 
     }
 
-
     const status =
-      data.status ||
-      "new";
+      data.status || "new";
 
-
-    /*
-    Показываем отслеживание
-    */
-
-    const tracking =
-      document.getElementById(
-        "orderTracking"
-      );
-
-
-    if (tracking) {
-
-      tracking.style.display =
-        "block";
-
-    }
-
-
-    /*
-    Номер заказа
-    */
-
-    const number =
-      document.getElementById(
-        "trackingOrderNumber"
-      );
-
-
-    if (number) {
-
-      number.textContent =
-        `Заказ ${data.orderId}`;
-
-    }
-
-
-    /*
-    Все этапы
-    */
-
-    const steps = {
-
-      new:
-        document.getElementById(
-          "trackingNew"
-        ),
-
-      accepted:
-        document.getElementById(
-          "trackingAccepted"
-        ),
-
-      cooking:
-        document.getElementById(
-          "trackingCooking"
-        ),
-
-      courier:
-        document.getElementById(
-          "trackingCourier"
-        ),
-
-      delivered:
-        document.getElementById(
-          "trackingDelivered"
-        )
-
-    };
-
-
-    /*
-    Названия статусов
-    */
-
-    const statusOrder = [
-
-      "new",
-
-      "accepted",
-
-      "cooking",
-
-      "courier",
-
-      "delivered"
-
-    ];
-
-
-    /*
-    Если статус неизвестен,
-    показываем new
-    */
-
-    let currentIndex =
-      statusOrder.indexOf(
-        status
-      );
-
-
-    if (currentIndex < 0) {
-
-      currentIndex = 0;
-
-    }
-
-
-    /*
-    Сбрасываем оформление
-    */
-
-    Object.values(steps)
-      .forEach(
-        step => {
-
-          if (!step) {
-            return;
-          }
-
-
-          step.style.opacity =
-            "0.35";
-
-
-          step.style.fontWeight =
-            "normal";
-
-
-          step.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-
-    /*
-    Активируем текущий
-    и пройденные этапы
-    */
-
-    statusOrder.forEach(
-      (item, index) => {
-
-        const step =
-          steps[item];
-
-
-        if (
-          step &&
-          index <= currentIndex
-        ) {
-
-          step.style.opacity =
-            "1";
-
-
-          step.style.fontWeight =
-            "800";
-
-
-          step.classList.add(
-            "active"
-          );
-
-        }
-
-      }
+    showOrderTracking(
+      orderId,
+      status
     );
 
-
     /*
-    Текст текущего статуса
-    */
-
-    const statusText =
-      document.getElementById(
-        "trackingStatusText"
-      );
-
-
-    const statusMessages = {
-
-      new:
-        "📦 Заказ получен",
-
-      accepted:
-        "🟢 Ваш заказ принят",
-
-      cooking:
-        "🍳 Ваш заказ готовится",
-
-      courier:
-        "🛵 Заказ передан курьеру",
-
-      delivered:
-        "✅ Заказ доставлен"
-
-    };
-
-
-    if (statusText) {
-
-      statusText.textContent =
-        statusMessages[status] ||
-        "📦 Заказ получен";
-
-    }
-
-
-    /*
-    После доставки прекращаем
-    постоянный опрос
+    Если заказ доставлен,
+    продолжаем показывать экран,
+    но прекращаем частые запросы.
     */
 
     if (
       status === "delivered" &&
-      trackingTimer
+      orderStatusTimer
     ) {
 
       clearInterval(
-        trackingTimer
+        orderStatusTimer
       );
 
-      trackingTimer = null;
-
-      const refresh =
-        document.getElementById(
-          "trackingRefresh"
-        );
-
-
-      if (refresh) {
-
-        refresh.textContent =
-          "✅ Заказ завершён";
-
-      }
+      orderStatusTimer = null;
 
     }
-
 
   } catch (error) {
 
     console.error(
-      "TRACKING ERROR:",
+      "ORDER STATUS REQUEST ERROR:",
       error
     );
 
@@ -2091,12 +1697,9 @@ async function updateOrderTracking(
 
 }
 
-
-/*
-==========================================
-ЗАПУСК ОТСЛЕЖИВАНИЯ
-==========================================
-*/
+/* ==============================
+   ЗАПУСК ОТСЛЕЖИВАНИЯ
+============================== */
 
 function startOrderTracking(
   orderId
@@ -2106,89 +1709,40 @@ function startOrderTracking(
     return;
   }
 
-
-  /*
-  Сохраняем заказ
-  */
-
   localStorage.setItem(
-    "myBulockaOrderId",
+    "activeOrderId",
     orderId
   );
 
-
   /*
-  Сразу проверяем
+  Первый запрос сразу
   */
 
-  updateOrderTracking(
-    orderId
-  );
-
+  checkOrderStatus();
 
   /*
-  Останавливаем старый таймер
+  Далее каждые 5 секунд
   */
 
-  if (trackingTimer) {
+  if (orderStatusTimer) {
 
     clearInterval(
-      trackingTimer
+      orderStatusTimer
     );
 
   }
 
-
-  /*
-  Проверяем каждые 5 секунд
-  */
-
-  trackingTimer =
+  orderStatusTimer =
     setInterval(
-      () => {
-
-        updateOrderTracking(
-          orderId
-        );
-
-      },
+      checkOrderStatus,
       5000
     );
 
 }
 
-
-/*
-==========================================
-ВОССТАНОВЛЕНИЕ ЗАКАЗА
-==========================================
-*/
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    const savedOrderId =
-      localStorage.getItem(
-        "myBulockaOrderId"
-      );
-
-
-    if (savedOrderId) {
-
-      startOrderTracking(
-        savedOrderId
-      );
-
-    }
-
-  }
-);
-
-
-/* ==============================
-   ЗАКАЗ
-============================== */
+/* ==========================================================
+   ОФОРМЛЕНИЕ ЗАКАЗА
+========================================================== */
 
 async function placeOrder() {
 
@@ -2202,7 +1756,6 @@ async function placeOrder() {
 
   }
 
-
   const name =
     document
       .getElementById(
@@ -2210,7 +1763,6 @@ async function placeOrder() {
       )
       .value
       .trim();
-
 
   const phone =
     document
@@ -2220,7 +1772,6 @@ async function placeOrder() {
       .value
       .trim();
 
-
   const address =
     document
       .getElementById(
@@ -2229,7 +1780,6 @@ async function placeOrder() {
       .value
       .trim();
 
-
   const comment =
     document
       .getElementById(
@@ -2237,7 +1787,6 @@ async function placeOrder() {
       )
       .value
       .trim();
-
 
   if (!name) {
 
@@ -2249,7 +1798,6 @@ async function placeOrder() {
 
   }
 
-
   if (!phone) {
 
     alert(
@@ -2260,7 +1808,6 @@ async function placeOrder() {
 
   }
 
-
   if (!address) {
 
     alert(
@@ -2270,7 +1817,6 @@ async function placeOrder() {
     return;
 
   }
-
 
   const items =
     products
@@ -2294,11 +1840,8 @@ async function placeOrder() {
 
       }));
 
-
   /*
-  ==========================================
   TELEGRAM CODE
-  ==========================================
   */
 
   const telegramConnectCode =
@@ -2306,12 +1849,8 @@ async function placeOrder() {
       "telegramConnectCode"
     );
 
-
-  /*
-  ==========================================
-  ДАННЫЕ ЗАКАЗА
-  ==========================================
-  */
+  const finalTotal =
+    getTotal();
 
   const orderData = {
 
@@ -2326,7 +1865,7 @@ async function placeOrder() {
     items,
 
     total:
-      getTotal(),
+      finalTotal,
 
     promo:
       coffeeFree(),
@@ -2336,18 +1875,15 @@ async function placeOrder() {
 
   };
 
-
   const button =
     document.querySelector(
       ".order-button"
     );
 
-
   button.disabled = true;
 
   button.textContent =
     "⏳ Отправляем заказ...";
-
 
   try {
 
@@ -2374,10 +1910,8 @@ async function placeOrder() {
         }
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -2391,114 +1925,91 @@ async function placeOrder() {
 
     }
 
-
     /*
-    ==========================================
-    СОХРАНЯЕМ НОМЕР ЗАКАЗА
-    ==========================================
+    Получаем номер заказа
     */
 
-    startOrderTracking(
-      data.orderId
-    );
+    const orderId =
+      data.orderId;
 
+    if (!orderId) {
 
-    /*
-    ==========================================
-    ИТОГОВАЯ СУММА
-    ==========================================
-    */
-
-    const finalTotal =
-      getTotal();
-
-
-    /*
-    ==========================================
-    УСПЕШНЫЙ ЗАКАЗ
-    ==========================================
-    */
-
-    document.getElementById(
-      "orderForm"
-    ).innerHTML = `
-
-      <div class="success">
-
-        <div class="success-icon">
-          ✅
-        </div>
-
-        <h3>
-          Заказ отправлен!
-        </h3>
-
-        <p>
-          Спасибо, ${name}!
-        </p>
-
-        <p>
-          Мы получили ваш заказ.
-        </p>
-
-        <p>
-
-          💰 Сумма:
-
-          <b>
-            ${money(finalTotal)}
-          </b>
-
-        </p>
-
-      </div>
-
-    `;
-
-
-    /*
-    ==========================================
-    ОЧИЩАЕМ КОРЗИНУ
-    ==========================================
-    */
-
-    Object.keys(cart)
-      .forEach(
-        id => {
-
-          delete cart[id];
-
-        }
+      throw new Error(
+        "Сервер не вернул номер заказа"
       );
-
-
-    render();
-
-
-    /*
-    ==========================================
-    ПОКАЗЫВАЕМ ОТСЛЕЖИВАНИЕ
-    ==========================================
-    */
-
-    const tracking =
-      document.getElementById(
-        "orderTracking"
-      );
-
-
-    if (tracking) {
-
-      tracking.style.display =
-        "block";
-
-      tracking.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
 
     }
 
+    /*
+    Сохраняем номер заказа
+    */
+
+    localStorage.setItem(
+      "activeOrderId",
+      orderId
+    );
+
+    /*
+    Закрываем корзину
+    */
+
+    closeCart();
+
+    /*
+    Очищаем корзину
+    */
+
+    Object.keys(cart)
+      .forEach(id => {
+
+        delete cart[id];
+
+      });
+
+    render();
+
+    /*
+    Показываем статус
+    */
+
+    showOrderTracking(
+      orderId,
+      "new"
+    );
+
+    /*
+    Запускаем автоматическое
+    отслеживание
+    */
+
+    startOrderTracking(
+      orderId
+    );
+
+    /*
+    Прокручиваем к статусу
+    */
+
+    setTimeout(
+      function() {
+
+        const tracking =
+          document.getElementById(
+            "trackingContainer"
+          );
+
+        if (tracking) {
+
+          tracking.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
+
+      },
+      150
+    );
 
   } catch (error) {
 
@@ -2507,12 +2018,10 @@ async function placeOrder() {
       error
     );
 
-
     alert(
       "Не удалось отправить заказ.\n\n" +
       "Попробуйте ещё раз."
     );
-
 
     button.disabled = false;
 
@@ -2523,13 +2032,31 @@ async function placeOrder() {
 
 }
 
-
 /* ==============================
    ЗАПУСК
 ============================== */
 
 render();
 
+/*
+Если в PWA уже есть
+активный заказ —
+сразу восстанавливаем
+его отслеживание.
+*/
+
+const savedOrderId =
+  localStorage.getItem(
+    "activeOrderId"
+  );
+
+if (savedOrderId) {
+
+  startOrderTracking(
+    savedOrderId
+  );
+
+}
 
 /* ==============================
    ОБНОВЛЕНИЕ АКЦИИ
