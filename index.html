@@ -8,7 +8,10 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#fff8ef">
+  <meta
+    name="theme-color"
+    content="#fff8ef"
+  >
 
   <meta
     name="apple-mobile-web-app-capable"
@@ -65,17 +68,106 @@
       font-size: 14px;
     }
 
+
+    /* ==========================
+       TELEGRAM
+    ========================== */
+
+    .telegram-connect {
+      margin: 0 16px 16px;
+      padding: 14px;
+
+      background: white;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      box-shadow:
+        0 4px 15px rgba(70,40,20,.08);
+    }
+
+    .telegram-icon {
+      width: 48px;
+      height: 48px;
+
+      border-radius: 14px;
+
+      background: #e8f4ff;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 25px;
+
+      flex-shrink: 0;
+    }
+
+    .telegram-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .telegram-title {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .telegram-status {
+      margin-top: 3px;
+
+      font-size: 12px;
+
+      color: #8a6c5a;
+
+      line-height: 1.3;
+    }
+
+    .telegram-button {
+      border: none;
+
+      border-radius: 12px;
+
+      padding: 10px 12px;
+
+      background: #229ed9;
+
+      color: white;
+
+      font-weight: 800;
+
+      font-size: 13px;
+    }
+
+    .telegram-button:disabled {
+      opacity: .6;
+    }
+
+
+    /* ==========================
+       АКЦИЯ
+    ========================== */
+
     .promo {
       margin: 8px 16px 20px;
+
       padding: 17px;
+
       border-radius: 20px;
+
       background: #fff0d9;
+
       border: 1px solid #f1d1a4;
     }
 
     .promo-title {
       font-size: 18px;
       font-weight: 800;
+
       margin-bottom: 6px;
     }
 
@@ -84,37 +176,58 @@
       line-height: 1.5;
     }
 
+
+    /* ==========================
+       МЕНЮ
+    ========================== */
+
     .section-title {
       margin: 18px 16px 12px;
+
       font-size: 22px;
+
       font-weight: 800;
     }
 
     #products {
       display: grid;
+
       gap: 12px;
+
       padding: 0 14px;
     }
 
     .product {
       background: white;
+
       border-radius: 20px;
+
       padding: 14px;
+
       display: flex;
+
       align-items: center;
+
       gap: 12px;
-      box-shadow: 0 4px 15px rgba(70,40,20,.08);
+
+      box-shadow:
+        0 4px 15px rgba(70,40,20,.08);
     }
 
     .icon {
       width: 58px;
       height: 58px;
+
       border-radius: 17px;
+
       background: #fff0dc;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 30px;
+
       flex-shrink: 0;
     }
 
@@ -130,75 +243,126 @@
 
     .price {
       margin-top: 5px;
+
       color: #bd6b2f;
+
       font-weight: 750;
     }
 
     .quantity {
       display: flex;
+
       align-items: center;
+
       gap: 7px;
     }
 
     .quantity button {
       width: 36px;
       height: 36px;
+
       border: none;
+
       border-radius: 11px;
+
       background: #f0dfcd;
+
       color: #4b2c1a;
+
       font-size: 22px;
+
       font-weight: 700;
     }
 
     .number {
       min-width: 18px;
+
       text-align: center;
+
       font-weight: 700;
     }
 
+
+    /* ==========================
+       НИЖНЯЯ КОРЗИНА
+    ========================== */
+
     .cart-bar {
       position: fixed;
+
       left: 14px;
       right: 14px;
-      bottom: calc(14px + env(safe-area-inset-bottom));
+
+      bottom:
+        calc(
+          14px +
+          env(safe-area-inset-bottom)
+        );
+
       background: #3b2418;
+
       color: white;
+
       border-radius: 20px;
+
       padding: 12px 14px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
-      box-shadow: 0 8px 28px rgba(0,0,0,.22);
+
+      box-shadow:
+        0 8px 28px rgba(0,0,0,.22);
+
       z-index: 10;
     }
 
     .cart-count {
       font-size: 12px;
+
       opacity: .75;
     }
 
     .cart-total {
       margin-top: 2px;
+
       font-size: 18px;
+
       font-weight: 800;
     }
 
     .cart-button {
       border: none;
+
       border-radius: 13px;
+
       padding: 12px 15px;
+
       background: #f2a65a;
+
       color: #3b2418;
+
       font-weight: 800;
     }
 
+
+    /* ==========================
+       КОРЗИНА
+    ========================== */
+
     .overlay {
       position: fixed;
+
       inset: 0;
+
       background: rgba(0,0,0,.45);
+
       display: none;
+
       align-items: flex-end;
+
       z-index: 100;
     }
 
@@ -208,44 +372,67 @@
 
     .sheet {
       width: 100%;
+
       max-height: 94vh;
+
       overflow-y: auto;
+
       background: #fff8ef;
-      border-radius: 25px 25px 0 0;
+
+      border-radius:
+        25px 25px 0 0;
+
       padding:
         20px
         16px
-        calc(25px + env(safe-area-inset-bottom));
+        calc(
+          25px +
+          env(safe-area-inset-bottom)
+        );
     }
 
     .sheet-header {
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
     }
 
     .sheet-title {
       font-size: 24px;
+
       font-weight: 800;
     }
 
     .close {
       width: 38px;
       height: 38px;
+
       border: none;
+
       border-radius: 50%;
+
       background: #efdfcf;
+
       font-size: 22px;
     }
 
     .cart-item {
       background: white;
+
       border-radius: 16px;
+
       padding: 12px;
+
       margin-top: 10px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
       gap: 10px;
     }
 
@@ -255,68 +442,112 @@
 
     .cart-item-price {
       margin-top: 4px;
+
       font-size: 13px;
+
       color: #8a6c5a;
     }
 
+
+    /* ==========================
+       АКЦИЯ В КОРЗИНЕ
+    ========================== */
+
     .promo-active {
       margin-top: 14px;
+
       padding: 12px;
+
       border-radius: 14px;
+
       background: #e5f6df;
+
       color: #2d6727;
+
       font-weight: 750;
+
       font-size: 14px;
     }
 
     .promo-inactive {
       margin-top: 14px;
+
       padding: 12px;
+
       border-radius: 14px;
+
       background: #eee6df;
+
       color: #765f50;
+
       font-size: 14px;
     }
 
     .summary {
       margin-top: 15px;
+
       padding: 16px;
+
       border-radius: 17px;
+
       background: #3b2418;
+
       color: white;
+
       display: flex;
+
       justify-content: space-between;
+
       font-size: 19px;
+
       font-weight: 800;
     }
 
+
+    /* ==========================
+       ФОРМА
+    ========================== */
+
     .form-title {
       margin-top: 22px;
+
       font-size: 20px;
+
       font-weight: 800;
     }
 
     label {
       display: block;
+
       margin-top: 13px;
+
       margin-bottom: 6px;
+
       font-weight: 700;
     }
 
     input,
     textarea {
       width: 100%;
+
       border: 1px solid #dfcdbc;
+
       border-radius: 13px;
+
       padding: 12px;
+
       background: white;
+
       color: #3b2418;
+
       font: inherit;
+
       outline: none;
     }
 
     textarea {
       min-height: 80px;
+
       resize: vertical;
     }
 
@@ -327,28 +558,35 @@
 
     .order-button {
       width: 100%;
-      margin-top: 18px;
-      padding: 15px;
-      border: none;
-      border-radius: 16px;
-      background: #d9823b;
-      color: white;
-      font-size: 17px;
-      font-weight: 800;
-    }
 
-    .order-button:disabled {
-      opacity: .6;
+      margin-top: 18px;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 16px;
+
+      background: #d9823b;
+
+      color: white;
+
+      font-size: 17px;
+
+      font-weight: 800;
     }
 
     .empty {
       text-align: center;
+
       padding: 35px 10px;
+
       color: #8a6c5a;
     }
 
     .success {
       text-align: center;
+
       padding: 25px 10px;
     }
 
@@ -358,22 +596,20 @@
 
     .success h3 {
       font-size: 24px;
-      margin: 10px 0;
-    }
 
-    .error-box {
-      margin-top: 15px;
-      padding: 14px;
-      border-radius: 14px;
-      background: #ffe4e0;
-      color: #8b2e23;
-      font-size: 14px;
+      margin: 10px 0;
     }
 
   </style>
 </head>
 
+
 <body>
+
+
+<!-- ==========================
+     ШАПКА
+========================== -->
 
 <header>
 
@@ -391,6 +627,45 @@
 
 </header>
 
+
+<!-- ==========================
+     TELEGRAM
+========================== -->
+
+<div class="telegram-connect">
+
+  <div class="telegram-icon">
+    📲
+  </div>
+
+  <div class="telegram-info">
+
+    <div class="telegram-title">
+      Telegram
+    </div>
+
+    <div
+      class="telegram-status"
+      id="telegramStatus"
+    >
+      Подключите Telegram для уведомлений
+    </div>
+
+  </div>
+
+  <button
+    class="telegram-button"
+    onclick="connectTelegram()"
+  >
+    Подключить
+  </button>
+
+</div>
+
+
+<!-- ==========================
+     АКЦИЯ
+========================== -->
 
 <div class="promo">
 
@@ -415,13 +690,20 @@
 </div>
 
 
+<!-- ==========================
+     МЕНЮ
+========================== -->
+
 <div class="section-title">
   Наше меню
 </div>
 
-
 <div id="products"></div>
 
+
+<!-- ==========================
+     НИЖНЯЯ ПАНЕЛЬ
+========================== -->
 
 <div class="cart-bar">
 
@@ -443,7 +725,6 @@
 
   </div>
 
-
   <button
     class="cart-button"
     onclick="openCart()"
@@ -453,6 +734,10 @@
 
 </div>
 
+
+<!-- ==========================
+     КОРЗИНА
+========================== -->
 
 <div
   class="overlay"
@@ -495,6 +780,10 @@
 
     </div>
 
+
+    <!-- ======================
+         ФОРМА ЗАКАЗА
+    ======================= -->
 
     <div id="orderForm">
 
@@ -565,9 +854,9 @@
 "use strict";
 
 
-/* =================================
+/* ==============================
    ТОВАРЫ
-================================= */
+============================== */
 
 const products = [
 
@@ -658,9 +947,102 @@ const products = [
 const cart = {};
 
 
-/* =================================
-   ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-================================= */
+/* ==============================
+   TELEGRAM
+============================== */
+
+async function connectTelegram() {
+
+  const button =
+    document.querySelector(
+      ".telegram-button"
+    );
+
+  const status =
+    document.getElementById(
+      "telegramStatus"
+    );
+
+  button.disabled = true;
+
+  button.textContent =
+    "⏳ Подключение...";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/telegram-connect"
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Не удалось создать подключение"
+      );
+
+    }
+
+
+    /*
+    Сохраняем код
+    */
+
+    localStorage.setItem(
+      "telegramConnectCode",
+      data.code
+    );
+
+
+    status.textContent =
+      "Открываем Telegram...";
+
+
+    /*
+    Открываем Telegram
+    */
+
+    window.location.href =
+      data.telegramUrl;
+
+
+  } catch (error) {
+
+    console.error(
+      "TELEGRAM CONNECT ERROR:",
+      error
+    );
+
+
+    alert(
+      "Не удалось подключить Telegram.\n\n" +
+      "Попробуйте ещё раз."
+    );
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "Подключить";
+
+  }
+
+}
+
+
+/* ==============================
+   ДЕНЬГИ
+============================== */
 
 function money(value) {
 
@@ -670,6 +1052,10 @@ function money(value) {
 
 }
 
+
+/* ==============================
+   КОЛИЧЕСТВО
+============================== */
 
 function getQty(id) {
 
@@ -693,7 +1079,10 @@ function getItems() {
 function getBunCount() {
 
   return products
-    .filter(product => product.bun)
+    .filter(
+      product =>
+        product.bun
+    )
     .reduce(
       (sum, product) =>
         sum + getQty(product.id),
@@ -703,17 +1092,19 @@ function getBunCount() {
 }
 
 
-/* =================================
+/* ==============================
    АКЦИЯ
-================================= */
+============================== */
 
 function promoActive() {
 
-  const now = new Date();
+  const now =
+    new Date();
 
   const minutes =
     now.getHours() * 60 +
     now.getMinutes();
+
 
   return (
     minutes >= 540 &&
@@ -734,22 +1125,24 @@ function coffeeFree() {
 }
 
 
-/* =================================
-   СУММА
-================================= */
+/* ==============================
+   ИТОГО
+============================== */
 
 function getTotal() {
 
   let total = 0;
 
 
-  products.forEach(product => {
+  products.forEach(
+    product => {
 
-    total +=
-      product.price *
-      getQty(product.id);
+      total +=
+        product.price *
+        getQty(product.id);
 
-  });
+    }
+  );
 
 
   if (coffeeFree()) {
@@ -761,14 +1154,17 @@ function getTotal() {
   }
 
 
-  return Math.max(total, 0);
+  return Math.max(
+    total,
+    0
+  );
 
 }
 
 
-/* =================================
-   КОРЗИНА
-================================= */
+/* ==============================
+   ДОБАВИТЬ
+============================== */
 
 function add(id) {
 
@@ -780,31 +1176,42 @@ function add(id) {
 }
 
 
+/* ==============================
+   УДАЛИТЬ
+============================== */
+
 function remove(id) {
 
   if (!getQty(id)) {
     return;
   }
 
+
   cart[id]--;
 
+
   if (cart[id] <= 0) {
+
     delete cart[id];
+
   }
+
 
   render();
 
 }
 
 
-/* =================================
+/* ==============================
    МЕНЮ
-================================= */
+============================== */
 
 function renderProducts() {
 
   const container =
-    document.getElementById("products");
+    document.getElementById(
+      "products"
+    );
 
 
   container.innerHTML =
@@ -861,34 +1268,39 @@ function renderProducts() {
 }
 
 
-/* =================================
+/* ==============================
    НИЖНЯЯ ПАНЕЛЬ
-================================= */
+============================== */
 
 function renderBottomBar() {
 
-  document
-    .getElementById("cartCount")
-    .textContent =
-      getItems() + " товаров";
+  document.getElementById(
+    "cartCount"
+  ).textContent =
+    getItems() +
+    " товаров";
 
 
-  document
-    .getElementById("cartTotal")
-    .textContent =
-      money(getTotal());
+  document.getElementById(
+    "cartTotal"
+  ).textContent =
+    money(
+      getTotal()
+    );
 
 }
 
 
-/* =================================
+/* ==============================
    КОРЗИНА
-================================= */
+============================== */
 
 function renderCart() {
 
   const container =
-    document.getElementById("cartItems");
+    document.getElementById(
+      "cartItems"
+    );
 
 
   const selected =
@@ -898,7 +1310,9 @@ function renderCart() {
     );
 
 
-  if (selected.length === 0) {
+  if (
+    selected.length === 0
+  ) {
 
     container.innerHTML = `
 
@@ -933,10 +1347,7 @@ function renderCart() {
           ) {
 
             freeText =
-              `
-              <br>
-              <b>🎁 Бесплатно по акции</b>
-              `;
+              `<br><b>🎁 Бесплатно по акции</b>`;
 
           }
 
@@ -950,9 +1361,11 @@ function renderCart() {
                 <div class="cart-item-name">
 
                   ${product.icon}
+
                   ${product.name}
 
                 </div>
+
 
                 <div class="cart-item-price">
 
@@ -997,14 +1410,18 @@ function renderCart() {
   }
 
 
-  document
-    .getElementById("modalTotal")
-    .textContent =
-      money(getTotal());
+  document.getElementById(
+    "modalTotal"
+  ).textContent =
+    money(
+      getTotal()
+    );
 
 
   const status =
-    document.getElementById("promoStatus");
+    document.getElementById(
+      "promoStatus"
+    );
 
 
   if (coffeeFree()) {
@@ -1028,9 +1445,8 @@ function renderCart() {
 
         ☕ Акция действует до 11:00.
 
-        Купите минимум
-        2 булочки —
-        кофе будет бесплатным.
+        Купите минимум 2 булочки —
+        и кофе будет бесплатным.
 
       </div>
 
@@ -1056,9 +1472,9 @@ function renderCart() {
 }
 
 
-/* =================================
-   ПОЛНАЯ ОТРИСОВКА
-================================= */
+/* ==============================
+   ОБЩИЙ RENDER
+============================== */
 
 function render() {
 
@@ -1071,35 +1487,42 @@ function render() {
 }
 
 
-/* =================================
+/* ==============================
    ОТКРЫТЬ КОРЗИНУ
-================================= */
+============================== */
 
 function openCart() {
 
   document
-    .getElementById("cartOverlay")
+    .getElementById(
+      "cartOverlay"
+    )
     .classList.add("show");
+
 
   renderCart();
 
 }
 
 
-/* =================================
+/* ==============================
    ЗАКРЫТЬ КОРЗИНУ
-================================= */
+============================== */
 
 function closeCart() {
 
   document
-    .getElementById("cartOverlay")
+    .getElementById(
+      "cartOverlay"
+    )
     .classList.remove("show");
 
 }
 
 
-function closeByBackground(event) {
+function closeByBackground(
+  event
+) {
 
   if (
     event.target.id ===
@@ -1113,9 +1536,9 @@ function closeByBackground(event) {
 }
 
 
-/* =================================
-   ОФОРМЛЕНИЕ ЗАКАЗА
-================================= */
+/* ==============================
+   ЗАКАЗ
+============================== */
 
 async function placeOrder() {
 
@@ -1132,35 +1555,45 @@ async function placeOrder() {
 
   const name =
     document
-      .getElementById("customerName")
+      .getElementById(
+        "customerName"
+      )
       .value
       .trim();
 
 
   const phone =
     document
-      .getElementById("customerPhone")
+      .getElementById(
+        "customerPhone"
+      )
       .value
       .trim();
 
 
   const address =
     document
-      .getElementById("customerAddress")
+      .getElementById(
+        "customerAddress"
+      )
       .value
       .trim();
 
 
   const comment =
     document
-      .getElementById("customerComment")
+      .getElementById(
+        "customerComment"
+      )
       .value
       .trim();
 
 
   if (!name) {
 
-    alert("Введите ваше имя.");
+    alert(
+      "Введите ваше имя."
+    );
 
     return;
 
@@ -1169,7 +1602,9 @@ async function placeOrder() {
 
   if (!phone) {
 
-    alert("Введите номер телефона.");
+    alert(
+      "Введите номер телефона."
+    );
 
     return;
 
@@ -1178,7 +1613,9 @@ async function placeOrder() {
 
   if (!address) {
 
-    alert("Введите адрес доставки.");
+    alert(
+      "Введите адрес доставки."
+    );
 
     return;
 
@@ -1206,19 +1643,40 @@ async function placeOrder() {
       }));
 
 
-  const telegramId =
-  localStorage.getItem("telegramId") || null;
+  /*
+  ==========================================
+  TELEGRAM CODE
+  ==========================================
+  */
 
-const orderData = {
-  name,
-  phone,
-  address,
-  comment,
-  items,
-  total: getTotal(),
-  promo: coffeeFree(),
-  telegramId
-};
+  const telegramConnectCode =
+    localStorage.getItem(
+      "telegramConnectCode"
+    );
+
+
+  const orderData = {
+
+    name,
+
+    phone,
+
+    address,
+
+    comment,
+
+    items,
+
+    total:
+      getTotal(),
+
+    promo:
+      coffeeFree(),
+
+    telegramConnectCode:
+      telegramConnectCode || null
+
+  };
 
 
   const button =
@@ -1247,23 +1705,15 @@ const orderData = {
           },
 
           body:
-            JSON.stringify(orderData)
+            JSON.stringify(
+              orderData
+            )
         }
       );
 
 
-    let data = {};
-
-    try {
-
-      data =
-        await response.json();
-
-    } catch {
-
-      data = {};
-
-    }
+    const data =
+      await response.json();
 
 
     if (
@@ -1283,39 +1733,46 @@ const orderData = {
       getTotal();
 
 
-    document
-      .getElementById("orderForm")
-      .innerHTML = `
+    document.getElementById(
+      "orderForm"
+    ).innerHTML = `
 
-        <div class="success">
+      <div class="success">
 
-          <div class="success-icon">
-            ✅
-          </div>
-
-          <h3>
-            Заказ отправлен!
-          </h3>
-
-          <p>
-            Спасибо, ${name}!
-          </p>
-
-          <p>
-            Мы получили ваш заказ.
-          </p>
-
-          <p>
-            💰 Сумма:
-            <b>
-              ${money(finalTotal)}
-            </b>
-          </p>
-
+        <div class="success-icon">
+          ✅
         </div>
 
-      `;
+        <h3>
+          Заказ отправлен!
+        </h3>
 
+        <p>
+          Спасибо, ${name}!
+        </p>
+
+        <p>
+          Мы получили ваш заказ.
+        </p>
+
+        <p>
+
+          💰 Сумма:
+
+          <b>
+            ${money(finalTotal)}
+          </b>
+
+        </p>
+
+      </div>
+
+    `;
+
+
+    /*
+    Очищаем корзину
+    */
 
     Object.keys(cart)
       .forEach(id => {
@@ -1326,6 +1783,7 @@ const orderData = {
 
 
     render();
+
 
   } catch (error) {
 
@@ -1351,18 +1809,16 @@ const orderData = {
 }
 
 
-/* =================================
+/* ==============================
    ЗАПУСК
-================================= */
+============================== */
 
 render();
 
 
-/*
-  Проверяем акцию каждую минуту.
-  В 11:00 бесплатный кофе
-  автоматически перестанет действовать.
-*/
+/* ==============================
+   ОБНОВЛЕНИЕ АКЦИИ
+============================== */
 
 setInterval(
   function() {
