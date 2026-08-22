@@ -8,7 +8,6 @@ export default async function handler(req, res) {
 
   try {
     const token = process.env.TELEGRAM_BOT_TOKEN;
-
     const redisUrl = process.env.KV_REST_API_URL;
     const redisToken = process.env.KV_REST_API_TOKEN;
 
@@ -30,48 +29,121 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    START — ПОДКЛЮЧЕНИЕ КЛИЕНТА
+    ПОЛЬЗОВАТЕЛЬ НАЖАЛ START
     ==========================================
     */
 
-    if (body?.message?.text) {
-
+    if (body?.message) {
       const message = body.message;
-
       const chatId = message.chat?.id;
-      const text = String(message.text).trim();
+      const text = String(message.text || "").trim();
 
-      if (
-        text === "/start" ||
-        text === "/start connect"
-      ) {
+      if (text.startsWith("/start")) {
+
+        const parts = text.split(/\s+/);
+        const code = parts[1] || null;
 
         const user = message.from || {};
 
-        const clientData = {
-          telegramId: chatId,
-          firstName: user.first_name || "",
-          username: user.username || "",
-          connectedAt: new Date().toISOString()
-        };
+        /*
+        ------------------------------------------
+        ЕСЛИ ЕСТЬ КОД ПОДКЛЮЧЕНИЯ
+        ------------------------------------------
+        */
 
-        await redisCommand(
-          redisUrl,
-          redisToken,
-          [
-            "SET",
-            `telegram:client:${chatId}`,
-            JSON.stringify(clientData)
-          ]
-        );
+        if (code) {
+
+          const connectKey =
+            `connect:${code}`;
+
+          const connectValue =
+            await redisCommand(
+              redisUrl,
+              redisToken,
+              [
+                "GET",
+                connectKey
+              ]
+            );
+
+          if (connectValue) {
+
+            const clientData = {
+              telegramId: chatId,
+              firstName:
+                user.first_name || "",
+              lastName:
+                user.last_name || "",
+              username:
+                user.username || "",
+              connectedAt:
+                new Date().toISOString()
+            };
+
+            /*
+            Сохраняем клиента
+            */
+
+            await redisCommand(
+              redisUrl,
+              redisToken,
+              [
+                "SET",
+                `telegram:client:${chatId}`,
+                JSON.stringify(clientData)
+              ]
+            );
+
+            /*
+            Связываем код с Telegram ID
+            */
+
+            await redisCommand(
+              redisUrl,
+              redisToken,
+              [
+                "SET",
+                connectKey,
+                JSON.stringify({
+                  telegramId: chatId,
+                  connected: true,
+                  connectedAt:
+                    new Date().toISOString()
+                }),
+                "EX",
+                "3600"
+              ]
+            );
+
+            await sendTelegram(
+              token,
+              chatId,
+              "🥐 «Моя Булочка»\n\n" +
+              "✅ Telegram успешно подключён!\n\n" +
+              "Теперь вы сможете получать уведомления " +
+              "о статусе своих заказов."
+            );
+
+            return res.status(200).json({
+              ok: true,
+              connected: true
+            });
+          }
+        }
+
+        /*
+        ------------------------------------------
+        Обычный /start без кода
+        ------------------------------------------
+        */
 
         await sendTelegram(
           token,
           chatId,
           "🥐 Добро пожаловать в «Моя Булочка»!\n\n" +
-          "✅ Telegram успешно подключён.\n\n" +
-          "Теперь вы сможете получать уведомления " +
-          "о статусе вашего заказа."
+          "Чтобы подключить уведомления о заказах, " +
+          "откройте кнопку подключения Telegram " +
+          "в приложении."
         );
 
         return res.status(200).json({
@@ -82,7 +154,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    НАЖАТИЕ КНОПКИ СТАТУСА
+    КНОПКИ СТАТУСА ЗАКАЗА
     ==========================================
     */
 
@@ -103,16 +175,13 @@ export default async function handler(req, res) {
       const callbackData =
         String(callback.data || "");
 
-      /*
-      Формат:
-
-      status:accepted:MB-XXXX
-      */
-
       const parts =
         callbackData.split(":");
 
-      if (parts.length < 3) {
+      if (
+        parts.length < 3 ||
+        parts[0] !== "status"
+      ) {
         return res.status(200).json({
           ok: true
         });
@@ -124,7 +193,7 @@ export default async function handler(req, res) {
         parts.slice(2).join(":");
 
       /*
-      Получаем заказ из Redis
+      Получаем заказ
       */
 
       const orderRaw =
@@ -158,29 +227,28 @@ export default async function handler(req, res) {
             ? JSON.parse(orderRaw)
             : orderRaw;
       } catch {
-
         return res.status(500).json({
           ok: false,
           error: "Invalid order data"
         });
       }
 
-      /*
-      ==========================================
-      ОПРЕДЕЛЯЕМ НОВЫЙ СТАТУС
-      ==========================================
-      */
-
-      let statusText = "";
       let statusCode = "";
+      let statusText = "";
       let nextButton = null;
+
+      /*
+      ------------------------------------------
+      ПРИНЯТ
+      ------------------------------------------
+      */
 
       if (action === "accepted") {
 
         statusCode = "accepted";
 
         statusText =
-          "🟢 Статус: Принят";
+          "🟢 Заказ принят";
 
         nextButton = {
           inline_keyboard: [
@@ -193,13 +261,20 @@ export default async function handler(req, res) {
             ]
           ]
         };
+      }
 
-      } else if (action === "preparing") {
+      /*
+      ------------------------------------------
+      ГОТОВИТСЯ
+      ------------------------------------------
+      */
+
+      else if (action === "preparing") {
 
         statusCode = "preparing";
 
         statusText =
-          "🟡 Статус: Готовится";
+          "🟡 Заказ готовится";
 
         nextButton = {
           inline_keyboard: [
@@ -212,13 +287,20 @@ export default async function handler(req, res) {
             ]
           ]
         };
+      }
 
-      } else if (action === "ready") {
+      /*
+      ------------------------------------------
+      ГОТОВ
+      ------------------------------------------
+      */
+
+      else if (action === "ready") {
 
         statusCode = "ready";
 
         statusText =
-          "🔵 Статус: Готов";
+          "🔵 Заказ готов";
 
         nextButton = {
           inline_keyboard: [
@@ -231,20 +313,27 @@ export default async function handler(req, res) {
             ]
           ]
         };
+      }
 
-      } else if (action === "delivered") {
+      /*
+      ------------------------------------------
+      ДОСТАВЛЕН
+      ------------------------------------------
+      */
+
+      else if (action === "delivered") {
 
         statusCode = "delivered";
 
         statusText =
-          "🟣 Статус: Доставлен";
+          "🟣 Заказ доставлен";
 
         nextButton = {
           inline_keyboard: []
         };
+      }
 
-      } else {
-
+      else {
         return res.status(200).json({
           ok: true
         });
@@ -252,7 +341,7 @@ export default async function handler(req, res) {
 
       /*
       ==========================================
-      СОХРАНЯЕМ НОВЫЙ СТАТУС
+      СОХРАНЯЕМ СТАТУС
       ==========================================
       */
 
@@ -275,7 +364,7 @@ export default async function handler(req, res) {
 
       /*
       ==========================================
-      УБИРАЕМ ЗАГРУЗКУ КНОПКИ
+      ОТВЕЧАЕМ НА НАЖАТИЕ КНОПКИ
       ==========================================
       */
 
@@ -287,7 +376,7 @@ export default async function handler(req, res) {
 
       /*
       ==========================================
-      МЕНЯЕМ КНОПКИ У ВЛАДЕЛЬЦА
+      МЕНЯЕМ КНОПКУ У ВЛАДЕЛЬЦА
       ==========================================
       */
 
@@ -314,7 +403,7 @@ export default async function handler(req, res) {
 
       /*
       ==========================================
-      ПОКАЗЫВАЕМ СТАТУС ВЛАДЕЛЬЦУ
+      УВЕДОМЛЯЕМ ВЛАДЕЛЬЦА
       ==========================================
       */
 
@@ -326,7 +415,7 @@ export default async function handler(req, res) {
 
       /*
       ==========================================
-      ОТПРАВЛЯЕМ СТАТУС КЛИЕНТУ
+      УВЕДОМЛЯЕМ КЛИЕНТА
       ==========================================
       */
 
@@ -338,21 +427,27 @@ export default async function handler(req, res) {
 
           clientMessage =
             `🟢 Ваш заказ ${orderId} принят!\n\n` +
-            "Мы уже начинаем его готовить. 🥐";
+            "🥐 Мы начинаем его готовить.";
 
-        } else if (statusCode === "preparing") {
+        }
+
+        else if (statusCode === "preparing") {
 
           clientMessage =
             `👨‍🍳 Ваш заказ ${orderId} готовится!\n\n` +
-            "Совсем скоро всё будет готово.";
+            "Совсем скоро будет готов.";
 
-        } else if (statusCode === "ready") {
+        }
+
+        else if (statusCode === "ready") {
 
           clientMessage =
             `📦 Ваш заказ ${orderId} готов!\n\n` +
-            "Он ожидает выдачи или доставки.";
+            "Можно забирать или ожидать доставку.";
 
-        } else if (statusCode === "delivered") {
+        }
+
+        else if (statusCode === "delivered") {
 
           clientMessage =
             `🚚 Ваш заказ ${orderId} доставлен!\n\n` +
@@ -397,7 +492,7 @@ export default async function handler(req, res) {
 
 /*
 ==========================================
-REDIS COMMAND
+REDIS
 ==========================================
 */
 
@@ -408,19 +503,22 @@ async function redisCommand(
 ) {
 
   const response =
-    await fetch(url, {
-      method: "POST",
+    await fetch(
+      url,
+      {
+        method: "POST",
 
-      headers: {
-        Authorization:
-          `Bearer ${token}`,
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
 
-        "Content-Type":
-          "application/json"
-      },
+          "Content-Type":
+            "application/json"
+        },
 
-      body: JSON.stringify(command)
-    });
+        body: JSON.stringify(command)
+      }
+    );
 
   const data =
     await response.json();
@@ -443,7 +541,7 @@ async function redisCommand(
 
 /*
 ==========================================
-TELEGRAM SEND MESSAGE
+TELEGRAM SEND
 ==========================================
 */
 
@@ -488,7 +586,7 @@ async function sendTelegram(
 
 /*
 ==========================================
-ANSWER CALLBACK
+CALLBACK
 ==========================================
 */
 
@@ -509,8 +607,11 @@ async function answerCallback(
       },
 
       body: JSON.stringify({
-        callback_query_id: callbackId,
+        callback_query_id:
+          callbackId,
+
         text,
+
         show_alert: false
       })
     }
