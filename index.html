@@ -6,10 +6,9 @@
 
   <meta name="theme-color" content="#fff8ef">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Моя Булочка">
 
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="./manifest.webmanifest">
 
   <title>Моя Булочка</title>
 
@@ -21,15 +20,15 @@
 
     body {
       margin: 0;
+      padding-bottom: 110px;
       background: #fff8ef;
       color: #3b2418;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding-bottom: 110px;
     }
 
     header {
       text-align: center;
-      padding: 28px 18px 18px;
+      padding: 28px 16px 18px;
     }
 
     .logo {
@@ -62,7 +61,7 @@
 
     .promo-text {
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     .section-title {
@@ -71,7 +70,7 @@
       font-weight: 800;
     }
 
-    .products {
+    #products {
       display: grid;
       gap: 12px;
       padding: 0 14px;
@@ -84,7 +83,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 4px 15px rgba(70, 40, 20, 0.08);
+      box-shadow: 0 4px 15px rgba(70,40,20,.08);
     }
 
     .icon {
@@ -180,7 +179,9 @@
 
 <header>
   <div class="logo">🥐</div>
+
   <h1>Моя Булочка</h1>
+
   <div class="subtitle">
     Свежая выпечка каждый день
   </div>
@@ -192,8 +193,8 @@
   </div>
 
   <div class="promo-text">
-    Купи любые <b>2 булочки</b> — получи
-    <b>кофе бесплатно!</b>
+    Купи любые <b>2 булочки</b> —
+    получи <b>кофе бесплатно!</b>
     <br>
     После 11:00 акция автоматически прекращается.
   </div>
@@ -203,7 +204,7 @@
   Наше меню
 </div>
 
-<div class="products" id="products"></div>
+<div id="products"></div>
 
 <div class="cart-bar">
 
@@ -224,9 +225,9 @@
 </div>
 
 <script>
+"use strict";
 
 const products = [
-
   {
     id: 1,
     name: "Sosiskali bulochka",
@@ -234,7 +235,6 @@ const products = [
     icon: "🌭",
     bun: true
   },
-
   {
     id: 2,
     name: "Vatrushka",
@@ -242,7 +242,6 @@ const products = [
     icon: "🧀",
     bun: true
   },
-
   {
     id: 3,
     name: "Makli bulochka",
@@ -250,7 +249,6 @@ const products = [
     icon: "🧈",
     bun: true
   },
-
   {
     id: 4,
     name: "Yong'oqli bulochka",
@@ -258,7 +256,6 @@ const products = [
     icon: "🌰",
     bun: true
   },
-
   {
     id: 5,
     name: "Shokoladli bulochka",
@@ -266,7 +263,6 @@ const products = [
     icon: "🍫",
     bun: true
   },
-
   {
     id: 6,
     name: "Jemli bulochka",
@@ -274,7 +270,6 @@ const products = [
     icon: "🍓",
     bun: true
   },
-
   {
     id: 7,
     name: "Hotdog",
@@ -282,7 +277,6 @@ const products = [
     icon: "🌭",
     bun: false
   },
-
   {
     id: 8,
     name: "Gamburger",
@@ -290,7 +284,6 @@ const products = [
     icon: "🍔",
     bun: false
   },
-
   {
     id: 9,
     name: "Kofe",
@@ -299,7 +292,6 @@ const products = [
     bun: false,
     coffee: true
   },
-
   {
     id: 10,
     name: "Choy",
@@ -307,30 +299,25 @@ const products = [
     icon: "🍵",
     bun: false
   }
-
 ];
 
 const cart = {};
 
-function formatPrice(price) {
-  return price.toLocaleString("ru-RU") + " so'm";
+function money(value) {
+  return Number(value).toLocaleString("ru-RU") + " so'm";
 }
 
-function getQuantity(id) {
+function getQty(id) {
   return cart[id] || 0;
 }
 
-function addToCart(id) {
-
-  cart[id] = getQuantity(id) + 1;
-
+function add(id) {
+  cart[id] = getQty(id) + 1;
   render();
-
 }
 
-function removeFromCart(id) {
-
-  if (!cart[id]) return;
+function remove(id) {
+  if (!getQty(id)) return;
 
   cart[id]--;
 
@@ -339,71 +326,52 @@ function removeFromCart(id) {
   }
 
   render();
-
 }
 
 function getBunCount() {
-
   return products
-    .filter(product => product.bun)
-    .reduce(
-      (sum, product) =>
-        sum + getQuantity(product.id),
-      0
-    );
-
+    .filter(function(product) {
+      return product.bun === true;
+    })
+    .reduce(function(total, product) {
+      return total + getQty(product.id);
+    }, 0);
 }
 
-function isPromoActive() {
-
+function promoActive() {
   const now = new Date();
 
   const minutes =
-    now.getHours() * 60 +
-    now.getMinutes();
+    now.getHours() * 60 + now.getMinutes();
 
   return minutes >= 540 && minutes < 660;
-
 }
 
-function isCoffeeFree() {
-
-  return (
-    isPromoActive() &&
-    getBunCount() >= 2
-  );
-
+function coffeeFree() {
+  return promoActive() && getBunCount() >= 2;
 }
 
 function getTotal() {
-
   let total = 0;
 
-  products.forEach(product => {
-
-    total +=
-      product.price *
-      getQuantity(product.id);
-
+  products.forEach(function(product) {
+    total += product.price * getQty(product.id);
   });
 
-  if (isCoffeeFree()) {
-
-    total -=
-      10000 *
-      getQuantity(9);
-
+  if (coffeeFree()) {
+    total -= 10000 * getQty(9);
   }
 
   return Math.max(total, 0);
-
 }
 
-function getTotalItems() {
-
-  return Object.values(cart)
-    .reduce((sum, quantity) => sum + quantity, 0);
-
+function getItems() {
+  return Object.values(cart).reduce(
+    function(total, quantity) {
+      return total + quantity;
+    },
+    0
+  );
 }
 
 function render() {
@@ -411,110 +379,91 @@ function render() {
   const container =
     document.getElementById("products");
 
-  container.innerHTML =
-    products.map(product => {
+  container.innerHTML = products.map(function(product) {
 
-      const quantity =
-        getQuantity(product.id);
+    return `
+      <div class="product">
 
-      return `
+        <div class="icon">
+          ${product.icon}
+        </div>
 
-        <div class="product">
+        <div class="info">
 
-          <div class="icon">
-            ${product.icon}
+          <div class="name">
+            ${product.name}
           </div>
 
-          <div class="info">
-
-            <div class="name">
-              ${product.name}
-            </div>
-
-            <div class="price">
-              ${formatPrice(product.price)}
-            </div>
-
-          </div>
-
-          <div class="quantity">
-
-            <button
-              onclick="removeFromCart(${product.id})">
-              −
-            </button>
-
-            <div class="number">
-              ${quantity}
-            </div>
-
-            <button
-              onclick="addToCart(${product.id})">
-              +
-            </button>
-
+          <div class="price">
+            ${money(product.price)}
           </div>
 
         </div>
 
-      `;
+        <div class="quantity">
 
-    }).join("");
+          <button onclick="remove(${product.id})">
+            −
+          </button>
 
-  document.getElementById("cartCount")
-    .textContent =
-      getTotalItems() + " товаров";
+          <div class="number">
+            ${getQty(product.id)}
+          </div>
 
-  document.getElementById("cartTotal")
-    .textContent =
-      formatPrice(getTotal());
+          <button onclick="add(${product.id})">
+            +
+          </button>
 
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+
+  document.getElementById("cartCount").textContent =
+    getItems() + " товаров";
+
+  document.getElementById("cartTotal").textContent =
+    money(getTotal());
 }
 
 function openCart() {
 
-  if (getTotalItems() === 0) {
-
+  if (getItems() === 0) {
     alert("Корзина пока пустая 🥐");
-
     return;
-
   }
 
-  let message =
-    "🛒 Ваша корзина:\n\n";
+  let message = "🛒 Ваша корзина:\n\n";
 
-  products.forEach(product => {
+  products.forEach(function(product) {
 
-    const quantity =
-      getQuantity(product.id);
+    const quantity = getQty(product.id);
 
     if (quantity > 0) {
 
       message +=
-        `${product.name} — ${quantity} шт.\n`;
-
+        product.name +
+        " — " +
+        quantity +
+        " шт.\n";
     }
-
   });
 
-  if (isCoffeeFree()) {
-
+  if (coffeeFree()) {
     message +=
       "\n🎁 Кофе бесплатно по акции!";
-
   }
 
   message +=
     "\n\n💰 Итого: " +
-    formatPrice(getTotal());
+    money(getTotal());
 
   alert(message);
-
 }
 
 render();
-
 </script>
 
 </body>
