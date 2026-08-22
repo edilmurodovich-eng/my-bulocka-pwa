@@ -25,40 +25,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    ОБЫЧНОЕ СООБЩЕНИЕ / START
-    ==========================================
-    */
-
-    if (update.message) {
-
-      const message = update.message;
-
-      const chatId = message.chat.id;
-
-      const text = message.text || "";
-
-
-      /*
-      Пользователь нажал START
-      */
-
-      if (text.startsWith("/start")) {
-
-        await sendTelegramMessage(
-          token,
-          chatId,
-          "✅ Telegram успешно подключён!\n\n" +
-          "Теперь вы будете получать уведомления о новых заказах."
-        );
-
-      }
-
-    }
-
-
-    /*
-    ==========================================
-    НАЖАТИЕ КНОПКИ
+    КНОПКА TELEGRAM
     ==========================================
     */
 
@@ -76,6 +43,12 @@ export default async function handler(req, res) {
       const message =
         callback.message;
 
+      if (!message) {
+        return res.status(200).json({
+          ok: true
+        });
+      }
+
       const chatId =
         message.chat.id;
 
@@ -84,24 +57,15 @@ export default async function handler(req, res) {
 
 
       /*
-      Отвечаем Telegram,
-      чтобы убрать "часики" на кнопке
+      Сразу убираем "часики"
       */
 
-      await fetch(
-        `https://api.telegram.org/bot${token}/answerCallbackQuery`,
+      await telegramRequest(
+        token,
+        "answerCallbackQuery",
         {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-            callback_query_id:
-              callbackId
-          })
+          callback_query_id:
+            callbackId
         }
       );
 
@@ -118,16 +82,43 @@ export default async function handler(req, res) {
       ) {
 
         /*
-        Меняем кнопку
+        Берём старый текст заказа
+        */
+
+        const oldText =
+          message.text || "";
+
+
+        /*
+        Добавляем статус
+        */
+
+        const newText =
+          oldText +
+          "\n\n" +
+          "✅ ЗАКАЗ ПРИНЯТ";
+
+
+        /*
+        Новая клавиатура
         */
 
         const keyboard = {
           inline_keyboard: [
             [
               {
-                text: "✅ Заказ принят",
+                text:
+                  "✅ Заказ принят",
                 callback_data:
                   "status:accepted_already"
+              }
+            ],
+            [
+              {
+                text:
+                  "🍳 Готовится",
+                callback_data:
+                  "status:cooking"
               }
             ]
           ]
@@ -135,43 +126,174 @@ export default async function handler(req, res) {
 
 
         /*
-        Меняем текст кнопки
+        Меняем сообщение
         */
 
-        await fetch(
-          `https://api.telegram.org/bot${token}/editMessageReplyMarkup`,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body: JSON.stringify({
-
+        const editResult =
+          await telegramRequest(
+            token,
+            "editMessageText",
+            {
               chat_id:
                 chatId,
 
               message_id:
                 messageId,
 
+              text:
+                newText,
+
               reply_markup:
                 keyboard
+            }
+          );
 
-            })
-          }
+
+        console.log(
+          "EDIT RESULT:",
+          JSON.stringify(
+            editResult
+          )
         );
 
 
-        /*
-        Добавляем сообщение
-        */
+        return res.status(200).json({
+          ok: true
+        });
+      }
 
-        await sendTelegramMessage(
+
+      /*
+      ========================================
+      ЗАКАЗ УЖЕ ПРИНЯТ
+      ========================================
+      */
+
+      if (
+        callbackData ===
+        "status:accepted_already"
+      ) {
+
+        return res.status(200).json({
+          ok: true
+        });
+
+      }
+
+
+      /*
+      ========================================
+      ГОТОВИТСЯ
+      ========================================
+      */
+
+      if (
+        callbackData ===
+        "status:cooking"
+      ) {
+
+        const oldText =
+          message.text || "";
+
+
+        const newText =
+          oldText +
+          "\n\n" +
+          "🍳 ЗАКАЗ ГОТОВИТСЯ";
+
+
+        const keyboard = {
+          inline_keyboard: [
+            [
+              {
+                text:
+                  "🍳 Готовится",
+                callback_data:
+                  "status:cooking_already"
+              }
+            ],
+            [
+              {
+                text:
+                  "🛵 Передан курьеру",
+                callback_data:
+                  "status:courier"
+              }
+            ]
+          ]
+        };
+
+
+        const editResult =
+          await telegramRequest(
+            token,
+            "editMessageText",
+            {
+              chat_id:
+                chatId,
+
+              message_id:
+                messageId,
+
+              text:
+                newText,
+
+              reply_markup:
+                keyboard
+            }
+          );
+
+
+        console.log(
+          "COOKING RESULT:",
+          JSON.stringify(
+            editResult
+          )
+        );
+
+
+        return res.status(200).json({
+          ok: true
+        });
+
+      }
+
+    }
+
+
+    /*
+    ==========================================
+    START / ПОДКЛЮЧЕНИЕ TELEGRAM
+    ==========================================
+    */
+
+    if (update.message) {
+
+      const message =
+        update.message;
+
+      const chatId =
+        message.chat.id;
+
+      const text =
+        message.text || "";
+
+
+      if (
+        text.startsWith("/start")
+      ) {
+
+        await telegramRequest(
           token,
-          chatId,
-          "✅ Заказ принят!"
+          "sendMessage",
+          {
+            chat_id:
+              chatId,
+
+            text:
+              "✅ Telegram успешно подключён!\n\n" +
+              "Теперь вы будете получать уведомления о новых заказах."
+          }
         );
 
       }
@@ -187,10 +309,9 @@ export default async function handler(req, res) {
   } catch (error) {
 
     console.error(
-      "TELEGRAM WEBHOOK ERROR:",
+      "TELEGRAM ERROR:",
       error
     );
-
 
     return res.status(500).json({
       ok: false,
@@ -198,25 +319,24 @@ export default async function handler(req, res) {
     });
 
   }
-
 }
 
 
 /*
 ==========================================
-ОТПРАВКА СООБЩЕНИЯ
+TELEGRAM API
 ==========================================
 */
 
-async function sendTelegramMessage(
+async function telegramRequest(
   token,
-  chatId,
-  text
+  method,
+  body
 ) {
 
   const response =
     await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
+      `https://api.telegram.org/bot${token}/${method}`,
       {
         method: "POST",
 
@@ -225,18 +345,25 @@ async function sendTelegramMessage(
             "application/json"
         },
 
-        body: JSON.stringify({
-
-          chat_id:
-            chatId,
-
-          text
-
-        })
+        body:
+          JSON.stringify(body)
       }
     );
 
 
-  return response.json();
+  const data =
+    await response.json();
 
+
+  if (!data.ok) {
+
+    console.error(
+      `Telegram ${method} error:`,
+      data
+    );
+
+  }
+
+
+  return data;
 }
