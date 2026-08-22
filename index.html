@@ -1029,17 +1029,136 @@ function closeByBackground(event) {
    ОФОРМЛЕНИЕ ЗАКАЗА
 ============================== */
 
-function placeOrder() {
+async function placeOrder() {
 
   if (getItems() === 0) {
+    alert("Добавьте товары в корзину.");
+    return;
+  }
+
+  const name =
+    document.getElementById("customerName").value.trim();
+
+  const phone =
+    document.getElementById("customerPhone").value.trim();
+
+  const address =
+    document.getElementById("customerAddress").value.trim();
+
+  const comment =
+    document.getElementById("customerComment").value.trim();
+
+  if (!name) {
+    alert("Введите ваше имя.");
+    return;
+  }
+
+  if (!phone) {
+    alert("Введите номер телефона.");
+    return;
+  }
+
+  if (!address) {
+    alert("Введите адрес доставки.");
+    return;
+  }
+
+  const items = products
+    .filter(product => getQty(product.id) > 0)
+    .map(product => ({
+      id: product.id,
+      name: product.name,
+      quantity: getQty(product.id),
+      price: product.price
+    }));
+
+  const orderData = {
+    name,
+    phone,
+    address,
+    comment,
+    items,
+    total: getTotal(),
+    promo: coffeeFree()
+  };
+
+  const button =
+    document.querySelector(".order-button");
+
+  button.disabled = true;
+  button.textContent = "⏳ Отправляем заказ...";
+
+  try {
+
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(orderData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(
+        data.error || "Не удалось отправить заказ"
+      );
+    }
+
+    document.getElementById("orderForm").innerHTML = `
+
+      <div class="success">
+
+        <div class="success-icon">
+          ✅
+        </div>
+
+        <h3>
+          Заказ отправлен!
+        </h3>
+
+        <p>
+          Спасибо, ${name}!
+        </p>
+
+        <p>
+          Мы получили ваш заказ.
+        </p>
+
+        <p>
+          💰 Сумма:
+          <b>${money(getTotal())}</b>
+        </p>
+
+      </div>
+
+    `;
+
+    /*
+      Очищаем корзину после успешной отправки
+    */
+
+    Object.keys(cart).forEach(id => {
+      delete cart[id];
+    });
+
+    render();
+
+  } catch (error) {
+
+    console.error("ORDER ERROR:", error);
 
     alert(
-      "Добавьте товары в корзину."
+      "Не удалось отправить заказ.\n\n" +
+      "Попробуйте ещё раз."
     );
 
-    return;
-
+    button.disabled = false;
+    button.textContent =
+      "📦 Оформить заказ";
   }
+}
 
 
   const name =
