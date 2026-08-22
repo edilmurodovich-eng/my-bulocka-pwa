@@ -43,8 +43,7 @@ export default async function handler(req, res) {
       comment,
       items,
       total,
-      promo,
-      telegramId
+      promo
     } = order;
 
     if (
@@ -85,9 +84,16 @@ export default async function handler(req, res) {
       items,
       total: Number(total) || 0,
       promo: Boolean(promo),
-      telegramId: telegramId || null,
+
       status: "new",
-      createdAt: new Date().toISOString()
+
+      createdAt: new Date().toISOString(),
+
+      /*
+      Пока Telegram ID клиента не передаём.
+      Подключим его следующим этапом.
+      */
+      telegramId: null
     };
 
     await redisCommand(
@@ -104,7 +110,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    ФОРМИРУЕМ ЗАКАЗ ДЛЯ TELEGRAM
+    ТЕКСТ ЗАКАЗА
     ==========================================
     */
 
@@ -112,64 +118,72 @@ export default async function handler(req, res) {
 
     items.forEach((item) => {
 
-      const itemTotal =
-        Number(item.price || 0) *
-        Number(item.quantity || 0);
-
       orderText +=
-        `• ${item.name} — ${item.quantity} шт.`;
+        `• ${item.name} — ${item.quantity} шт.\n`;
 
-      if (itemTotal > 0) {
-        orderText +=
-          ` — ${itemTotal.toLocaleString("ru-RU")} so'm`;
-      }
-
-      orderText += "\n";
     });
+
+    /*
+    ==========================================
+    СООБЩЕНИЕ В TELEGRAM
+    ==========================================
+    */
 
     let message =
       "🥐 НОВЫЙ ЗАКАЗ — «МОЯ БУЛОЧКА»\n\n" +
 
-      `🔢 Заказ: ${orderId}\n\n` +
+      `🔢 Заказ: ${orderId}\n` +
 
       `👤 Имя: ${name}\n` +
+
       `📞 Телефон: ${phone}\n` +
-      `📍 Адрес: ${address}\n`;
 
-    if (comment) {
-      message +=
-        `📝 Комментарий: ${comment}\n`;
-    }
+      `📍 Адрес: ${address}\n\n` +
 
-    message +=
-      "\n🛒 ЗАКАЗ:\n" +
+      "🛒 ЗАКАЗ:\n" +
+
       orderText;
 
     if (promo) {
+
       message +=
         "\n🎁 Кофе бесплатно по акции";
+
+    }
+
+    if (comment) {
+
+      message +=
+        `\n\n📝 Комментарий: ${comment}`;
+
     }
 
     message +=
-      "\n\n" +
-      `💰 Итого: ${Number(total || 0).toLocaleString("ru-RU")} so'm`;
+      `\n\n💰 Итого: ${
+        Number(total).toLocaleString("ru-RU")
+      } so'm`;
 
     /*
     ==========================================
-    КНОПКА "ПРИНЯТЬ"
+    КНОПКА «ПРИНЯТЬ»
     ==========================================
     */
 
     const keyboard = {
+
       inline_keyboard: [
+
         [
           {
             text: "🟢 Принять заказ",
+
             callback_data:
               `status:accepted:${orderId}`
           }
         ]
+
       ]
+
     };
 
     /*
@@ -178,23 +192,30 @@ export default async function handler(req, res) {
     ==========================================
     */
 
-    const telegramResponse = await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
-      {
-        method: "POST",
+    const telegramResponse =
+      await fetch(
+        `https://api.telegram.org/bot${token}/sendMessage`,
+        {
 
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
+          method: "POST",
 
-        body: JSON.stringify({
-          chat_id: ownerChatId,
-          text: message,
-          reply_markup: keyboard
-        })
-      }
-    );
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            chat_id: ownerChatId,
+
+            text: message,
+
+            reply_markup: keyboard
+
+          })
+
+        }
+      );
 
     const telegramData =
       await telegramResponse.json();
@@ -206,59 +227,28 @@ export default async function handler(req, res) {
         telegramData
       );
 
-      /*
-      Если Telegram не принял сообщение,
-      удаляем сохранённый заказ.
-      */
-
-      await redisCommand(
-        redisUrl,
-        redisToken,
-        [
-          "DEL",
-          `order:${orderId}`
-        ]
-      );
-
       return res.status(500).json({
         ok: false,
         error: "Telegram API error"
       });
+
     }
 
     /*
     ==========================================
-    СОХРАНЯЕМ TELEGRAM MESSAGE ID
-    ==========================================
-    */
-
-    orderData.telegramMessageId =
-      telegramData.result.message_id;
-
-    await redisCommand(
-      redisUrl,
-      redisToken,
-      [
-        "SET",
-        `order:${orderId}`,
-        JSON.stringify(orderData),
-        "EX",
-        "604800"
-      ]
-    );
-
-    /*
-    ==========================================
-    ОТВЕТ САЙТУ
+    УСПЕХ
     ==========================================
     */
 
     return res.status(200).json({
+
       ok: true,
+
       orderId,
-      status: "new",
+
       messageId:
         telegramData.result.message_id
+
     });
 
   } catch (error) {
@@ -269,16 +259,20 @@ export default async function handler(req, res) {
     );
 
     return res.status(500).json({
+
       ok: false,
+
       error: error.message
+
     });
+
   }
 }
 
 
 /*
 ==========================================
-REDIS COMMAND
+REDIS
 ==========================================
 */
 
@@ -289,19 +283,27 @@ async function redisCommand(
 ) {
 
   const response =
-    await fetch(url, {
-      method: "POST",
+    await fetch(
+      url,
+      {
 
-      headers: {
-        Authorization:
-          `Bearer ${token}`,
+        method: "POST",
 
-        "Content-Type":
-          "application/json"
-      },
+        headers: {
 
-      body: JSON.stringify(command)
-    });
+          Authorization:
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body:
+          JSON.stringify(command)
+
+      }
+    );
 
   const data =
     await response.json();
@@ -316,6 +318,7 @@ async function redisCommand(
     throw new Error(
       "Redis request failed"
     );
+
   }
 
   return data.result;
