@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -30,6 +32,7 @@
 
   <title>Моя Булочка</title>
 
+
   <style>
 
     * {
@@ -37,11 +40,14 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+
     body {
       margin: 0;
       padding-bottom: 110px;
+
       background: #fff8ef;
       color: #3b2418;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -49,30 +55,33 @@
         sans-serif;
     }
 
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
+
+    /* ==========================
+       HEADER
+    ========================== */
 
     header {
       text-align: center;
       padding: 28px 16px 18px;
     }
 
+
     .logo {
       font-size: 52px;
     }
+
 
     h1 {
       margin: 5px 0;
       font-size: 30px;
     }
 
+
     .subtitle {
       color: #8a6c5a;
       font-size: 14px;
     }
+
 
     /* ==========================
        TELEGRAM
@@ -81,227 +90,333 @@
     .telegram-connect {
       margin: 0 16px 16px;
       padding: 14px;
+
       background: white;
+
       border-radius: 18px;
+
       display: flex;
       align-items: center;
+
       gap: 12px;
+
       box-shadow:
         0 4px 15px rgba(70,40,20,.08);
     }
 
+
     .telegram-icon {
       width: 48px;
       height: 48px;
+
       border-radius: 14px;
+
       background: #e8f4ff;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 25px;
+
       flex-shrink: 0;
     }
+
 
     .telegram-info {
       flex: 1;
       min-width: 0;
     }
 
+
     .telegram-title {
       font-weight: 800;
       font-size: 16px;
     }
 
+
     .telegram-status {
       margin-top: 3px;
+
       font-size: 12px;
+
       color: #8a6c5a;
+
       line-height: 1.3;
     }
 
+
     .telegram-button {
       border: none;
+
       border-radius: 12px;
+
       padding: 10px 12px;
+
       background: #229ed9;
+
       color: white;
+
       font-weight: 800;
+
       font-size: 13px;
     }
+
 
     .telegram-button:disabled {
       opacity: .6;
     }
 
+
     /* ==========================
-       АКЦИЯ
+       PROMO
     ========================== */
 
     .promo {
       margin: 8px 16px 20px;
+
       padding: 17px;
+
       border-radius: 20px;
+
       background: #fff0d9;
+
       border: 1px solid #f1d1a4;
     }
+
 
     .promo-title {
       font-size: 18px;
       font-weight: 800;
+
       margin-bottom: 6px;
     }
+
 
     .promo-text {
       font-size: 14px;
       line-height: 1.5;
     }
 
+
     /* ==========================
-       МЕНЮ
+       MENU
     ========================== */
 
     .section-title {
       margin: 18px 16px 12px;
+
       font-size: 22px;
+
       font-weight: 800;
     }
 
+
     #products {
       display: grid;
+
       gap: 12px;
+
       padding: 0 14px;
     }
 
+
     .product {
       background: white;
+
       border-radius: 20px;
+
       padding: 14px;
+
       display: flex;
+
       align-items: center;
+
       gap: 12px;
+
       box-shadow:
         0 4px 15px rgba(70,40,20,.08);
     }
 
+
     .icon {
       width: 58px;
       height: 58px;
+
       border-radius: 17px;
+
       background: #fff0dc;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 30px;
+
       flex-shrink: 0;
     }
+
 
     .info {
       flex: 1;
       min-width: 0;
     }
 
+
     .name {
       font-size: 16px;
       font-weight: 750;
     }
 
+
     .price {
       margin-top: 5px;
+
       color: #bd6b2f;
+
       font-weight: 750;
     }
 
+
     .quantity {
       display: flex;
+
       align-items: center;
+
       gap: 7px;
     }
+
 
     .quantity button {
       width: 36px;
       height: 36px;
+
       border: none;
+
       border-radius: 11px;
+
       background: #f0dfcd;
+
       color: #4b2c1a;
+
       font-size: 22px;
+
       font-weight: 700;
     }
+
 
     .number {
       min-width: 18px;
+
       text-align: center;
+
       font-weight: 700;
     }
 
+
     /* ==========================
-       НИЖНЯЯ КОРЗИНА
+       CART BAR
     ========================== */
 
     .cart-bar {
       position: fixed;
+
       left: 14px;
       right: 14px;
+
       bottom:
         calc(
           14px +
           env(safe-area-inset-bottom)
         );
+
       background: #3b2418;
+
       color: white;
+
       border-radius: 20px;
+
       padding: 12px 14px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
       box-shadow:
         0 8px 28px rgba(0,0,0,.22);
+
       z-index: 10;
     }
+
 
     .cart-count {
       font-size: 12px;
       opacity: .75;
     }
 
+
     .cart-total {
       margin-top: 2px;
+
       font-size: 18px;
+
       font-weight: 800;
     }
+
 
     .cart-button {
       border: none;
+
       border-radius: 13px;
+
       padding: 12px 15px;
+
       background: #f2a65a;
+
       color: #3b2418;
+
       font-weight: 800;
     }
 
+
     /* ==========================
-       КОРЗИНА
+       OVERLAY
     ========================== */
 
     .overlay {
       position: fixed;
+
       inset: 0;
+
       background: rgba(0,0,0,.45);
+
       display: none;
+
       align-items: flex-end;
+
       z-index: 100;
     }
+
 
     .overlay.show {
       display: flex;
     }
 
+
     .sheet {
       width: 100%;
+
       max-height: 94vh;
+
       overflow-y: auto;
+
       background: #fff8ef;
-      border-radius: 25px 25px 0 0;
+
+      border-radius:
+        25px 25px 0 0;
+
       padding:
         20px
         16px
@@ -311,281 +426,414 @@
         );
     }
 
+
     .sheet-header {
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
     }
 
+
     .sheet-title {
       font-size: 24px;
+
       font-weight: 800;
     }
+
 
     .close {
       width: 38px;
       height: 38px;
+
       border: none;
+
       border-radius: 50%;
+
       background: #efdfcf;
+
       font-size: 22px;
     }
 
+
+    /* ==========================
+       CART ITEMS
+    ========================== */
+
     .cart-item {
       background: white;
+
       border-radius: 16px;
+
       padding: 12px;
+
       margin-top: 10px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
       gap: 10px;
     }
+
 
     .cart-item-name {
       font-weight: 750;
     }
 
+
     .cart-item-price {
       margin-top: 4px;
+
       font-size: 13px;
+
       color: #8a6c5a;
     }
 
+
     /* ==========================
-       АКЦИЯ В КОРЗИНЕ
+       PROMO CART
     ========================== */
 
     .promo-active {
       margin-top: 14px;
+
       padding: 12px;
+
       border-radius: 14px;
+
       background: #e5f6df;
+
       color: #2d6727;
+
       font-weight: 750;
+
       font-size: 14px;
     }
+
 
     .promo-inactive {
       margin-top: 14px;
+
       padding: 12px;
+
       border-radius: 14px;
+
       background: #eee6df;
+
       color: #765f50;
+
       font-size: 14px;
     }
 
+
     .summary {
       margin-top: 15px;
+
       padding: 16px;
+
       border-radius: 17px;
+
       background: #3b2418;
+
       color: white;
+
       display: flex;
+
       justify-content: space-between;
+
       font-size: 19px;
+
       font-weight: 800;
     }
 
+
     /* ==========================
-       ФОРМА
+       FORM
     ========================== */
 
     .form-title {
       margin-top: 22px;
+
       font-size: 20px;
+
       font-weight: 800;
     }
 
+
     label {
       display: block;
+
       margin-top: 13px;
+
       margin-bottom: 6px;
+
       font-weight: 700;
     }
+
 
     input,
     textarea {
       width: 100%;
+
       border: 1px solid #dfcdbc;
+
       border-radius: 13px;
+
       padding: 12px;
+
       background: white;
+
       color: #3b2418;
+
       font: inherit;
+
       outline: none;
     }
 
+
     textarea {
       min-height: 80px;
+
       resize: vertical;
     }
+
 
     input:focus,
     textarea:focus {
       border-color: #d9823b;
     }
 
+
     .order-button {
       width: 100%;
+
       margin-top: 18px;
+
       padding: 15px;
+
       border: none;
+
       border-radius: 16px;
+
       background: #d9823b;
+
       color: white;
+
       font-size: 17px;
+
       font-weight: 800;
     }
 
-    .order-button:disabled {
-      opacity: .65;
-    }
 
     .empty {
       text-align: center;
+
       padding: 35px 10px;
+
       color: #8a6c5a;
     }
 
-    /* ==========================
-       ЭКРАН СТАТУСА
-    ========================== */
-
-    .order-tracking {
-      margin: 20px 16px;
-      padding: 20px 16px;
-      background: white;
-      border-radius: 24px;
-      box-shadow:
-        0 5px 20px rgba(70,40,20,.09);
-    }
-
-    .tracking-title {
-      text-align: center;
-      font-size: 22px;
-      font-weight: 850;
-      margin-bottom: 5px;
-    }
-
-    .tracking-number {
-      text-align: center;
-      color: #8a6c5a;
-      font-size: 13px;
-      margin-bottom: 20px;
-    }
-
-    .current-status {
-      text-align: center;
-      padding: 14px;
-      border-radius: 16px;
-      background: #fff0dc;
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .status-list {
-      position: relative;
-    }
-
-    .status-row {
-      position: relative;
-      display: flex;
-      align-items: center;
-      min-height: 58px;
-    }
-
-    .status-row:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      left: 18px;
-      top: 38px;
-      width: 3px;
-      height: 38px;
-      background: #eadfd5;
-      border-radius: 5px;
-    }
-
-    .status-row.done:not(:last-child)::after {
-      background: #d9823b;
-    }
-
-    .status-dot {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #eee6df;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      z-index: 1;
-      flex-shrink: 0;
-    }
-
-    .status-row.done .status-dot {
-      background: #d9823b;
-      color: white;
-    }
-
-    .status-row.active .status-dot {
-      background: #3b2418;
-      color: white;
-      box-shadow:
-        0 0 0 5px #f5e5d5;
-    }
-
-    .status-label {
-      margin-left: 12px;
-      font-weight: 750;
-      color: #9b887b;
-    }
-
-    .status-row.done .status-label,
-    .status-row.active .status-label {
-      color: #3b2418;
-    }
-
-    .tracking-update {
-      text-align: center;
-      margin-top: 16px;
-      color: #9b887b;
-      font-size: 12px;
-    }
-
-    .tracking-complete {
-      margin-top: 15px;
-      padding: 13px;
-      border-radius: 14px;
-      background: #e5f6df;
-      color: #2d6727;
-      text-align: center;
-      font-weight: 750;
-    }
 
     /* ==========================
-       УСПЕХ
+       SUCCESS
     ========================== */
 
     .success {
       text-align: center;
+
       padding: 25px 10px;
     }
+
 
     .success-icon {
       font-size: 60px;
     }
 
+
     .success h3 {
       font-size: 24px;
+
       margin: 10px 0;
     }
 
+
+    /* ==========================
+       ORDER TRACKING
+    ========================== */
+
+    .tracking {
+      margin-top: 20px;
+
+      background: white;
+
+      border-radius: 20px;
+
+      padding: 18px;
+
+      box-shadow:
+        0 4px 15px rgba(70,40,20,.08);
+
+      text-align: left;
+    }
+
+
+    .tracking-title {
+      font-size: 18px;
+
+      font-weight: 800;
+
+      margin-bottom: 5px;
+    }
+
+
+    .tracking-number {
+      color: #8a6c5a;
+
+      font-size: 13px;
+
+      margin-bottom: 18px;
+    }
+
+
+    .status-main {
+      text-align: center;
+
+      padding: 18px 10px;
+
+      border-radius: 17px;
+
+      background: #fff0d9;
+
+      font-size: 18px;
+
+      font-weight: 800;
+    }
+
+
+    .status-description {
+      text-align: center;
+
+      margin-top: 8px;
+
+      color: #8a6c5a;
+
+      font-size: 13px;
+
+      line-height: 1.4;
+    }
+
+
+    .status-steps {
+      margin-top: 20px;
+    }
+
+
+    .status-step {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      margin-top: 12px;
+
+      color: #a89486;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+
+    .status-step.active {
+      color: #3b2418;
+    }
+
+
+    .status-step.done {
+      color: #2d6727;
+    }
+
+
+    .status-dot {
+      width: 32px;
+      height: 32px;
+
+      border-radius: 50%;
+
+      background: #eee6df;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      flex-shrink: 0;
+    }
+
+
+    .status-step.active .status-dot {
+      background: #f2a65a;
+
+      color: #3b2418;
+    }
+
+
+    .status-step.done .status-dot {
+      background: #dff1d9;
+
+      color: #2d6727;
+    }
+
+
+    .tracking-refresh {
+      margin-top: 15px;
+
+      text-align: center;
+
+      color: #9b8677;
+
+      font-size: 11px;
+    }
+
+
+    .new-order-button {
+      width: 100%;
+
+      margin-top: 15px;
+
+      padding: 13px;
+
+      border: none;
+
+      border-radius: 15px;
+
+      background: #3b2418;
+
+      color: white;
+
+      font-size: 15px;
+
+      font-weight: 800;
+    }
+
+
   </style>
+
 </head>
 
+
 <body>
+
+
+<!-- ==========================
+     HEADER
+========================== -->
 
 <header>
 
@@ -603,7 +851,10 @@
 
 </header>
 
-<!-- TELEGRAM -->
+
+<!-- ==========================
+     TELEGRAM
+========================== -->
 
 <div class="telegram-connect">
 
@@ -626,6 +877,7 @@
 
   </div>
 
+
   <button
     class="telegram-button"
     onclick="connectTelegram()"
@@ -635,7 +887,10 @@
 
 </div>
 
-<!-- АКЦИЯ -->
+
+<!-- ==========================
+     PROMO
+========================== -->
 
 <div class="promo">
 
@@ -659,19 +914,22 @@
 
 </div>
 
-<!-- ОТСЛЕЖИВАНИЕ -->
 
-<div id="trackingContainer"></div>
-
-<!-- МЕНЮ -->
+<!-- ==========================
+     MENU
+========================== -->
 
 <div class="section-title">
   Наше меню
 </div>
 
+
 <div id="products"></div>
 
-<!-- НИЖНЯЯ ПАНЕЛЬ -->
+
+<!-- ==========================
+     CART BAR
+========================== -->
 
 <div class="cart-bar">
 
@@ -693,6 +951,7 @@
 
   </div>
 
+
   <button
     class="cart-button"
     onclick="openCart()"
@@ -702,7 +961,10 @@
 
 </div>
 
-<!-- КОРЗИНА -->
+
+<!-- ==========================
+     CART
+========================== -->
 
 <div
   class="overlay"
@@ -712,11 +974,13 @@
 
   <div class="sheet">
 
+
     <div class="sheet-header">
 
       <div class="sheet-title">
         🛒 Корзина
       </div>
+
 
       <button
         class="close"
@@ -727,9 +991,12 @@
 
     </div>
 
+
     <div id="cartItems"></div>
 
+
     <div id="promoStatus"></div>
+
 
     <div class="summary">
 
@@ -743,13 +1010,17 @@
 
     </div>
 
-    <!-- ФОРМА -->
+
+    <!-- ======================
+         ORDER FORM
+    ======================= -->
 
     <div id="orderForm">
 
       <div class="form-title">
         📦 Данные для заказа
       </div>
+
 
       <label for="customerName">
         Ваше имя
@@ -761,6 +1032,7 @@
         placeholder="Например: Muhammad"
       >
 
+
       <label for="customerPhone">
         Номер телефона
       </label>
@@ -770,6 +1042,7 @@
         type="tel"
         placeholder="+998 90 123 45 67"
       >
+
 
       <label for="customerAddress">
         Адрес доставки
@@ -781,6 +1054,7 @@
         placeholder="Улица, дом, квартира"
       >
 
+
       <label for="customerComment">
         Комментарий
       </label>
@@ -789,6 +1063,7 @@
         id="customerComment"
         placeholder="Например: позвонить перед доставкой"
       ></textarea>
+
 
       <button
         class="order-button"
@@ -799,17 +1074,21 @@
 
     </div>
 
+
   </div>
 
 </div>
+
+
 
 <script>
 
 "use strict";
 
-/* ==============================
+
+/* ==========================================
    ТОВАРЫ
-============================== */
+========================================== */
 
 const products = [
 
@@ -896,11 +1175,25 @@ const products = [
 
 ];
 
+
 const cart = {};
 
-/* ==============================
+
+/* ==========================================
+   ОТСЛЕЖИВАНИЕ ЗАКАЗА
+========================================== */
+
+let trackingTimer = null;
+
+let currentOrderId =
+  localStorage.getItem(
+    "currentOrderId"
+  );
+
+
+/* ==========================================
    TELEGRAM
-============================== */
+========================================== */
 
 async function connectTelegram() {
 
@@ -919,6 +1212,7 @@ async function connectTelegram() {
   button.textContent =
     "⏳ Подключение...";
 
+
   try {
 
     const response =
@@ -926,8 +1220,10 @@ async function connectTelegram() {
         "/api/telegram-connect"
       );
 
+
     const data =
       await response.json();
+
 
     if (
       !response.ok ||
@@ -941,16 +1237,20 @@ async function connectTelegram() {
 
     }
 
+
     localStorage.setItem(
       "telegramConnectCode",
       data.code
     );
 
+
     status.textContent =
       "Открываем Telegram...";
 
+
     window.location.href =
       data.telegramUrl;
+
 
   } catch (error) {
 
@@ -959,22 +1259,26 @@ async function connectTelegram() {
       error
     );
 
+
     alert(
       "Не удалось подключить Telegram.\n\n" +
       "Попробуйте ещё раз."
     );
 
+
     button.disabled = false;
 
     button.textContent =
       "Подключить";
+
   }
 
 }
 
-/* ==============================
-   ДЕНЬГИ
-============================== */
+
+/* ==========================================
+   MONEY
+========================================== */
 
 function money(value) {
 
@@ -984,15 +1288,17 @@ function money(value) {
 
 }
 
-/* ==============================
-   КОЛИЧЕСТВО
-============================== */
+
+/* ==========================================
+   QUANTITY
+========================================== */
 
 function getQty(id) {
 
   return cart[id] || 0;
 
 }
+
 
 function getItems() {
 
@@ -1004,6 +1310,7 @@ function getItems() {
     );
 
 }
+
 
 function getBunCount() {
 
@@ -1020,9 +1327,10 @@ function getBunCount() {
 
 }
 
-/* ==============================
-   АКЦИЯ
-============================== */
+
+/* ==========================================
+   PROMO
+========================================== */
 
 function promoActive() {
 
@@ -1033,12 +1341,14 @@ function promoActive() {
     now.getHours() * 60 +
     now.getMinutes();
 
+
   return (
     minutes >= 540 &&
     minutes < 660
   );
 
 }
+
 
 function coffeeFree() {
 
@@ -1050,13 +1360,15 @@ function coffeeFree() {
 
 }
 
-/* ==============================
-   ИТОГО
-============================== */
+
+/* ==========================================
+   TOTAL
+========================================== */
 
 function getTotal() {
 
   let total = 0;
+
 
   products.forEach(
     product => {
@@ -1068,6 +1380,7 @@ function getTotal() {
     }
   );
 
+
   if (coffeeFree()) {
 
     total -=
@@ -1076,6 +1389,7 @@ function getTotal() {
 
   }
 
+
   return Math.max(
     total,
     0
@@ -1083,9 +1397,10 @@ function getTotal() {
 
 }
 
-/* ==============================
-   ДОБАВИТЬ
-============================== */
+
+/* ==========================================
+   ADD
+========================================== */
 
 function add(id) {
 
@@ -1096,9 +1411,10 @@ function add(id) {
 
 }
 
-/* ==============================
-   УДАЛИТЬ
-============================== */
+
+/* ==========================================
+   REMOVE
+========================================== */
 
 function remove(id) {
 
@@ -1106,19 +1422,25 @@ function remove(id) {
     return;
   }
 
+
   cart[id]--;
 
+
   if (cart[id] <= 0) {
+
     delete cart[id];
+
   }
+
 
   render();
 
 }
 
-/* ==============================
-   МЕНЮ
-============================== */
+
+/* ==========================================
+   PRODUCTS
+========================================== */
 
 function renderProducts() {
 
@@ -1126,6 +1448,7 @@ function renderProducts() {
     document.getElementById(
       "products"
     );
+
 
   container.innerHTML =
     products
@@ -1139,6 +1462,7 @@ function renderProducts() {
               ${product.icon}
             </div>
 
+
             <div class="info">
 
               <div class="name">
@@ -1151,6 +1475,7 @@ function renderProducts() {
 
             </div>
 
+
             <div class="quantity">
 
               <button
@@ -1159,9 +1484,11 @@ function renderProducts() {
                 −
               </button>
 
+
               <div class="number">
                 ${getQty(product.id)}
               </div>
+
 
               <button
                 onclick="add(${product.id})"
@@ -1180,9 +1507,10 @@ function renderProducts() {
 
 }
 
-/* ==============================
-   НИЖНЯЯ ПАНЕЛЬ
-============================== */
+
+/* ==========================================
+   BOTTOM BAR
+========================================== */
 
 function renderBottomBar() {
 
@@ -1191,6 +1519,7 @@ function renderBottomBar() {
   ).textContent =
     getItems() +
     " товаров";
+
 
   document.getElementById(
     "cartTotal"
@@ -1201,9 +1530,10 @@ function renderBottomBar() {
 
 }
 
-/* ==============================
-   КОРЗИНА
-============================== */
+
+/* ==========================================
+   CART
+========================================== */
 
 function renderCart() {
 
@@ -1212,11 +1542,13 @@ function renderCart() {
       "cartItems"
     );
 
+
   const selected =
     products.filter(
       product =>
         getQty(product.id) > 0
     );
+
 
   if (
     selected.length === 0
@@ -1245,7 +1577,9 @@ function renderCart() {
           const quantity =
             getQty(product.id);
 
+
           let freeText = "";
+
 
           if (
             product.coffee &&
@@ -1256,6 +1590,7 @@ function renderCart() {
               `<br><b>🎁 Бесплатно по акции</b>`;
 
           }
+
 
           return `
 
@@ -1271,6 +1606,7 @@ function renderCart() {
 
                 </div>
 
+
                 <div class="cart-item-price">
 
                   ${quantity}
@@ -1283,6 +1619,7 @@ function renderCart() {
 
               </div>
 
+
               <div class="quantity">
 
                 <button
@@ -1291,9 +1628,11 @@ function renderCart() {
                   −
                 </button>
 
+
                 <div class="number">
                   ${quantity}
                 </div>
+
 
                 <button
                   onclick="add(${product.id})"
@@ -1312,6 +1651,7 @@ function renderCart() {
 
   }
 
+
   document.getElementById(
     "modalTotal"
   ).textContent =
@@ -1319,10 +1659,12 @@ function renderCart() {
       getTotal()
     );
 
+
   const status =
     document.getElementById(
       "promoStatus"
     );
+
 
   if (coffeeFree()) {
 
@@ -1371,9 +1713,10 @@ function renderCart() {
 
 }
 
-/* ==============================
-   ОБЩИЙ RENDER
-============================== */
+
+/* ==========================================
+   RENDER
+========================================== */
 
 function render() {
 
@@ -1385,9 +1728,10 @@ function render() {
 
 }
 
-/* ==============================
-   ОТКРЫТЬ КОРЗИНУ
-============================== */
+
+/* ==========================================
+   OPEN CART
+========================================== */
 
 function openCart() {
 
@@ -1397,13 +1741,15 @@ function openCart() {
     )
     .classList.add("show");
 
+
   renderCart();
 
 }
 
-/* ==============================
-   ЗАКРЫТЬ КОРЗИНУ
-============================== */
+
+/* ==========================================
+   CLOSE CART
+========================================== */
 
 function closeCart() {
 
@@ -1414,6 +1760,7 @@ function closeCart() {
     .classList.remove("show");
 
 }
+
 
 function closeByBackground(event) {
 
@@ -1428,205 +1775,299 @@ function closeByBackground(event) {
 
 }
 
-/* ==========================================================
-   ОТСЛЕЖИВАНИЕ ЗАКАЗА
-========================================================== */
 
-let orderStatusTimer = null;
+/* ==========================================
+   STATUS INFORMATION
+========================================== */
 
-const STATUS_INFO = {
+function getStatusInfo(status) {
 
-  new: {
-    title: "🕐 Заказ получен",
-    index: 0
-  },
+  const statuses = {
 
-  accepted: {
-    title: "✅ Заказ принят",
-    index: 1
-  },
+    new: {
+      icon: "🟡",
+      title: "Новый заказ",
+      description:
+        "Мы получили ваш заказ и скоро начнём его обработку.",
+      step: 0
+    },
 
-  cooking: {
-    title: "🍳 Заказ готовится",
-    index: 2
-  },
+    accepted: {
+      icon: "🟢",
+      title: "Заказ принят",
+      description:
+        "Заказ принят. Мы начали его обработку.",
+      step: 1
+    },
 
-  courier: {
-    title: "🛵 Передан курьеру",
-    index: 3
-  },
+    cooking: {
+      icon: "🍳",
+      title: "Готовится",
+      description:
+        "Наши пекари готовят ваш заказ.",
+      step: 2
+    },
 
-  delivered: {
-    title: "✅ Заказ доставлен",
-    index: 4
-  }
+    courier: {
+      icon: "🛵",
+      title: "Передан курьеру",
+      description:
+        "Заказ уже у курьера и скоро будет доставлен.",
+      step: 3
+    },
 
-};
+    delivered: {
+      icon: "✅",
+      title: "Доставлен",
+      description:
+        "Ваш заказ успешно доставлен. Спасибо за покупку! ❤️",
+      step: 4
+    }
 
-function showOrderTracking(
+  };
+
+
+  return (
+    statuses[status] ||
+    statuses.new
+  );
+
+}
+
+
+/* ==========================================
+   TRACKING HTML
+========================================== */
+
+function trackingHTML(
   orderId,
   status
 ) {
 
-  const container =
-    document.getElementById(
-      "trackingContainer"
-    );
-
   const info =
-    STATUS_INFO[status] ||
-    STATUS_INFO.new;
+    getStatusInfo(status);
 
-  const currentIndex =
-    info.index;
 
-  const statuses = [
+  const steps = [
 
     {
-      label: "Заказ получен",
-      icon: "🕐"
+      title: "Новый заказ",
+      icon: "🟡"
     },
 
     {
-      label: "Заказ принят",
-      icon: "✅"
+      title: "Заказ принят",
+      icon: "🟢"
     },
 
     {
-      label: "Готовится",
+      title: "Готовится",
       icon: "🍳"
     },
 
     {
-      label: "Передан курьеру",
+      title: "Передан курьеру",
       icon: "🛵"
     },
 
     {
-      label: "Доставлен",
-      icon: "🏠"
+      title: "Доставлен",
+      icon: "✅"
     }
 
   ];
 
-  let rows = "";
 
-  statuses.forEach(
-    (item, index) => {
+  return `
 
-      let className = "status-row";
-
-      if (
-        index <
-        currentIndex
-      ) {
-
-        className += " done";
-
-      }
-
-      if (
-        index ===
-        currentIndex
-      ) {
-
-        className += " active";
-
-      }
-
-      rows += `
-
-        <div class="${className}">
-
-          <div class="status-dot">
-            ${item.icon}
-          </div>
-
-          <div class="status-label">
-            ${item.label}
-          </div>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-  let completeText = "";
-
-  if (
-    status === "delivered"
-  ) {
-
-    completeText = `
-
-      <div class="tracking-complete">
-
-        ❤️ Спасибо за заказ!
-
-      </div>
-
-    `;
-
-  }
-
-  container.innerHTML = `
-
-    <div class="order-tracking">
+    <div class="tracking">
 
       <div class="tracking-title">
-
-        🥐 Ваш заказ
-
+        📦 Отслеживание заказа
       </div>
+
 
       <div class="tracking-number">
-
-        № ${orderId}
-
+        Заказ: <b>${orderId}</b>
       </div>
 
-      <div class="current-status">
+
+      <div class="status-main">
+
+        ${info.icon}
 
         ${info.title}
 
       </div>
 
-      <div class="status-list">
 
-        ${rows}
+      <div class="status-description">
+
+        ${info.description}
 
       </div>
 
-      ${completeText}
 
-      <div class="tracking-update">
+      <div class="status-steps">
 
-        Статус обновляется автоматически
+        ${
+          steps
+            .map(
+              (step, index) => {
 
+                let className = "";
+
+
+                if (
+                  index <
+                  info.step
+                ) {
+
+                  className =
+                    "done";
+
+                } else if (
+                  index ===
+                  info.step
+                ) {
+
+                  className =
+                    "active";
+
+                }
+
+
+                return `
+
+                  <div
+                    class="
+                      status-step
+                      ${className}
+                    "
+                  >
+
+                    <div class="status-dot">
+
+                      ${
+                        index <
+                        info.step
+                          ? "✓"
+                          : step.icon
+                      }
+
+                    </div>
+
+
+                    <div>
+                      ${step.title}
+                    </div>
+
+                  </div>
+
+                `;
+
+              }
+            )
+            .join("")
+        }
+
+      </div>
+
+
+      <div
+        class="tracking-refresh"
+        id="trackingRefresh"
+      >
+        🔄 Статус обновляется автоматически
       </div>
 
     </div>
+
+
+    ${
+      status === "delivered"
+
+        ? `
+
+          <button
+            class="new-order-button"
+            onclick="startNewOrder()"
+          >
+            🥐 Сделать новый заказ
+          </button>
+
+        `
+
+        : ""
+
+    }
 
   `;
 
 }
 
-/* ==============================
-   ПОЛУЧЕНИЕ СТАТУСА
-============================== */
 
-async function checkOrderStatus() {
+/* ==========================================
+   SHOW TRACKING
+========================================== */
 
-  const orderId =
-    localStorage.getItem(
-      "activeOrderId"
+function showTracking(
+  orderId,
+  status = "new"
+) {
+
+  const form =
+    document.getElementById(
+      "orderForm"
     );
+
+
+  form.innerHTML =
+    `
+
+      <div class="success">
+
+        <div class="success-icon">
+          🥐
+        </div>
+
+
+        <h3>
+          Заказ отправлен!
+        </h3>
+
+
+        <p>
+          Ваш заказ принят системой.
+        </p>
+
+
+        ${
+          trackingHTML(
+            orderId,
+            status
+          )
+        }
+
+      </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   LOAD ORDER STATUS
+========================================== */
+
+async function loadOrderStatus(
+  orderId
+) {
 
   if (!orderId) {
     return;
   }
+
 
   try {
 
@@ -1638,12 +2079,15 @@ async function checkOrderStatus() {
         ),
         {
           method: "GET",
+
           cache: "no-store"
         }
       );
 
+
     const data =
       await response.json();
+
 
     if (
       !response.ok ||
@@ -1659,37 +2103,35 @@ async function checkOrderStatus() {
 
     }
 
+
     const status =
       data.status || "new";
 
-    showOrderTracking(
+
+    showTracking(
       orderId,
       status
     );
 
+
     /*
-    Если заказ доставлен,
-    продолжаем показывать экран,
-    но прекращаем частые запросы.
+    Если заказ доставлен —
+    прекращаем опрос
     */
 
     if (
-      status === "delivered" &&
-      orderStatusTimer
+      status ===
+      "delivered"
     ) {
 
-      clearInterval(
-        orderStatusTimer
-      );
-
-      orderStatusTimer = null;
+      stopTracking();
 
     }
 
   } catch (error) {
 
     console.error(
-      "ORDER STATUS REQUEST ERROR:",
+      "ORDER STATUS FETCH ERROR:",
       error
     );
 
@@ -1697,56 +2139,178 @@ async function checkOrderStatus() {
 
 }
 
-/* ==============================
-   ЗАПУСК ОТСЛЕЖИВАНИЯ
-============================== */
 
-function startOrderTracking(
+/* ==========================================
+   START TRACKING
+========================================== */
+
+function startTracking(
   orderId
 ) {
+
+  stopTracking();
+
 
   if (!orderId) {
     return;
   }
 
+
+  currentOrderId =
+    orderId;
+
+
   localStorage.setItem(
-    "activeOrderId",
+    "currentOrderId",
     orderId
   );
 
-  /*
-  Первый запрос сразу
-  */
-
-  checkOrderStatus();
 
   /*
-  Далее каждые 5 секунд
+  Сразу проверяем статус
   */
 
-  if (orderStatusTimer) {
+  loadOrderStatus(
+    orderId
+  );
 
-    clearInterval(
-      orderStatusTimer
-    );
 
-  }
+  /*
+  Затем каждые 5 секунд
+  */
 
-  orderStatusTimer =
+  trackingTimer =
     setInterval(
-      checkOrderStatus,
+      function() {
+
+        loadOrderStatus(
+          orderId
+        );
+
+      },
       5000
     );
 
 }
 
-/* ==========================================================
-   ОФОРМЛЕНИЕ ЗАКАЗА
-========================================================== */
+
+/* ==========================================
+   STOP TRACKING
+========================================== */
+
+function stopTracking() {
+
+  if (
+    trackingTimer
+  ) {
+
+    clearInterval(
+      trackingTimer
+    );
+
+    trackingTimer =
+      null;
+
+  }
+
+}
+
+
+/* ==========================================
+   NEW ORDER
+========================================== */
+
+function startNewOrder() {
+
+  stopTracking();
+
+
+  currentOrderId =
+    null;
+
+
+  localStorage.removeItem(
+    "currentOrderId"
+  );
+
+
+  document.getElementById(
+    "orderForm"
+  ).innerHTML = `
+
+    <div class="form-title">
+      📦 Данные для заказа
+    </div>
+
+
+    <label for="customerName">
+      Ваше имя
+    </label>
+
+
+    <input
+      id="customerName"
+      type="text"
+      placeholder="Например: Muhammad"
+    >
+
+
+    <label for="customerPhone">
+      Номер телефона
+    </label>
+
+
+    <input
+      id="customerPhone"
+      type="tel"
+      placeholder="+998 90 123 45 67"
+    >
+
+
+    <label for="customerAddress">
+      Адрес доставки
+    </label>
+
+
+    <input
+      id="customerAddress"
+      type="text"
+      placeholder="Улица, дом, квартира"
+    >
+
+
+    <label for="customerComment">
+      Комментарий
+    </label>
+
+
+    <textarea
+      id="customerComment"
+      placeholder="Например: позвонить перед доставкой"
+    ></textarea>
+
+
+    <button
+      class="order-button"
+      onclick="placeOrder()"
+    >
+      📦 Оформить заказ
+    </button>
+
+  `;
+
+}
+
+
+/* ==========================================
+   PLACE ORDER
+========================================== */
 
 async function placeOrder() {
 
-  if (getItems() === 0) {
+  if (
+    getItems() === 0
+  ) {
 
     alert(
       "Добавьте товары в корзину."
@@ -1756,6 +2320,7 @@ async function placeOrder() {
 
   }
 
+
   const name =
     document
       .getElementById(
@@ -1763,6 +2328,7 @@ async function placeOrder() {
       )
       .value
       .trim();
+
 
   const phone =
     document
@@ -1772,6 +2338,7 @@ async function placeOrder() {
       .value
       .trim();
 
+
   const address =
     document
       .getElementById(
@@ -1780,6 +2347,7 @@ async function placeOrder() {
       .value
       .trim();
 
+
   const comment =
     document
       .getElementById(
@@ -1787,6 +2355,7 @@ async function placeOrder() {
       )
       .value
       .trim();
+
 
   if (!name) {
 
@@ -1798,6 +2367,7 @@ async function placeOrder() {
 
   }
 
+
   if (!phone) {
 
     alert(
@@ -1808,6 +2378,7 @@ async function placeOrder() {
 
   }
 
+
   if (!address) {
 
     alert(
@@ -1817,6 +2388,7 @@ async function placeOrder() {
     return;
 
   }
+
 
   const items =
     products
@@ -1840,6 +2412,7 @@ async function placeOrder() {
 
       }));
 
+
   /*
   TELEGRAM CODE
   */
@@ -1849,8 +2422,6 @@ async function placeOrder() {
       "telegramConnectCode"
     );
 
-  const finalTotal =
-    getTotal();
 
   const orderData = {
 
@@ -1865,7 +2436,7 @@ async function placeOrder() {
     items,
 
     total:
-      finalTotal,
+      getTotal(),
 
     promo:
       coffeeFree(),
@@ -1875,15 +2446,20 @@ async function placeOrder() {
 
   };
 
+
   const button =
     document.querySelector(
       ".order-button"
     );
 
-  button.disabled = true;
+
+  button.disabled =
+    true;
+
 
   button.textContent =
     "⏳ Отправляем заказ...";
+
 
   try {
 
@@ -1910,8 +2486,10 @@ async function placeOrder() {
         }
       );
 
+
     const data =
       await response.json();
+
 
     if (
       !response.ok ||
@@ -1925,12 +2503,16 @@ async function placeOrder() {
 
     }
 
+
     /*
-    Получаем номер заказа
+    ======================================
+    ПОЛУЧАЕМ ID ЗАКАЗА
+    ======================================
     */
 
     const orderId =
       data.orderId;
+
 
     if (!orderId) {
 
@@ -1940,76 +2522,64 @@ async function placeOrder() {
 
     }
 
+
     /*
-    Сохраняем номер заказа
+    ======================================
+    СОХРАНЯЕМ ID
+    ======================================
     */
 
+    currentOrderId =
+      orderId;
+
+
     localStorage.setItem(
-      "activeOrderId",
+      "currentOrderId",
       orderId
     );
 
-    /*
-    Закрываем корзину
-    */
-
-    closeCart();
 
     /*
-    Очищаем корзину
+    ======================================
+    ОЧИЩАЕМ КОРЗИНУ
+    ======================================
     */
 
     Object.keys(cart)
-      .forEach(id => {
+      .forEach(
+        id => {
 
-        delete cart[id];
+          delete cart[id];
 
-      });
+        }
+      );
+
 
     render();
 
+
     /*
-    Показываем статус
+    ======================================
+    ПОКАЗЫВАЕМ ОТСЛЕЖИВАНИЕ
+    ======================================
     */
 
-    showOrderTracking(
+    showTracking(
       orderId,
       "new"
     );
 
+
     /*
-    Запускаем автоматическое
-    отслеживание
+    ======================================
+    ЗАПУСКАЕМ АВТООБНОВЛЕНИЕ
+    ======================================
     */
 
-    startOrderTracking(
+    startTracking(
       orderId
     );
 
-    /*
-    Прокручиваем к статусу
-    */
-
-    setTimeout(
-      function() {
-
-        const tracking =
-          document.getElementById(
-            "trackingContainer"
-          );
-
-        if (tracking) {
-
-          tracking.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-        }
-
-      },
-      150
-    );
 
   } catch (error) {
 
@@ -2018,12 +2588,16 @@ async function placeOrder() {
       error
     );
 
+
     alert(
       "Не удалось отправить заказ.\n\n" +
       "Попробуйте ещё раз."
     );
 
-    button.disabled = false;
+
+    button.disabled =
+      false;
+
 
     button.textContent =
       "📦 Оформить заказ";
@@ -2032,35 +2606,44 @@ async function placeOrder() {
 
 }
 
-/* ==============================
+
+/* ==========================================
    ЗАПУСК
-============================== */
+========================================== */
 
 render();
 
-/*
-Если в PWA уже есть
-активный заказ —
-сразу восстанавливаем
-его отслеживание.
-*/
 
-const savedOrderId =
-  localStorage.getItem(
-    "activeOrderId"
+/* ==========================================
+   ВОССТАНОВЛЕНИЕ ПОСЛЕДНЕГО ЗАКАЗА
+========================================== */
+
+if (
+  currentOrderId
+) {
+
+  /*
+  Если пользователь закрыл PWA,
+  а потом снова открыл,
+  показываем его последний заказ.
+  */
+
+  showTracking(
+    currentOrderId,
+    "new"
   );
 
-if (savedOrderId) {
 
-  startOrderTracking(
-    savedOrderId
+  startTracking(
+    currentOrderId
   );
 
 }
 
-/* ==============================
+
+/* ==========================================
    ОБНОВЛЕНИЕ АКЦИИ
-============================== */
+========================================== */
 
 setInterval(
   function() {
@@ -2073,5 +2656,7 @@ setInterval(
 
 </script>
 
+
 </body>
+
 </html>
