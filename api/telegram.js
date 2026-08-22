@@ -1,12 +1,8 @@
 export default async function handler(req, res) {
   try {
     const token = process.env.TELEGRAM_BOT_TOKEN;
-
-    const redisUrl =
-      process.env.KV_REST_API_URL;
-
-    const redisToken =
-      process.env.KV_REST_API_TOKEN;
+    const redisUrl = process.env.KV_REST_API_URL;
+    const redisToken = process.env.KV_REST_API_TOKEN;
 
     if (!token || !redisUrl || !redisToken) {
       return res.status(500).json({
@@ -14,12 +10,6 @@ export default async function handler(req, res) {
         error: "Telegram or Redis settings are missing"
       });
     }
-
-    /*
-    ==========================================
-    TELEGRAM WEBHOOK
-    ==========================================
-    */
 
     if (req.method !== "POST") {
       return res.status(405).json({
@@ -29,12 +19,6 @@ export default async function handler(req, res) {
     }
 
     const update = req.body;
-
-    /*
-    ==========================================
-    ПРОВЕРЯЕМ MESSAGE
-    ==========================================
-    */
 
     const message = update?.message;
 
@@ -65,11 +49,9 @@ export default async function handler(req, res) {
 
     if (text.startsWith("/start")) {
 
-      const parts =
-        text.split(/\s+/);
+      const parts = text.split(/\s+/);
 
-      const code =
-        parts[1];
+      const code = parts[1];
 
       if (!code) {
 
@@ -82,11 +64,16 @@ export default async function handler(req, res) {
         return res.status(200).json({
           ok: true
         });
-
       }
 
       /*
-      Ищем код подключения
+      ==========================================
+      ИЩЕМ КОД
+      ==========================================
+
+      telegram-connect.js сохраняет его как:
+
+      connect:КОД
       */
 
       const connection =
@@ -95,7 +82,7 @@ export default async function handler(req, res) {
           redisToken,
           [
             "GET",
-            `telegram:connect:${code}`
+            `connect:${code}`
           ]
         );
 
@@ -104,13 +91,14 @@ export default async function handler(req, res) {
         await sendTelegram(
           token,
           chatId,
-          "❌ Код подключения недействителен или устарел."
+          "❌ Код подключения недействителен или устарел.\n\n" +
+          "Получите новый код в приложении «Моя Булочка»."
         );
 
         return res.status(200).json({
-          ok: true
+          ok: true,
+          connected: false
         });
-
       }
 
       /*
@@ -127,15 +115,15 @@ export default async function handler(req, res) {
           `telegram:user:${chatId}`,
           JSON.stringify({
             telegramId: chatId,
-            connectedAt:
-              new Date().toISOString()
+            connectedAt: new Date().toISOString()
           })
         ]
       );
 
       /*
-      Также сохраняем связь
-      CODE → TELEGRAM ID
+      ==========================================
+      СОХРАНЯЕМ СВЯЗЬ КОД → TELEGRAM ID
+      ==========================================
       */
 
       await redisCommand(
@@ -143,16 +131,21 @@ export default async function handler(req, res) {
         redisToken,
         [
           "SET",
-          `telegram:connect:${code}`,
+          `connect:${code}`,
           JSON.stringify({
             telegramId: chatId,
-            connectedAt:
-              new Date().toISOString()
+            connectedAt: new Date().toISOString()
           }),
           "EX",
           "86400"
         ]
       );
+
+      /*
+      ==========================================
+      ПОДТВЕРЖДЕНИЕ
+      ==========================================
+      */
 
       await sendTelegram(
         token,
@@ -168,7 +161,6 @@ export default async function handler(req, res) {
         connected: true,
         telegramId: chatId
       });
-
     }
 
     return res.status(200).json({
@@ -209,8 +201,7 @@ async function sendTelegram(
         method: "POST",
 
         headers: {
-          "Content-Type":
-            "application/json"
+          "Content-Type": "application/json"
         },
 
         body: JSON.stringify({
