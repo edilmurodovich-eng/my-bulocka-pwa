@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    КНОПКА TELEGRAM
+    CALLBACK — НАЖАТИЕ КНОПКИ
     ==========================================
     */
 
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         callback.id;
 
       const callbackData =
-        callback.data;
+        callback.data || "";
 
       const message =
         callback.message;
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
 
 
       /*
-      Сразу убираем "часики"
+      Убираем "часики"
       */
 
       await telegramRequest(
@@ -72,56 +72,110 @@ export default async function handler(req, res) {
 
       /*
       ========================================
+      РАЗБИРАЕМ КНОПКУ
+      ========================================
+
+      status:accepted:MB-MT4QWF0E
+
+      Получаем:
+
+      status
+      accepted
+      MB-MT4QWF0E
+      */
+
+      const parts =
+        callbackData.split(":");
+
+      const action =
+        parts[1];
+
+      const orderId =
+        parts.slice(2).join(":");
+
+
+      console.log(
+        "CALLBACK ACTION:",
+        action
+      );
+
+      console.log(
+        "ORDER ID:",
+        orderId
+      );
+
+
+      /*
+      ========================================
       ПРИНЯТЬ ЗАКАЗ
       ========================================
       */
 
       if (
-        callbackData ===
-        "status:accepted"
+        action ===
+        "accepted"
       ) {
-
-        /*
-        Берём старый текст заказа
-        */
 
         const oldText =
           message.text || "";
 
 
         /*
-        Добавляем статус
+        Не добавляем статус повторно
         */
 
-        const newText =
-          oldText +
-          "\n\n" +
-          "✅ ЗАКАЗ ПРИНЯТ";
+        let newText =
+          oldText;
+
+
+        if (
+          !oldText.includes(
+            "✅ ЗАКАЗ ПРИНЯТ"
+          )
+        ) {
+
+          newText =
+            oldText +
+            "\n\n" +
+            "✅ ЗАКАЗ ПРИНЯТ";
+
+        }
 
 
         /*
-        Новая клавиатура
+        Новые кнопки
         */
 
         const keyboard = {
+
           inline_keyboard: [
+
             [
+
               {
                 text:
                   "✅ Заказ принят",
+
                 callback_data:
-                  "status:accepted_already"
+                  `status:accepted_already:${orderId}`
               }
+
             ],
+
             [
+
               {
                 text:
                   "🍳 Готовится",
+
                 callback_data:
-                  "status:cooking"
+                  `status:cooking:${orderId}`
               }
+
             ]
+
           ]
+
         };
 
 
@@ -129,7 +183,7 @@ export default async function handler(req, res) {
         Меняем сообщение
         */
 
-        const editResult =
+        const result =
           await telegramRequest(
             token,
             "editMessageText",
@@ -151,28 +205,9 @@ export default async function handler(req, res) {
 
         console.log(
           "EDIT RESULT:",
-          JSON.stringify(
-            editResult
-          )
+          JSON.stringify(result)
         );
 
-
-        return res.status(200).json({
-          ok: true
-        });
-      }
-
-
-      /*
-      ========================================
-      ЗАКАЗ УЖЕ ПРИНЯТ
-      ========================================
-      */
-
-      if (
-        callbackData ===
-        "status:accepted_already"
-      ) {
 
         return res.status(200).json({
           ok: true
@@ -188,43 +223,66 @@ export default async function handler(req, res) {
       */
 
       if (
-        callbackData ===
-        "status:cooking"
+        action ===
+        "cooking"
       ) {
 
         const oldText =
           message.text || "";
 
 
-        const newText =
-          oldText +
-          "\n\n" +
-          "🍳 ЗАКАЗ ГОТОВИТСЯ";
+        let newText =
+          oldText;
+
+
+        if (
+          !oldText.includes(
+            "🍳 ЗАКАЗ ГОТОВИТСЯ"
+          )
+        ) {
+
+          newText =
+            oldText +
+            "\n\n" +
+            "🍳 ЗАКАЗ ГОТОВИТСЯ";
+
+        }
 
 
         const keyboard = {
+
           inline_keyboard: [
+
             [
+
               {
                 text:
                   "🍳 Готовится",
+
                 callback_data:
-                  "status:cooking_already"
+                  `status:cooking_already:${orderId}`
               }
+
             ],
+
             [
+
               {
                 text:
                   "🛵 Передан курьеру",
+
                 callback_data:
-                  "status:courier"
+                  `status:courier:${orderId}`
               }
+
             ]
+
           ]
+
         };
 
 
-        const editResult =
+        const result =
           await telegramRequest(
             token,
             "editMessageText",
@@ -246,9 +304,193 @@ export default async function handler(req, res) {
 
         console.log(
           "COOKING RESULT:",
-          JSON.stringify(
-            editResult
+          JSON.stringify(result)
+        );
+
+
+        return res.status(200).json({
+          ok: true
+        });
+
+      }
+
+
+      /*
+      ========================================
+      ПЕРЕДАН КУРЬЕРУ
+      ========================================
+      */
+
+      if (
+        action ===
+        "courier"
+      ) {
+
+        const oldText =
+          message.text || "";
+
+
+        let newText =
+          oldText;
+
+
+        if (
+          !oldText.includes(
+            "🛵 ПЕРЕДАН КУРЬЕРУ"
           )
+        ) {
+
+          newText =
+            oldText +
+            "\n\n" +
+            "🛵 ПЕРЕДАН КУРЬЕРУ";
+
+        }
+
+
+        const keyboard = {
+
+          inline_keyboard: [
+
+            [
+
+              {
+                text:
+                  "🛵 Передан курьеру",
+
+                callback_data:
+                  `status:courier_already:${orderId}`
+              }
+
+            ],
+
+            [
+
+              {
+                text:
+                  "✅ Доставлен",
+
+                callback_data:
+                  `status:delivered:${orderId}`
+              }
+
+            ]
+
+          ]
+
+        };
+
+
+        const result =
+          await telegramRequest(
+            token,
+            "editMessageText",
+            {
+              chat_id:
+                chatId,
+
+              message_id:
+                messageId,
+
+              text:
+                newText,
+
+              reply_markup:
+                keyboard
+            }
+          );
+
+
+        console.log(
+          "COURIER RESULT:",
+          JSON.stringify(result)
+        );
+
+
+        return res.status(200).json({
+          ok: true
+        });
+
+      }
+
+
+      /*
+      ========================================
+      ДОСТАВЛЕН
+      ========================================
+      */
+
+      if (
+        action ===
+        "delivered"
+      ) {
+
+        const oldText =
+          message.text || "";
+
+
+        let newText =
+          oldText;
+
+
+        if (
+          !oldText.includes(
+            "✅ ЗАКАЗ ДОСТАВЛЕН"
+          )
+        ) {
+
+          newText =
+            oldText +
+            "\n\n" +
+            "✅ ЗАКАЗ ДОСТАВЛЕН";
+
+        }
+
+
+        const keyboard = {
+
+          inline_keyboard: [
+
+            [
+
+              {
+                text:
+                  "✅ Заказ доставлен",
+
+                callback_data:
+                  `status:delivered_already:${orderId}`
+              }
+
+            ]
+
+          ]
+
+        };
+
+
+        const result =
+          await telegramRequest(
+            token,
+            "editMessageText",
+            {
+              chat_id:
+                chatId,
+
+              message_id:
+                messageId,
+
+              text:
+                newText,
+
+              reply_markup:
+                keyboard
+            }
+          );
+
+
+        console.log(
+          "DELIVERED RESULT:",
+          JSON.stringify(result)
         );
 
 
@@ -263,7 +505,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    START / ПОДКЛЮЧЕНИЕ TELEGRAM
+    START TELEGRAM
     ==========================================
     */
 
@@ -319,6 +561,7 @@ export default async function handler(req, res) {
     });
 
   }
+
 }
 
 
