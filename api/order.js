@@ -336,7 +336,16 @@ export default async function handler(req, res) {
         orderId
       ]
     );
-
+await redisCommand(
+  redisUrl,
+  redisToken,
+  [
+    "LTRIM",
+    "orders:index",
+    "0",
+    "4999"
+  ]
+    );
     /*
     ==========================================
     TELEGRAM
