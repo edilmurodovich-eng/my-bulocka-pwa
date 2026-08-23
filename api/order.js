@@ -301,6 +301,11 @@ if (!normalizedPaymentMethod) {
         promoActive,
 
       freeCoffee,
+      
+      paymentMethod,
+
+paymentMethodName:
+  normalizedPaymentMethod,
 
       status:
         "new",
