@@ -39,14 +39,29 @@ export default async function handler(req, res) {
     }
 
     const {
-      name,
-      phone,
-      address,
-      comment,
-      items,
-      promo,
-      telegramConnectCode
-    } = order;
+  name,
+  phone,
+  address,
+  comment,
+  items,
+  promo,
+  telegramConnectCode,
+  paymentMethod
+} = order;
+    const PAYMENT_METHODS = {
+  cash: "Наличными при получении",
+  card: "Картой при получении"
+};
+
+const normalizedPaymentMethod =
+  PAYMENT_METHODS[paymentMethod];
+
+if (!normalizedPaymentMethod) {
+  return res.status(400).json({
+    ok: false,
+    error: "Invalid payment method"
+  });
+}
 
     if (
       !name ||
