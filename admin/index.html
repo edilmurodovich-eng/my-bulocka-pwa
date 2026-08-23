@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#fff8ef"
+  >
+
+  <title>
+    Бухгалтерия — Булочная
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+
+      background: #fff8ef;
+      color: #3b2418;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .login,
+    .dashboard {
+      display: none;
+    }
+
+    .login.show,
+    .dashboard.show {
+      display: block;
+    }
+
+    .card {
+      background: white;
+
+      border-radius: 22px;
+
+      padding: 20px;
+
+      margin-bottom: 15px;
+
+      box-shadow:
+        0 5px 20px
+        rgba(70,40,20,.08);
+    }
+
+    .login {
+      max-width: 420px;
+      margin: 60px auto;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    input {
+      width: 100%;
+
+      padding: 14px;
+
+      border:
+        1px solid #dfcdbc;
+
+      border-radius: 13px;
+
+      font: inherit;
+
+      outline: none;
+    }
+
+    button {
+      border: none;
+
+      border-radius: 13px;
+
+      padding: 13px 16px;
+
+      background: #d9823b;
+
+      color: white;
+
+      font-weight: 800;
+
+      font-size: 15px;
+
+      cursor: pointer;
+    }
+
+    .login button {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .top {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      flex-wrap: wrap;
+    }
+
+    .logout {
+      background: #3b2418;
+    }
+
+    .date-row {
+      display: flex;
+
+      gap: 10px;
+
+      align-items: center;
+
+      flex-wrap: wrap;
+    }
+
+    .date-row input {
+      width: auto;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(180px, 1fr)
+        );
+
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background: #fff0d9;
+    }
+
+    .stat-label {
+      color: #8a6c5a;
+
+      font-size: 13px;
+
+      font-weight: 700;
+    }
+
+    .stat-value {
+      margin-top: 6px;
+
+      font-size: 23px;
+
+      font-weight: 900;
+    }
+
+    .green {
+      background: #e4f5df;
+    }
+
+    .red {
+      background: #fde3df;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+
+      border-collapse: collapse;
+
+      min-width: 600px;
+    }
+
+    th,
+    td {
+      padding: 11px 8px;
+
+      text-align: left;
+
+      border-bottom:
+        1px solid #eee2d8;
+
+      font-size: 13px;
+    }
+
+    th {
+      color: #8a6c5a;
+    }
+
+    .status {
+      font-weight: 800;
+    }
+
+    .error {
+      color: #b3261e;
+
+      margin-top: 10px;
+
+      font-size: 13px;
+    }
+
+    .loading {
+      text-align: center;
+
+      padding: 20px;
+
+      color: #8a6c5a;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGIN -->
+
+  <div
+    id="login"
+    class="login card"
+  >
+
+    <h1>
+      🔐 Бухгалтерия
+    </h1>
+
+    <p>
+      «Булочная» — Вкус детства
+    </p>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Пароль администратора"
+      autocomplete="current-password"
+    >
+
+    <button
+      onclick="login()"
+    >
+      Войти
+    </button>
+
+    <div
+      id="loginError"
+      class="error"
+    ></div>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+
+  <div
+    id="dashboard"
+    class="dashboard"
+  >
+
+    <div class="card">
+
+      <div class="top">
+
+        <div>
+
+          <h1>
+            📊 Бухгалтерия
+          </h1>
+
+          <div>
+            «Булочная»
+          </div>
+
+        </div>
+
+        <button
+          class="logout"
+          onclick="logout()"
+        >
+          Выйти
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- DATE -->
+
+    <div class="card">
+
+      <h2>
+        📅 Период
+      </h2>
+
+      <div class="date-row">
+
+        <input
+          id="date"
+          type="date"
+        >
+
+        <button
+          onclick="loadAccounting()"
+        >
+          🔄 Обновить
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Заказов
+        </div>
+
+        <div
+          id="totalOrders"
+          class="stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Валовая выручка
+        </div>
+
+        <div
+          id="grossRevenue"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Скидки
+        </div>
+
+        <div
+          id="discounts"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+      <div class="stat green">
+
+        <div class="stat-label">
+          Чистая выручка
+        </div>
+
+        <div
+          id="netRevenue"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+      <div class="stat green">
+
+        <div class="stat-label">
+          Доставлено
+        </div>
+
+        <div
+          id="deliveredRevenue"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+      <div class="stat red">
+
+        <div class="stat-label">
+          Отменено
+        </div>
+
+        <div
+          id="cancelledOrders"
+          class="stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+
+    <div class="card">
+
+      <h2>
+        🥐 Продажи товаров
+      </h2>
+
+      <div
+        id="products"
+        class="table-wrap"
+      ></div>
+
+    </div>
+
+
+    <!-- ORDERS -->
+
+    <div class="card">
+
+      <h2>
+        📦 Заказы
+      </h2>
+
+      <div
+        id="orders"
+        class="table-wrap"
+      ></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/*
+==========================================
+LOGIN
+==========================================
+*/
+
+async function login() {
+
+  const password =
+    document
+      .getElementById(
+        "password"
+      )
+      .value;
+
+  const error =
+    document
+      .getElementById(
+        "loginError"
+      );
+
+  error.textContent = "";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/login",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              password
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+      throw new Error(
+        data.error ||
+        "Ошибка входа"
+      );
+    }
+
+
+    showDashboard();
+
+  } catch (error) {
+
+    error.textContent =
+      error.message;
+
+  }
+
+}
+
+
+/*
+==========================================
+CHECK AUTH
+==========================================
+*/
+
+async function checkAuth() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/accounting?date=" +
+        encodeURIComponent(
+          today()
+        ),
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (
+      response.ok
+    ) {
+
+      showDashboard();
+
+      const data =
+        await response.json();
+
+      renderAccounting(
+        data
+      );
+
+    } else {
+
+      showLogin();
+
+    }
+
+  } catch {
+
+    showLogin();
+
+  }
+
+}
+
+
+/*
+==========================================
+UI
+==========================================
+*/
+
+function showLogin() {
+
+  document
+    .getElementById("login")
+    .classList.add("show");
+
+  document
+    .getElementById("dashboard")
+    .classList.remove("show");
+
+}
+
+
+function showDashboard() {
+
+  document
+    .getElementById("login")
+    .classList.remove("show");
+
+  document
+    .getElementById("dashboard")
+    .classList.add("show");
+
+}
+
+
+/*
+==========================================
+LOGOUT
+==========================================
+*/
+
+async function logout() {
+
+  await fetch(
+    "/api/admin/logout",
+    {
+      method: "POST"
+    }
+  );
+
+  showLogin();
+
+}
+
+
+/*
+==========================================
+DATE
+==========================================
+*/
+
+function today() {
+
+  return new Date()
+    .toISOString()
+    .slice(0, 10);
+
+}
+
+
+/*
+==========================================
+LOAD ACCOUNTING
+==========================================
+*/
+
+async function loadAccounting() {
+
+  const date =
+    document
+      .getElementById(
+        "date"
+      )
+      .value;
+
+
+  if (!date) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/accounting?date=" +
+        encodeURIComponent(
+          date
+        ),
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (
+      response.status === 401
+    ) {
+
+      showLogin();
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Ошибка бухгалтерии"
+      );
+
+    }
+
+
+    renderAccounting(
+      data
+    );
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
+  }
+
+}
+
+
+/*
+==========================================
+FORMAT MONEY
+==========================================
+*/
+
+function money(value) {
+
+  return Number(value || 0)
+    .toLocaleString("ru-RU") +
+    " so'm";
+
+}
+
+
+/*
+==========================================
+RENDER
+==========================================
+*/
+
+function renderAccounting(
+  data
+) {
+
+  const summary =
+    data.summary || {};
+
+
+  document
+    .getElementById(
+      "totalOrders"
+    )
+    .textContent =
+    summary.totalOrders || 0;
+
+
+  document
+    .getElementById(
+      "grossRevenue"
+    )
+    .textContent =
+    money(
+      summary.grossRevenue
+    );
+
+
+  document
+    .getElementById(
+      "discounts"
+    )
+    .textContent =
+    money(
+      summary.discounts
+    );
+
+
+  document
+    .getElementById(
+      "netRevenue"
+    )
+    .textContent =
+    money(
+      summary.netRevenue
+    );
+
+
+  document
+    .getElementById(
+      "deliveredRevenue"
+    )
+    .textContent =
+    money(
+      summary.deliveredRevenue
+    );
+
+
+  document
+    .getElementById(
+      "cancelledOrders"
+    )
+    .textContent =
+    summary.cancelledOrders || 0;
+
+
+  renderProducts(
+    data.products || []
+  );
+
+
+  renderOrders(
+    data.orders || []
+  );
+
+}
+
+
+/*
+==========================================
+PRODUCT TABLE
+==========================================
+*/
+
+function renderProducts(
+  products
+) {
+
+  const container =
+    document.getElementById(
+      "products"
+    );
+
+
+  if (!products.length) {
+
+    container.innerHTML =
+      "<p>Продаж пока нет.</p>";
+
+    return;
+
+  }
+
+
+  container.innerHTML = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Товар
+          </th>
+
+          <th>
+            Цена
+          </th>
+
+          <th>
+            Количество
+          </th>
+
+          <th>
+            Выручка
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${products.map(
+          product => `
+
+            <tr>
+
+              <td>
+                ${escapeHTML(
+                  product.name
+                )}
+              </td>
+
+              <td>
+                ${money(
+                  product.price
+                )}
+              </td>
+
+              <td>
+                ${product.quantity}
+              </td>
+
+              <td>
+                ${money(
+                  product.revenue
+                )}
+              </td>
+
+            </tr>
+
+          `
+        ).join("")}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+
+/*
+==========================================
+ORDERS TABLE
+==========================================
+*/
+
+function renderOrders(
+  orders
+) {
+
+  const container =
+    document.getElementById(
+      "orders"
+    );
+
+
+  if (!orders.length) {
+
+    container.innerHTML =
+      "<p>Заказов за этот день нет.</p>";
+
+    return;
+
+  }
+
+
+  container.innerHTML = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Заказ
+          </th>
+
+          <th>
+            Клиент
+          </th>
+
+          <th>
+            Сумма
+          </th>
+
+          <th>
+            Статус
+          </th>
+
+          <th>
+            Время
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${orders.map(
+          order => `
+
+            <tr>
+
+              <td>
+                ${escapeHTML(
+                  order.orderId
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  order.name
+                )}
+              </td>
+
+              <td>
+                ${money(
+                  order.total
+                )}
+              </td>
+
+              <td class="status">
+
+                ${statusText(
+                  order.status
+                )}
+
+              </td>
+
+              <td>
+                ${formatDate(
+                  order.createdAt
+                )}
+              </td>
+
+            </tr>
+
+          `
+        ).join("")}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+
+/*
+==========================================
+STATUS
+==========================================
+*/
+
+function statusText(
+  status
+) {
+
+  const map = {
+
+    new:
+      "🟡 Новый",
+
+    accepted:
+      "🟢 Принят",
+
+    cooking:
+      "🍳 Готовится",
+
+    courier:
+      "🛵 Курьер",
+
+    delivered:
+      "✅ Доставлен",
+
+    cancelled:
+      "❌ Отменён"
+
+  };
+
+  return (
+    map[status] ||
+    status ||
+    "Неизвестно"
+  );
+
+}
+
+
+/*
+==========================================
+DATE FORMAT
+==========================================
+*/
+
+function formatDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+  return new Date(
+    value
+  ).toLocaleTimeString(
+    "ru-RU",
+    {
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
+
+}
+
+
+/*
+==========================================
+HTML SECURITY
+==========================================
+*/
+
+function escapeHTML(
+  value
+) {
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+/*
+==========================================
+START
+==========================================
+*/
+
+document
+  .getElementById(
+    "date"
+  )
+  .value =
+  today();
+
+
+checkAuth();
+
+</script>
+
+</body>
+
+</html>
