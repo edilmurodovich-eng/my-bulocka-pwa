@@ -85,31 +85,32 @@
 
     header {
       text-align: center;
-      padding: 22px 16px 18px;
+      padding: 18px 16px 18px;
     }
 
 
+    /* НОВЫЙ ЛОГОТИП */
+
     .logo {
-      width: 155px;
-      height: 155px;
-
-      margin: 0 auto 10px;
-
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+
+      width: 100%;
+
+      margin-bottom: 8px;
     }
 
 
     .logo img {
-      width: 100%;
-      height: 100%;
-
-      display: block;
+      width: 180px;
+      height: 180px;
 
       object-fit: contain;
 
-      border-radius: 24px;
+      display: block;
+
+      border-radius: 0;
     }
 
 
@@ -944,16 +945,18 @@
 
 
     /* ==========================
-       MOBILE LOGO
+       МОБИЛЬНАЯ АДАПТАЦИЯ
     ========================== */
 
-    @media (max-width: 480px) {
+    @media (max-width: 420px) {
 
-      .logo {
-        width: 140px;
-        height: 140px;
+      header {
+        padding-top: 12px;
+      }
 
-        margin-bottom: 8px;
+      .logo img {
+        width: 170px;
+        height: 170px;
       }
 
       h1 {
@@ -977,6 +980,7 @@
 
 <header>
 
+  <!-- НОВЫЙ ЛОГОТИП -->
   <div class="logo">
 
     <img
