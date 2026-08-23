@@ -22,7 +22,12 @@
 
   <meta
     name="apple-mobile-web-app-title"
-    content="Моя Булочка"
+    content="Булочная"
+  >
+
+  <meta
+    name="description"
+    content="Булочная — Вкус детства. Свежая выпечка каждый день."
   >
 
   <link
@@ -30,7 +35,7 @@
     href="./manifest.webmanifest"
   >
 
-  <title>Моя Булочка</title>
+  <title>Булочная — Вкус детства</title>
 
 
   <style>
@@ -38,6 +43,11 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
     }
 
 
@@ -56,6 +66,19 @@
     }
 
 
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+
+    button {
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+
     /* ==========================
        HEADER
     ========================== */
@@ -68,18 +91,47 @@
 
     .logo {
       font-size: 52px;
+      line-height: 1;
+      margin-bottom: 8px;
     }
 
 
     h1 {
       margin: 5px 0;
-      font-size: 30px;
+
+      font-size: 32px;
+      line-height: 1.15;
+
+      font-weight: 900;
+      letter-spacing: -0.5px;
     }
 
 
     .subtitle {
+      margin-top: 7px;
+
       color: #8a6c5a;
-      font-size: 14px;
+
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+
+    .owner-badge {
+      display: inline-block;
+
+      margin-top: 10px;
+
+      padding: 6px 11px;
+
+      border-radius: 999px;
+
+      background: #fff0d9;
+
+      color: #9a6946;
+
+      font-size: 10px;
+      font-weight: 700;
     }
 
 
@@ -165,6 +217,7 @@
 
     .telegram-button:disabled {
       opacity: .6;
+      cursor: default;
     }
 
 
@@ -302,6 +355,16 @@
       font-size: 22px;
 
       font-weight: 700;
+
+      transition:
+        transform .1s ease,
+        opacity .1s ease;
+    }
+
+
+    .quantity button:active {
+      transform: scale(.92);
+      opacity: .75;
     }
 
 
@@ -311,6 +374,41 @@
       text-align: center;
 
       font-weight: 700;
+    }
+
+
+    /* ==========================
+       FOOTER
+    ========================== */
+
+    .footer {
+      margin: 30px 16px 15px;
+
+      padding: 20px 15px;
+
+      text-align: center;
+
+      color: #9a8373;
+
+      font-size: 11px;
+
+      line-height: 1.6;
+    }
+
+
+    .footer-brand {
+      color: #6e4c38;
+
+      font-size: 14px;
+
+      font-weight: 800;
+
+      margin-bottom: 5px;
+    }
+
+
+    .footer-owner {
+      font-size: 11px;
     }
 
 
@@ -629,6 +727,11 @@
     }
 
 
+    .order-button:disabled {
+      opacity: .6;
+    }
+
+
     .empty {
       text-align: center;
 
@@ -842,10 +945,14 @@
   </div>
 
   <h1>
-    Моя Булочка
+    Булочная
   </h1>
 
   <div class="subtitle">
+    Вкус детства
+  </div>
+
+  <div class="owner-badge">
     Свежая выпечка каждый день
   </div>
 
@@ -925,6 +1032,27 @@
 
 
 <div id="products"></div>
+
+
+<!-- ==========================
+     FOOTER
+========================== -->
+
+<div class="footer">
+
+  <div class="footer-brand">
+    «Булочная» — Вкус детства
+  </div>
+
+  <div class="footer-owner">
+    Правообладатель: «Булочная»
+  </div>
+
+  <div class="footer-owner">
+    Владелец: Самнов Эркин Дилмуродович
+  </div>
+
+</div>
 
 
 <!-- ==========================
@@ -1030,6 +1158,7 @@
         id="customerName"
         type="text"
         placeholder="Например: Muhammad"
+        autocomplete="name"
       >
 
 
@@ -1041,6 +1170,7 @@
         id="customerPhone"
         type="tel"
         placeholder="+998 90 123 45 67"
+        autocomplete="tel"
       >
 
 
@@ -1052,6 +1182,7 @@
         id="customerAddress"
         type="text"
         placeholder="Улица, дом, квартира"
+        autocomplete="street-address"
       >
 
 
@@ -1480,6 +1611,7 @@ function renderProducts() {
 
               <button
                 onclick="remove(${product.id})"
+                aria-label="Уменьшить количество"
               >
                 −
               </button>
@@ -1492,6 +1624,7 @@ function renderProducts() {
 
               <button
                 onclick="add(${product.id})"
+                aria-label="Увеличить количество"
               >
                 +
               </button>
@@ -1624,6 +1757,7 @@ function renderCart() {
 
                 <button
                   onclick="remove(${product.id})"
+                  aria-label="Уменьшить количество"
                 >
                   −
                 </button>
@@ -1636,6 +1770,7 @@ function renderCart() {
 
                 <button
                   onclick="add(${product.id})"
+                  aria-label="Увеличить количество"
                 >
                   +
                 </button>
@@ -2079,7 +2214,6 @@ async function loadOrderStatus(
         ),
         {
           method: "GET",
-
           cache: "no-store"
         }
       );
@@ -2113,11 +2247,6 @@ async function loadOrderStatus(
       status
     );
 
-
-    /*
-    Если заказ доставлен —
-    прекращаем опрос
-    */
 
     if (
       status ===
@@ -2166,18 +2295,10 @@ function startTracking(
   );
 
 
-  /*
-  Сразу проверяем статус
-  */
-
   loadOrderStatus(
     orderId
   );
 
-
-  /*
-  Затем каждые 5 секунд
-  */
 
   trackingTimer =
     setInterval(
@@ -2252,6 +2373,7 @@ function startNewOrder() {
       id="customerName"
       type="text"
       placeholder="Например: Muhammad"
+      autocomplete="name"
     >
 
 
@@ -2264,6 +2386,7 @@ function startNewOrder() {
       id="customerPhone"
       type="tel"
       placeholder="+998 90 123 45 67"
+      autocomplete="tel"
     >
 
 
@@ -2276,6 +2399,7 @@ function startNewOrder() {
       id="customerAddress"
       type="text"
       placeholder="Улица, дом, квартира"
+      autocomplete="street-address"
     >
 
 
@@ -2504,12 +2628,6 @@ async function placeOrder() {
     }
 
 
-    /*
-    ======================================
-    ПОЛУЧАЕМ ID ЗАКАЗА
-    ======================================
-    */
-
     const orderId =
       data.orderId;
 
@@ -2523,12 +2641,6 @@ async function placeOrder() {
     }
 
 
-    /*
-    ======================================
-    СОХРАНЯЕМ ID
-    ======================================
-    */
-
     currentOrderId =
       orderId;
 
@@ -2538,12 +2650,6 @@ async function placeOrder() {
       orderId
     );
 
-
-    /*
-    ======================================
-    ОЧИЩАЕМ КОРЗИНУ
-    ======================================
-    */
 
     Object.keys(cart)
       .forEach(
@@ -2558,23 +2664,11 @@ async function placeOrder() {
     render();
 
 
-    /*
-    ======================================
-    ПОКАЗЫВАЕМ ОТСЛЕЖИВАНИЕ
-    ======================================
-    */
-
     showTracking(
       orderId,
       "new"
     );
 
-
-    /*
-    ======================================
-    ЗАПУСКАЕМ АВТООБНОВЛЕНИЕ
-    ======================================
-    */
 
     startTracking(
       orderId
@@ -2622,12 +2716,6 @@ if (
   currentOrderId
 ) {
 
-  /*
-  Если пользователь закрыл PWA,
-  а потом снова открыл,
-  показываем его последний заказ.
-  */
-
   showTracking(
     currentOrderId,
     "new"
@@ -2653,6 +2741,7 @@ setInterval(
   },
   60000
 );
+
 
 </script>
 
