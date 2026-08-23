@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+
   if (req.method !== "GET") {
     return res.status(405).json({
       ok: false,
@@ -7,35 +8,41 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const redisUrl =
       process.env.KV_REST_API_URL;
 
     const redisToken =
       process.env.KV_REST_API_TOKEN;
 
-    if (!redisUrl || !redisToken) {
+
+    if (
+      !redisUrl ||
+      !redisToken
+    ) {
       return res.status(500).json({
         ok: false,
-        error: "Redis is not configured"
+        error:
+          "Redis is not configured"
       });
     }
 
+
     const orderId =
-      req.query.orderId;
+      String(
+        req.query.orderId ||
+        ""
+      ).trim();
+
 
     if (!orderId) {
       return res.status(400).json({
         ok: false,
-        error: "Order ID is required"
+        error:
+          "Order ID is required"
       });
     }
 
-
-    /*
-    ==========================================
-    ПОЛУЧАЕМ ЗАКАЗ
-    ==========================================
-    */
 
     const orderResult =
       await redisCommand(
@@ -48,51 +55,39 @@ export default async function handler(req, res) {
       );
 
 
-    if (
-      !orderResult
-    ) {
+    if (!orderResult) {
       return res.status(404).json({
         ok: false,
-        error: "Order not found"
+        error:
+          "Order not found"
       });
     }
 
-
-    /*
-    ==========================================
-    РАЗБИРАЕМ ЗАКАЗ
-    ==========================================
-    */
 
     let order;
 
     try {
 
       order =
-        typeof orderResult === "string"
-          ? JSON.parse(orderResult)
+        typeof orderResult ===
+        "string"
+
+          ? JSON.parse(
+              orderResult
+            )
+
           : orderResult;
 
-    } catch (error) {
-
-      console.error(
-        "ORDER JSON ERROR:",
-        error
-      );
+    } catch {
 
       return res.status(500).json({
         ok: false,
-        error: "Invalid order data"
+        error:
+          "Invalid order data"
       });
 
     }
 
-
-    /*
-    ==========================================
-    ПОЛУЧАЕМ ОТДЕЛЬНЫЙ СТАТУС
-    ==========================================
-    */
 
     const statusResult =
       await redisCommand(
@@ -105,30 +100,11 @@ export default async function handler(req, res) {
       );
 
 
-    /*
-    ==========================================
-    ВЫБИРАЕМ АКТУАЛЬНЫЙ СТАТУС
-    ==========================================
-    */
-
     const status =
       statusResult ||
       order.status ||
       "new";
 
-
-    console.log(
-      "ORDER STATUS:",
-      orderId,
-      status
-    );
-
-
-    /*
-    ==========================================
-    ОТВЕТ
-    ==========================================
-    */
 
     return res.status(200).json({
 
@@ -138,9 +114,7 @@ export default async function handler(req, res) {
         order.orderId ||
         orderId,
 
-      status:
-
-        status,
+      status,
 
       createdAt:
         order.createdAt ||
@@ -161,23 +135,15 @@ export default async function handler(req, res) {
     );
 
     return res.status(500).json({
-
       ok: false,
-
       error:
-        error.message
-
+        "Internal server error"
     });
 
   }
+
 }
 
-
-/*
-==========================================
-REDIS
-==========================================
-*/
 
 async function redisCommand(
   url,
@@ -189,22 +155,20 @@ async function redisCommand(
     await fetch(
       url,
       {
-
         method: "POST",
 
         headers: {
-
           Authorization:
             `Bearer ${token}`,
 
           "Content-Type":
             "application/json"
-
         },
 
         body:
-          JSON.stringify(command)
-
+          JSON.stringify(
+            command
+          )
       }
     );
 
@@ -214,19 +178,11 @@ async function redisCommand(
 
 
   if (!response.ok) {
-
-    console.error(
-      "REDIS ERROR:",
-      data
-    );
-
     throw new Error(
       "Redis request failed"
     );
-
   }
 
 
   return data.result;
-
 }
