@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -17,55 +19,32 @@ export default async function handler(req, res) {
       });
     }
 
-    /*
-    ==========================================
-    СОЗДАЁМ УНИКАЛЬНЫЙ КОД
-    ==========================================
-    */
+    // Криптографически случайный код
+    const code = crypto
+      .randomBytes(5)
+      .toString("hex")
+      .toUpperCase();
 
-    const code =
-      Math.random()
-        .toString(36)
-        .substring(2, 10)
-        .toUpperCase();
+    // Код действует 10 минут
+    const redisResponse = await fetch(redisUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${redisToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify([
+        "SET",
+        `connect:${code}`,
+        "waiting",
+        "EX",
+        "600"
+      ])
+    });
 
-    /*
-    ==========================================
-    СОХРАНЯЕМ КОД В REDIS
-    ==========================================
-    */
+    const redisData = await redisResponse.json();
 
-    const redisResponse = await fetch(
-      redisUrl,
-      {
-        method: "POST",
-
-        headers: {
-          Authorization:
-            `Bearer ${redisToken}`,
-
-          "Content-Type":
-            "application/json"
-        },
-
-        body: JSON.stringify([
-          "SET",
-          `connect:${code}`,
-          "waiting",
-          "EX",
-          "600"
-        ])
-      }
-    );
-
-    const redisData =
-      await redisResponse.json();
-
-    if (!redisResponse.ok) {
-      console.error(
-        "REDIS ERROR:",
-        redisData
-      );
+    if (!redisResponse.ok || !redisData.result) {
+      console.error("REDIS ERROR:", redisData);
 
       return res.status(500).json({
         ok: false,
@@ -73,17 +52,10 @@ export default async function handler(req, res) {
       });
     }
 
-    /*
-    ==========================================
-    ССЫЛКА НА TELEGRAM
-    ==========================================
-    */
-
-    const botUsername =
-      "Thefirstbulochnaya_bot";
+    const botUsername = "Thefirstbulochnaya_bot";
 
     const telegramUrl =
-      `https://t.me/${botUsername}?start=${code}`;
+      `https://t.me/${botUsername}?start=${encodeURIComponent(code)}`;
 
     return res.status(200).json({
       ok: true,
@@ -92,15 +64,11 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-
-    console.error(
-      "TELEGRAM CONNECT ERROR:",
-      error
-    );
+    console.error("TELEGRAM CONNECT ERROR:", error);
 
     return res.status(500).json({
       ok: false,
-      error: error.message
+      error: "Telegram connection error"
     });
   }
 }
