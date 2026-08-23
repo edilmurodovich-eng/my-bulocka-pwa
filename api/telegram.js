@@ -12,28 +12,61 @@ export default async function handler(req, res) {
     const token =
       process.env.TELEGRAM_BOT_TOKEN;
 
+    const ownerChatId =
+      process.env.TELEGRAM_OWNER_CHAT_ID;
+
     const redisUrl =
       process.env.KV_REST_API_URL;
 
     const redisToken =
       process.env.KV_REST_API_TOKEN;
 
+
+    /*
+    ==========================================
+    ПРОВЕРКА ENV
+    ==========================================
+    */
+
     if (!token) {
       return res.status(500).json({
         ok: false,
-        error: "TELEGRAM_BOT_TOKEN is missing"
+        error:
+          "TELEGRAM_BOT_TOKEN is missing"
       });
     }
 
-    if (!redisUrl || !redisToken) {
+
+    if (!ownerChatId) {
       return res.status(500).json({
         ok: false,
-        error: "Redis is not configured"
+        error:
+          "TELEGRAM_OWNER_CHAT_ID is missing"
       });
     }
+
+
+    if (
+      !redisUrl ||
+      !redisToken
+    ) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Redis is not configured"
+      });
+    }
+
+
+    /*
+    ==========================================
+    TELEGRAM UPDATE
+    ==========================================
+    */
 
     const update =
       req.body || {};
+
 
     console.log(
       "TELEGRAM UPDATE:",
@@ -43,7 +76,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    /start
+    /start — ПОДКЛЮЧЕНИЕ TELEGRAM
     ==========================================
     */
 
@@ -69,7 +102,11 @@ export default async function handler(req, res) {
           text.split(/\s+/);
 
         const code =
-          parts[1];
+          parts[1]
+            ? String(parts[1])
+                .trim()
+                .toUpperCase()
+            : "";
 
 
         /*
@@ -84,7 +121,8 @@ export default async function handler(req, res) {
             token,
             "sendMessage",
             {
-              chat_id: chatId,
+              chat_id:
+                chatId,
 
               text:
                 "❌ Код подключения не найден.\n\n" +
@@ -92,6 +130,7 @@ export default async function handler(req, res) {
                 "и нажмите «Подключить Telegram»."
             }
           );
+
 
           return res.status(200).json({
             ok: true
@@ -109,6 +148,7 @@ export default async function handler(req, res) {
         const key =
           `connect:${code}`;
 
+
         const redisResult =
           await redisCommand(
             redisUrl,
@@ -118,16 +158,6 @@ export default async function handler(req, res) {
               key
             ]
           );
-
-        console.log(
-          "CONNECT KEY:",
-          key
-        );
-
-        console.log(
-          "CONNECT RESULT:",
-          redisResult
-        );
 
 
         /*
@@ -145,7 +175,8 @@ export default async function handler(req, res) {
             token,
             "sendMessage",
             {
-              chat_id: chatId,
+              chat_id:
+                chatId,
 
               text:
                 "❌ Код подключения не найден или уже использован.\n\n" +
@@ -154,6 +185,7 @@ export default async function handler(req, res) {
                 "чтобы получить новый код."
             }
           );
+
 
           return res.status(200).json({
             ok: true
@@ -217,7 +249,8 @@ export default async function handler(req, res) {
           token,
           "sendMessage",
           {
-            chat_id: chatId,
+            chat_id:
+              chatId,
 
             text:
               "✅ Telegram успешно подключён!\n\n" +
@@ -240,7 +273,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    CALLBACK
+    CALLBACK BUTTON
     ==========================================
     */
 
@@ -249,6 +282,7 @@ export default async function handler(req, res) {
       return await handleCallback(
         update.callback_query,
         token,
+        ownerChatId,
         redisUrl,
         redisToken,
         res
@@ -271,7 +305,8 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       ok: false,
-      error: "Internal server error"
+      error:
+        "Internal server error"
     });
 
   }
@@ -288,6 +323,7 @@ CALLBACK
 async function handleCallback(
   callback,
   token,
+  ownerChatId,
   redisUrl,
   redisToken,
   res
@@ -328,8 +364,39 @@ async function handleCallback(
   }
 
 
-  const ownerChatId =
-    message.chat.id;
+  /*
+  ==========================================
+  ПРОВЕРКА ВЛАДЕЛЬЦА
+  ==========================================
+  */
+
+  const callbackChatId =
+    String(
+      message.chat?.id || ""
+    );
+
+  const configuredOwnerChatId =
+    String(ownerChatId);
+
+
+  if (
+    callbackChatId !==
+    configuredOwnerChatId
+  ) {
+
+    console.error(
+      "UNAUTHORIZED TELEGRAM CALLBACK:",
+      callbackChatId
+    );
+
+    return res.status(200).json({
+      ok: false,
+      error:
+        "Unauthorized"
+    });
+
+  }
+
 
   const messageId =
     message.message_id;
@@ -337,9 +404,9 @@ async function handleCallback(
 
   /*
   ==========================================
-  CALLBACK
+  CALLBACK DATA
   ==========================================
-  
+
   status:accepted:MB-XXXX
   status:cooking:MB-XXXX
   status:courier:MB-XXXX
@@ -351,6 +418,19 @@ async function handleCallback(
 
   const parts =
     callbackData.split(":");
+
+
+  if (
+    parts.length < 3 ||
+    parts[0] !== "status"
+  ) {
+
+    return res.status(200).json({
+      ok: true
+    });
+
+  }
+
 
   const action =
     parts[1];
@@ -415,7 +495,8 @@ async function handleCallback(
 
     return res.status(200).json({
       ok: false,
-      error: "Order not found"
+      error:
+        "Order not found"
     });
 
   }
@@ -430,10 +511,6 @@ async function handleCallback(
   let customerChatId =
     null;
 
-
-  /*
-  Сначала сохранённая связь
-  */
 
   const savedChat =
     await redisCommand(
@@ -454,10 +531,6 @@ async function handleCallback(
   }
 
 
-  /*
-  Потом telegramId
-  */
-
   if (
     !customerChatId &&
     order.telegramId
@@ -469,15 +542,9 @@ async function handleCallback(
   }
 
 
-  console.log(
-    "CUSTOMER CHAT ID:",
-    customerChatId
-  );
-
-
   /*
   ==========================================
-  НОВЫЙ ЗАКАЗ
+  ПРИНЯТ
   ==========================================
   */
 
@@ -516,12 +583,15 @@ async function handleCallback(
           "\n\n✅ ЗАКАЗ ПРИНЯТ";
 
 
+    /*
+    КНОПКИ ПОСЛЕ ПРИНЯТИЯ
+    */
+
     const keyboard = {
 
       inline_keyboard: [
 
         [
-
           {
             text:
               "🍳 Готовится",
@@ -529,11 +599,9 @@ async function handleCallback(
             callback_data:
               `status:cooking:${orderId}`
           }
-
         ],
 
         [
-
           {
             text:
               "❌ Отменить заказ",
@@ -541,7 +609,6 @@ async function handleCallback(
             callback_data:
               `status:cancelled:${orderId}`
           }
-
         ]
 
       ]
@@ -567,6 +634,10 @@ async function handleCallback(
       }
     );
 
+
+    /*
+    УВЕДОМЛЕНИЕ КЛИЕНТА
+    */
 
     if (customerChatId) {
 
@@ -640,7 +711,6 @@ async function handleCallback(
       inline_keyboard: [
 
         [
-
           {
             text:
               "🛵 Передан курьеру",
@@ -648,11 +718,9 @@ async function handleCallback(
             callback_data:
               `status:courier:${orderId}`
           }
-
         ],
 
         [
-
           {
             text:
               "❌ Отменить заказ",
@@ -660,7 +728,6 @@ async function handleCallback(
             callback_data:
               `status:cancelled:${orderId}`
           }
-
         ]
 
       ]
@@ -686,6 +753,10 @@ async function handleCallback(
       }
     );
 
+
+    /*
+    УВЕДОМЛЕНИЕ КЛИЕНТА
+    */
 
     if (customerChatId) {
 
@@ -721,7 +792,8 @@ async function handleCallback(
   if (action === "courier") {
 
     if (
-      order.status === "cancelled"
+      order.status === "cancelled" ||
+      order.status === "delivered"
     ) {
 
       return res.status(200).json({
@@ -757,7 +829,6 @@ async function handleCallback(
       inline_keyboard: [
 
         [
-
           {
             text:
               "✅ Доставлен",
@@ -765,7 +836,16 @@ async function handleCallback(
             callback_data:
               `status:delivered:${orderId}`
           }
+        ],
 
+        [
+          {
+            text:
+              "❌ Отменить заказ",
+
+            callback_data:
+              `status:cancelled:${orderId}`
+          }
         ]
 
       ]
@@ -791,6 +871,10 @@ async function handleCallback(
       }
     );
 
+
+    /*
+    УВЕДОМЛЕНИЕ КЛИЕНТА
+    */
 
     if (customerChatId) {
 
@@ -877,6 +961,10 @@ async function handleCallback(
     );
 
 
+    /*
+    УВЕДОМЛЕНИЕ КЛИЕНТА
+    */
+
     if (customerChatId) {
 
       await telegramRequest(
@@ -912,8 +1000,10 @@ async function handleCallback(
   if (action === "cancelled") {
 
     /*
-    Нельзя отменить уже доставленный
-    или ранее отменённый заказ
+    Нельзя отменить:
+
+    - уже доставленный;
+    - уже отменённый заказ.
     */
 
     if (
@@ -928,6 +1018,12 @@ async function handleCallback(
     }
 
 
+    /*
+    ======================================
+    ОБНОВЛЯЕМ СТАТУС
+    ======================================
+    */
+
     await updateOrderStatus(
       redisUrl,
       redisToken,
@@ -935,6 +1031,12 @@ async function handleCallback(
       "cancelled"
     );
 
+
+    /*
+    ======================================
+    МЕНЯЕМ СООБЩЕНИЕ ВЛАДЕЛЬЦА
+    ======================================
+    */
 
     const oldText =
       message.text || "";
@@ -1022,6 +1124,12 @@ async function updateOrderStatus(
   status
 ) {
 
+  /*
+  ========================================
+  ОТДЕЛЬНЫЙ STATUS KEY
+  ========================================
+  */
+
   await redisCommand(
     redisUrl,
     redisToken,
@@ -1034,6 +1142,12 @@ async function updateOrderStatus(
     ]
   );
 
+
+  /*
+  ========================================
+  ОСНОВНОЙ ORDER
+  ========================================
+  */
 
   const result =
     await redisCommand(
@@ -1061,6 +1175,7 @@ async function updateOrderStatus(
 
     order.status =
       status;
+
 
     order.updatedAt =
       new Date().toISOString();
@@ -1161,7 +1276,6 @@ async function telegramRequest(
   const response =
     await fetch(
       `https://api.telegram.org/bot${token}/${method}`,
-
       {
         method: "POST",
 
