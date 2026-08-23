@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -7,40 +9,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const token =
-      process.env.TELEGRAM_BOT_TOKEN;
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const ownerChatId = process.env.TELEGRAM_OWNER_CHAT_ID;
 
-    const ownerChatId =
-      process.env.TELEGRAM_OWNER_CHAT_ID;
-
-    const redisUrl =
-      process.env.KV_REST_API_URL;
-
-    const redisToken =
-      process.env.KV_REST_API_TOKEN;
+    const redisUrl = process.env.KV_REST_API_URL;
+    const redisToken = process.env.KV_REST_API_TOKEN;
 
     if (!token || !ownerChatId) {
       return res.status(500).json({
         ok: false,
-        error:
-          "Telegram settings are not configured"
+        error: "Telegram settings are not configured"
       });
     }
 
     if (!redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error:
-          "Redis is not configured"
+        error: "Redis is not configured"
       });
     }
 
     const order = req.body;
 
-    if (
-      !order ||
-      typeof order !== "object"
-    ) {
+    if (!order || typeof order !== "object") {
       return res.status(400).json({
         ok: false,
         error: "Invalid order"
@@ -53,17 +44,9 @@ export default async function handler(req, res) {
       address,
       comment,
       items,
-      total,
       promo,
       telegramConnectCode
     } = order;
-
-
-    /*
-    ==========================================
-    ПРОВЕРКА ЗАКАЗА
-    ==========================================
-    */
 
     if (
       !name ||
@@ -78,10 +61,152 @@ export default async function handler(req, res) {
       });
     }
 
+    /*
+    ==========================================
+    СЕРВЕРНЫЕ ЦЕНЫ
+    ==========================================
+    */
+
+    const PRICE_LIST = {
+      1: 4000,
+      2: 3500,
+      3: 5000,
+      4: 6000,
+      5: 7000,
+      6: 6000,
+      7: 9000,
+      8: 12000,
+      9: 4000,
+      10: 2000
+    };
+
+    const PRODUCT_NAMES = {
+      1: "Sosiskali bulochka",
+      2: "Vatrushka",
+      3: "Makli bulochka",
+      4: "Yong'oqli bulochka",
+      5: "Shokoladli bulochka",
+      6: "Jemli bulochka",
+      7: "Hotdog",
+      8: "Gamburger",
+      9: "Kofe",
+      10: "Choy"
+    };
+
+    const BUN_IDS = [1, 2, 3, 4, 5, 6];
 
     /*
     ==========================================
-    СОЗДАЁМ НОМЕР ЗАКАЗА
+    ПРОВЕРЯЕМ ТОВАРЫ
+    ==========================================
+    */
+
+    const normalizedItems = [];
+
+    let bunCount = 0;
+
+    for (const item of items) {
+      const id = Number(item.id);
+      const quantity = Number(item.quantity);
+
+      if (!PRICE_LIST[id]) {
+        return res.status(400).json({
+          ok: false,
+          error: `Unknown product: ${id}`
+        });
+      }
+
+      if (
+        !Number.isInteger(quantity) ||
+        quantity < 1 ||
+        quantity > 100
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid quantity"
+        });
+      }
+
+      if (BUN_IDS.includes(id)) {
+        bunCount += quantity;
+      }
+
+      normalizedItems.push({
+        id,
+        name: PRODUCT_NAMES[id],
+        quantity,
+        price: PRICE_LIST[id]
+      });
+    }
+
+    /*
+    ==========================================
+    ПРОМО
+    09:00 - 11:00
+    2 булочки = кофе бесплатно
+    ==========================================
+    */
+
+    const now = new Date();
+
+    const minutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+    const promoTime =
+      minutes >= 540 &&
+      minutes < 660;
+
+    const coffeeQuantity =
+      normalizedItems
+        .filter(item => item.id === 9)
+        .reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+
+    const promoActive =
+      Boolean(promo) &&
+      promoTime &&
+      bunCount >= 2 &&
+      coffeeQuantity > 0;
+
+    /*
+    ==========================================
+    СЧИТАЕМ ИТОГ ТОЛЬКО НА СЕРВЕРЕ
+    ==========================================
+    */
+
+    let total = 0;
+
+    for (const item of normalizedItems) {
+      total +=
+        item.price *
+        item.quantity;
+    }
+
+    let freeCoffee = 0;
+
+    if (promoActive) {
+      freeCoffee =
+        Math.min(
+          coffeeQuantity,
+          Math.floor(bunCount / 2)
+        );
+
+      total -=
+        freeCoffee *
+        PRICE_LIST[9];
+    }
+
+    total = Math.max(
+      total,
+      0
+    );
+
+    /*
+    ==========================================
+    НОМЕР ЗАКАЗА
     ==========================================
     */
 
@@ -89,80 +214,78 @@ export default async function handler(req, res) {
       "MB-" +
       Date.now()
         .toString(36)
+        .toUpperCase() +
+      "-" +
+      crypto
+        .randomBytes(2)
+        .toString("hex")
         .toUpperCase();
-
 
     /*
     ==========================================
-    ИЩЕМ TELEGRAM КЛИЕНТА
+    TELEGRAM КЛИЕНТА
     ==========================================
     */
 
     let customerTelegramId = null;
 
     if (telegramConnectCode) {
-
-      console.log(
-        "TELEGRAM CONNECT CODE:",
-        telegramConnectCode
-      );
-
-
       const telegramResult =
         await redisCommand(
           redisUrl,
           redisToken,
           [
             "GET",
-            `telegram:code:${telegramConnectCode}`
+            `connect:${telegramConnectCode}`
           ]
         );
 
-
-      console.log(
-        "TELEGRAM CLIENT RESULT:",
-        telegramResult
-      );
-
-
-      if (telegramResult) {
-
+      if (
+        telegramResult &&
+        telegramResult !== "waiting"
+      ) {
         customerTelegramId =
-          String(
-            telegramResult
-          );
-
+          String(telegramResult);
       }
-
     }
-
 
     /*
     ==========================================
-    СОХРАНЯЕМ ЗАКАЗ
+    ДАННЫЕ ЗАКАЗА
     ==========================================
     */
 
     const orderData = {
-
       orderId,
 
-      name,
+      name:
+        String(name).slice(0, 100),
 
-      phone,
+      phone:
+        String(phone).slice(0, 50),
 
-      address,
+      address:
+        String(address).slice(0, 300),
 
       comment:
-        comment || "",
+        String(comment || "").slice(0, 500),
 
-      items,
+      items:
+        normalizedItems,
 
-      total:
-        Number(total) || 0,
+      subtotal:
+        total +
+        freeCoffee * PRICE_LIST[9],
+
+      discount:
+        freeCoffee * PRICE_LIST[9],
+
+      total,
 
       promo:
-        Boolean(promo),
+        promoActive,
+
+      freeCoffee,
 
       status:
         "new",
@@ -170,14 +293,20 @@ export default async function handler(req, res) {
       createdAt:
         new Date().toISOString(),
 
+      updatedAt:
+        new Date().toISOString(),
+
       telegramId:
         customerTelegramId
-
     };
 
-
     /*
-    Основная запись заказа
+    ==========================================
+    СОХРАНЯЕМ ЗАКАЗ
+
+    90 дней вместо 7 дней,
+    чтобы бухгалтерия имела историю
+    ==========================================
     */
 
     await redisCommand(
@@ -185,125 +314,106 @@ export default async function handler(req, res) {
       redisToken,
       [
         "SET",
-
         `order:${orderId}`,
-
-        JSON.stringify(
-          orderData
-        ),
-
+        JSON.stringify(orderData),
         "EX",
-
-        "604800"
+        "7776000"
       ]
     );
 
+    /*
+    ==========================================
+    ИНДЕКС ЗАКАЗОВ
+    ==========================================
+    */
+
+    await redisCommand(
+      redisUrl,
+      redisToken,
+      [
+        "LPUSH",
+        "orders:index",
+        orderId
+      ]
+    );
 
     /*
     ==========================================
-    ПРИВЯЗЫВАЕМ ЗАКАЗ К TELEGRAM
+    TELEGRAM
     ==========================================
     */
 
     if (customerTelegramId) {
-
       await redisCommand(
         redisUrl,
         redisToken,
         [
           "SET",
-
           `order:${orderId}:chat`,
-
-          String(
-            customerTelegramId
-          ),
-
+          String(customerTelegramId),
           "EX",
-
-          "604800"
+          "7776000"
         ]
       );
-
-
-      console.log(
-        "ORDER TELEGRAM LINKED:",
-        orderId,
-        customerTelegramId
-      );
-
-    } else {
-
-      console.log(
-        "TELEGRAM CLIENT NOT FOUND FOR ORDER:",
-        orderId
-      );
-
     }
-
 
     /*
     ==========================================
-    ФОРМИРУЕМ ТОВАРЫ
+    ТЕКСТ ЗАКАЗА
     ==========================================
     */
 
     let orderText = "";
 
-    items.forEach((item) => {
+    normalizedItems.forEach(item => {
+      const free =
+        item.id === 9 &&
+        freeCoffee > 0
+          ? " 🎁"
+          : "";
 
       orderText +=
-        `• ${item.name} — ${item.quantity} шт.\n`;
-
+        `• ${item.name} — ${item.quantity} шт. × ${item.price.toLocaleString("ru-RU")} so'm${free}\n`;
     });
-
 
     /*
     ==========================================
-    СООБЩЕНИЕ ВЛАДЕЛЬЦУ
+    TELEGRAM OWNER MESSAGE
     ==========================================
     */
 
     let message =
-
-      "🥐 НОВЫЙ ЗАКАЗ — «МОЯ БУЛОЧКА»\n\n" +
+      "🥐 НОВЫЙ ЗАКАЗ — «БУЛОЧНАЯ»\n\n" +
 
       `🔢 Заказ: ${orderId}\n` +
 
-      `👤 Имя: ${name}\n` +
+      `👤 Имя: ${orderData.name}\n` +
 
-      `📞 Телефон: ${phone}\n` +
+      `📞 Телефон: ${orderData.phone}\n` +
 
-      `📍 Адрес: ${address}\n\n` +
+      `📍 Адрес: ${orderData.address}\n\n` +
 
       "🛒 ЗАКАЗ:\n" +
 
       orderText;
 
-
-    if (promo) {
-
+    if (freeCoffee > 0) {
       message +=
-        "\n🎁 Кофе бесплатно по акции";
-
+        `\n🎁 Бесплатный кофе: ${freeCoffee} шт.`;
     }
 
-
-    if (comment) {
-
+    if (orderData.discount > 0) {
       message +=
-        `\n\n📝 Комментарий: ${comment}`;
-
+        `\n💸 Скидка: ${orderData.discount.toLocaleString("ru-RU")} so'm`;
     }
 
+    if (orderData.comment) {
+      message +=
+        `\n\n📝 Комментарий: ${orderData.comment}`;
+    }
 
     message +=
-
-      `\n\n💰 Итого: ${
-        Number(total)
-          .toLocaleString("ru-RU")
-      } so'm`;
-
+      `\n\n💰 Итого: ${total.toLocaleString("ru-RU")} so'm`;
 
     /*
     ==========================================
@@ -312,137 +422,84 @@ export default async function handler(req, res) {
     */
 
     const keyboard = {
-
       inline_keyboard: [
-
         [
-
           {
-
-            text:
-              "🟢 Принять заказ",
-
+            text: "🟢 Принять заказ",
             callback_data:
               `status:accepted:${orderId}`
-
           }
-
         ]
-
       ]
-
     };
-
 
     /*
     ==========================================
-    ОТПРАВЛЯЕМ ЗАКАЗ В TELEGRAM
+    TELEGRAM
     ==========================================
     */
 
     const telegramResponse =
       await fetch(
-
         `https://api.telegram.org/bot${token}/sendMessage`,
-
         {
-
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
-
             "Content-Type":
               "application/json"
-
           },
 
-          body:
-            JSON.stringify({
+          body: JSON.stringify({
+            chat_id:
+              ownerChatId,
 
-              chat_id:
-                ownerChatId,
+            text:
+              message,
 
-              text:
-                message,
-
-              reply_markup:
-                keyboard
-
-            })
-
+            reply_markup:
+              keyboard
+          })
         }
-
       );
-
 
     const telegramData =
       await telegramResponse.json();
 
-
     if (!telegramData.ok) {
-
       console.error(
         "Telegram API error:",
         telegramData
       );
 
       return res.status(500).json({
-
-        ok:
-          false,
-
-        error:
-          "Telegram API error"
-
+        ok: false,
+        error: "Telegram API error"
       });
-
     }
 
-
-    /*
-    ==========================================
-    УСПЕХ
-    ==========================================
-    */
-
     return res.status(200).json({
-
-      ok:
-        true,
-
+      ok: true,
       orderId,
-
+      total,
       messageId:
         telegramData.result.message_id,
 
       telegramConnected:
-        Boolean(
-          customerTelegramId
-        )
-
+        Boolean(customerTelegramId)
     });
 
-
   } catch (error) {
-
     console.error(
       "ORDER API ERROR:",
       error
     );
 
     return res.status(500).json({
-
-      ok:
-        false,
-
-      error:
-        error.message
-
+      ok: false,
+      error: "Internal server error"
     });
-
   }
-
 }
 
 
@@ -457,40 +514,29 @@ async function redisCommand(
   token,
   command
 ) {
-
   const response =
     await fetch(
       url,
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
           Authorization:
             `Bearer ${token}`,
 
           "Content-Type":
             "application/json"
-
         },
 
         body:
-          JSON.stringify(
-            command
-          )
-
+          JSON.stringify(command)
       }
     );
-
 
   const data =
     await response.json();
 
-
   if (!response.ok) {
-
     console.error(
       "REDIS ERROR:",
       data
@@ -499,9 +545,7 @@ async function redisCommand(
     throw new Error(
       "Redis request failed"
     );
-
   }
-
 
   return data.result;
 }
