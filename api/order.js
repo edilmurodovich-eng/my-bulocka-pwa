@@ -1,30 +1,19 @@
 import crypto from "crypto";
 
-
 /*
 ==========================================
 API: СОЗДАНИЕ ЗАКАЗА
 ==========================================
 */
 
-
 export default async function handler(req, res) {
 
-  /*
-  ========================================
-  ТОЛЬКО POST
-  ========================================
-  */
-
   if (req.method !== "POST") {
-
     return res.status(405).json({
       ok: false,
       error: "Method not allowed"
     });
-
   }
-
 
   try {
 
@@ -53,17 +42,11 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    if (
-      !token ||
-      !ownerChatId
-    ) {
-
+    if (!token || !ownerChatId) {
       return res.status(500).json({
         ok: false,
-        error:
-          "Telegram settings are not configured"
+        error: "Telegram settings are not configured"
       });
-
     }
 
 
@@ -73,28 +56,21 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    if (
-      !redisUrl ||
-      !redisToken
-    ) {
-
+    if (!redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error:
-          "Redis is not configured"
+        error: "Redis is not configured"
       });
-
     }
 
 
     /*
     ========================================
-    ПОЛУЧАЕМ ЗАКАЗ
+    BODY
     ========================================
     */
 
-    const order =
-      req.body;
+    const order = req.body;
 
 
     if (
@@ -102,18 +78,16 @@ export default async function handler(req, res) {
       typeof order !== "object" ||
       Array.isArray(order)
     ) {
-
       return res.status(400).json({
         ok: false,
         error: "Invalid order"
       });
-
     }
 
 
     /*
     ========================================
-    ДАННЫЕ ЗАКАЗА
+    ДАННЫЕ
     ========================================
     */
 
@@ -124,14 +98,13 @@ export default async function handler(req, res) {
       comment,
       items,
       promo,
-      telegramConnectCode,
-      paymentMethod
+      telegramConnectCode
     } = order;
 
 
     /*
     ========================================
-    ПРОВЕРКА ОСНОВНЫХ ДАННЫХ
+    ОСНОВНЫЕ ДАННЫЕ
     ========================================
     */
 
@@ -142,61 +115,38 @@ export default async function handler(req, res) {
       !Array.isArray(items) ||
       items.length === 0
     ) {
-
       return res.status(400).json({
         ok: false,
-        error:
-          "Missing order data"
+        error: "Missing order data"
       });
+    }
 
+
+    if (items.length > 50) {
+      return res.status(400).json({
+        ok: false,
+        error: "Too many order items"
+      });
     }
 
 
     /*
     ========================================
-    ОГРАНИЧЕНИЕ КОЛИЧЕСТВА ПОЗИЦИЙ
-    ========================================
-    */
-
-    if (
-      items.length > 50
-    ) {
-
-      return res.status(400).json({
-        ok: false,
-        error:
-          "Too many order items"
-      });
-
-    }
-
-
-    /*
-    ========================================
-    СПИСОК ЦЕН
+    ЦЕНЫ
     ========================================
     */
 
     const PRICE_LIST = {
 
       1: 4000,
-
       2: 3500,
-
       3: 5000,
-
       4: 6000,
-
       5: 7000,
-
       6: 6000,
-
       7: 9000,
-
       8: 12000,
-
       9: 4000,
-
       10: 2000
 
     };
@@ -204,50 +154,51 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    НАЗВАНИЯ ТОВАРОВ
+    НАЗВАНИЯ
     ========================================
     */
 
     const PRODUCT_NAMES = {
 
-      1:
-        "Sosiskali bulochka",
-
-      2:
-        "Vatrushka",
-
-      3:
-        "Makli bulochka",
-
-      4:
-        "Yong'oqli bulochka",
-
-      5:
-        "Shokoladli bulochka",
-
-      6:
-        "Jemli bulochka",
-
-      7:
-        "Hotdog",
-
-      8:
-        "Gamburger",
-
-      9:
-        "Kofe",
-
-      10:
-        "Choy"
+      1: "Sosiskali bulochka",
+      2: "Vatrushka",
+      3: "Makli bulochka",
+      4: "Yong'oqli bulochka",
+      5: "Shokoladli bulochka",
+      6: "Jemli bulochka",
+      7: "Hotdog",
+      8: "Gamburger",
+      9: "Kofe",
+      10: "Choy"
 
     };
 
 
     /*
     ========================================
-    СПОСОБЫ ОПЛАТЫ
+    СПОСОБ ОПЛАТЫ
+    ========================================
+
+    Поддерживаются:
+
+    cash
+    card
+    cash_on_delivery
+    card_on_delivery
+
+    Если клиент ничего не отправил,
+    используем cash.
     ========================================
     */
+
+    const rawPaymentMethod =
+      String(
+        order.paymentMethod ||
+        "cash"
+      )
+        .trim()
+        .toLowerCase();
+
 
     const PAYMENT_METHODS = {
 
@@ -255,34 +206,38 @@ export default async function handler(req, res) {
         "Наличными при получении",
 
       card:
+        "Картой при получении",
+
+      cash_on_delivery:
+        "Наличными при получении",
+
+      card_on_delivery:
         "Картой при получении"
 
     };
 
 
-    /*
-    ========================================
-    ПРОВЕРЯЕМ СПОСОБ ОПЛАТЫ
-    ========================================
-    */
-
-    const normalizedPaymentMethod =
+    const paymentMethod =
       PAYMENT_METHODS[
-        paymentMethod
-      ];
+        rawPaymentMethod
+      ]
+        ? (
+            rawPaymentMethod ===
+            "cash_on_delivery"
+              ? "cash"
+              : rawPaymentMethod ===
+                "card_on_delivery"
+                  ? "card"
+                  : rawPaymentMethod
+          )
+        : "cash";
 
 
-    if (
-      !normalizedPaymentMethod
-    ) {
-
-      return res.status(400).json({
-        ok: false,
-        error:
-          "Invalid payment method"
-      });
-
-    }
+    const paymentMethodName =
+      PAYMENT_METHODS[
+        rawPaymentMethod
+      ] ||
+      "Наличными при получении";
 
 
     /*
@@ -292,14 +247,12 @@ export default async function handler(req, res) {
     */
 
     const BUN_IDS = [
-
       1,
       2,
       3,
       4,
       5,
       6
-
     ];
 
 
@@ -314,26 +267,35 @@ export default async function handler(req, res) {
     let bunCount = 0;
 
 
-    for (
-      const item of items
-    ) {
+    for (const item of items) {
+
+      if (!item || typeof item !== "object") {
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid order item"
+        });
+      }
+
 
       const id =
-        Number(item?.id);
+        Number(item.id);
 
       const quantity =
-        Number(item?.quantity);
+        Number(item.quantity);
 
 
       /*
       --------------------------------------
-      ПРОВЕРКА ID
+      ID
       --------------------------------------
       */
 
       if (
         !Number.isInteger(id) ||
-        !PRICE_LIST[id]
+        !Object.prototype.hasOwnProperty.call(
+          PRICE_LIST,
+          id
+        )
       ) {
 
         return res.status(400).json({
@@ -347,7 +309,7 @@ export default async function handler(req, res) {
 
       /*
       --------------------------------------
-      ПРОВЕРКА КОЛИЧЕСТВА
+      QUANTITY
       --------------------------------------
       */
 
@@ -359,8 +321,7 @@ export default async function handler(req, res) {
 
         return res.status(400).json({
           ok: false,
-          error:
-            "Invalid quantity"
+          error: "Invalid quantity"
         });
 
       }
@@ -368,23 +329,17 @@ export default async function handler(req, res) {
 
       /*
       --------------------------------------
-      СЧИТАЕМ БУЛОЧКИ
+      БУЛОЧКИ
       --------------------------------------
       */
 
-      if (
-        BUN_IDS.includes(id)
-      ) {
-
-        bunCount +=
-          quantity;
-
+      if (BUN_IDS.includes(id)) {
+        bunCount += quantity;
       }
 
 
       /*
       --------------------------------------
-      СОХРАНЯЕМ ТОЛЬКО
       СЕРВЕРНЫЕ ДАННЫЕ
       --------------------------------------
       */
@@ -408,21 +363,19 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    ПРОМО-АКЦИЯ
+    ПРОМО
     ========================================
 
     09:00 - 11:00
 
     2 булочки =
-    1 кофе бесплатно
+    кофе бесплатно
 
     ========================================
     */
 
-
     const now =
       new Date();
-
 
     const minutes =
       now.getHours() * 60 +
@@ -436,30 +389,25 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    КОЛИЧЕСТВО КОФЕ
+    КОФЕ
     ========================================
     */
 
     const coffeeQuantity =
       normalizedItems
         .filter(
-          item =>
-            item.id === 9
+          item => item.id === 9
         )
         .reduce(
-          (
-            sum,
-            item
-          ) =>
-            sum +
-            item.quantity,
+          (sum, item) =>
+            sum + item.quantity,
           0
         );
 
 
     /*
     ========================================
-    АКЦИЯ АКТИВНА?
+    АКЦИЯ
     ========================================
     */
 
@@ -472,16 +420,14 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    СЧИТАЕМ СУММУ
+    SUBTOTAL
     ========================================
     */
 
     let subtotal = 0;
 
 
-    for (
-      const item of normalizedItems
-    ) {
+    for (const item of normalizedItems) {
 
       subtotal +=
         item.price *
@@ -499,9 +445,7 @@ export default async function handler(req, res) {
     let freeCoffee = 0;
 
 
-    if (
-      promoActive
-    ) {
+    if (promoActive) {
 
       freeCoffee =
         Math.min(
@@ -527,14 +471,13 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    ИТОГ
+    ИТОГО
     ========================================
     */
 
     const total =
       Math.max(
-        subtotal -
-        discount,
+        subtotal - discount,
         0
       );
 
@@ -546,15 +489,11 @@ export default async function handler(req, res) {
     */
 
     const orderId =
-
       "MB-" +
-
       Date.now()
         .toString(36)
         .toUpperCase() +
-
       "-" +
-
       crypto
         .randomBytes(2)
         .toString("hex")
@@ -567,13 +506,21 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    let customerTelegramId =
-      null;
+    let customerTelegramId = null;
 
 
-    if (
+    const cleanTelegramCode =
       telegramConnectCode
-    ) {
+        ? String(
+            telegramConnectCode
+          )
+            .trim()
+            .toUpperCase()
+            .slice(0, 100)
+        : null;
+
+
+    if (cleanTelegramCode) {
 
       const telegramResult =
         await redisCommand(
@@ -581,23 +528,14 @@ export default async function handler(req, res) {
           redisToken,
           [
             "GET",
-
-            `connect:${telegramConnectCode}`
+            `connect:${cleanTelegramCode}`
           ]
         );
 
 
-      /*
-      --------------------------------------
-      Если Redis содержит waiting,
-      клиент ещё не подключён
-      --------------------------------------
-      */
-
       if (
         telegramResult &&
-        telegramResult !==
-          "waiting"
+        telegramResult !== "waiting"
       ) {
 
         customerTelegramId =
@@ -617,13 +555,12 @@ export default async function handler(req, res) {
     */
 
     const createdAt =
-      new Date()
-        .toISOString();
+      new Date().toISOString();
 
 
     /*
     ========================================
-    ДАННЫЕ ЗАКАЗА
+    ORDER DATA
     ========================================
     */
 
@@ -633,9 +570,7 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       КЛИЕНТ
-      --------------------------------------
       */
 
       name:
@@ -643,18 +578,15 @@ export default async function handler(req, res) {
           .trim()
           .slice(0, 100),
 
-
       phone:
         String(phone)
           .trim()
           .slice(0, 50),
 
-
       address:
         String(address)
           .trim()
           .slice(0, 300),
-
 
       comment:
         String(comment || "")
@@ -663,9 +595,7 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       ТОВАРЫ
-      --------------------------------------
       */
 
       items:
@@ -673,9 +603,7 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       ФИНАНСЫ
-      --------------------------------------
       */
 
       subtotal,
@@ -686,9 +614,7 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       ПРОМО
-      --------------------------------------
       */
 
       promo:
@@ -698,21 +624,28 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       ОПЛАТА
-      --------------------------------------
       */
 
       paymentMethod,
 
-      paymentMethodName:
-        normalizedPaymentMethod,
+      paymentMethodName,
 
 
       /*
-      --------------------------------------
+      TELEGRAM CODE
+      */
+
+      telegramConnectCode:
+        cleanTelegramCode,
+
+
+      telegramId:
+        customerTelegramId,
+
+
+      /*
       СТАТУС
-      --------------------------------------
       */
 
       status:
@@ -720,25 +653,13 @@ export default async function handler(req, res) {
 
 
       /*
-      --------------------------------------
       ДАТЫ
-      --------------------------------------
       */
 
       createdAt,
 
       updatedAt:
-        createdAt,
-
-
-      /*
-      --------------------------------------
-      TELEGRAM
-      --------------------------------------
-      */
-
-      telegramId:
-        customerTelegramId
+        createdAt
 
     };
 
@@ -747,94 +668,56 @@ export default async function handler(req, res) {
     ========================================
     СОХРАНЯЕМ ЗАКАЗ
     ========================================
-
-    90 дней
-
-    ========================================
     */
 
     await redisCommand(
-
       redisUrl,
-
       redisToken,
-
       [
-
         "SET",
-
         `order:${orderId}`,
-
-        JSON.stringify(
-          orderData
-        ),
-
+        JSON.stringify(orderData),
         "EX",
-
         "7776000"
-
       ]
-
     );
 
 
     /*
     ========================================
-    ИНДЕКС ЗАКАЗОВ
+    ИНДЕКС
     ========================================
     */
 
     await redisCommand(
-
       redisUrl,
-
       redisToken,
-
       [
-
         "LPUSH",
-
         "orders:index",
-
         orderId
-
       ]
-
     );
 
 
     /*
     ========================================
-    TELEGRAM CHAT
+    СОХРАНЯЕМ TELEGRAM CHAT
     ========================================
     */
 
-    if (
-      customerTelegramId
-    ) {
+    if (customerTelegramId) {
 
       await redisCommand(
-
         redisUrl,
-
         redisToken,
-
         [
-
           "SET",
-
           `order:${orderId}:chat`,
-
-          String(
-            customerTelegramId
-          ),
-
+          String(customerTelegramId),
           "EX",
-
           "7776000"
-
         ]
-
       );
 
     }
@@ -842,55 +725,34 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    ФОРМИРУЕМ ТОВАРЫ
+    ТЕКСТ ЗАКАЗА
     ========================================
     */
 
-    let orderText =
-      "";
+    let orderText = "";
 
 
-    normalizedItems.forEach(
-      item => {
+    normalizedItems.forEach(item => {
 
-        /*
-        ------------------------------------
-        Бесплатный кофе
-        ------------------------------------
-        */
-
-        let freeText =
-          "";
+      const freeText =
+        item.id === 9 &&
+        freeCoffee > 0
+          ? " 🎁"
+          : "";
 
 
-        if (
-          item.id === 9 &&
-          freeCoffee > 0
-        ) {
+      orderText +=
+        `• ${item.name} — ` +
+        `${item.quantity} шт. × ` +
+        `${item.price.toLocaleString("ru-RU")} so'm` +
+        `${freeText}\n`;
 
-          freeText =
-            " 🎁";
-
-        }
-
-
-        orderText +=
-
-          `• ${item.name} — ` +
-
-          `${item.quantity} шт. × ` +
-
-          `${item.price.toLocaleString("ru-RU")} so'm` +
-
-          `${freeText}\n`;
-
-      }
-    );
+    });
 
 
     /*
     ========================================
-    СООБЩЕНИЕ ВЛАДЕЛЬЦУ
+    TELEGRAM OWNER MESSAGE
     ========================================
     */
 
@@ -913,19 +775,14 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    БЕСПЛАТНЫЙ КОФЕ
+    ПРОМО
     ========================================
     */
 
-    if (
-      freeCoffee > 0
-    ) {
+    if (freeCoffee > 0) {
 
       message +=
-
-        `\n🎁 Бесплатный кофе: ` +
-
-        `${freeCoffee} шт.`;
+        `\n🎁 Бесплатный кофе: ${freeCoffee} шт.`;
 
     }
 
@@ -936,14 +793,10 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    if (
-      discount > 0
-    ) {
+    if (discount > 0) {
 
       message +=
-
         `\n💸 Скидка: ` +
-
         `${discount.toLocaleString("ru-RU")} so'm`;
 
     }
@@ -951,15 +804,12 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    СПОСОБ ОПЛАТЫ
+    ОПЛАТА
     ========================================
     */
 
     message +=
-
-      `\n💳 Оплата: ` +
-
-      normalizedPaymentMethod;
+      `\n💳 Оплата: ${paymentMethodName}`;
 
 
     /*
@@ -968,14 +818,10 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    if (
-      orderData.comment
-    ) {
+    if (orderData.comment) {
 
       message +=
-
         `\n\n📝 Комментарий: ` +
-
         orderData.comment;
 
     }
@@ -988,15 +834,13 @@ export default async function handler(req, res) {
     */
 
     message +=
-
       `\n\n💰 Итого: ` +
-
       `${total.toLocaleString("ru-RU")} so'm`;
 
 
     /*
     ========================================
-    КНОПКА ПРИНЯТЬ
+    КНОПКА
     ========================================
     */
 
@@ -1005,17 +849,13 @@ export default async function handler(req, res) {
       inline_keyboard: [
 
         [
-
           {
-
             text:
               "🟢 Принять заказ",
 
             callback_data:
               `status:accepted:${orderId}`
-
           }
-
         ]
 
       ]
@@ -1025,56 +865,39 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    ОТПРАВКА TELEGRAM
+    TELEGRAM
     ========================================
     */
 
     const telegramResponse =
-
       await fetch(
-
         `https://api.telegram.org/bot${token}/sendMessage`,
-
         {
-
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
-
             "Content-Type":
               "application/json"
-
           },
 
-          body:
-            JSON.stringify({
+          body: JSON.stringify({
 
-              chat_id:
-                ownerChatId,
+            chat_id:
+              ownerChatId,
 
-              text:
-                message,
+            text:
+              message,
 
-              reply_markup:
-                keyboard
+            reply_markup:
+              keyboard
 
-            })
-
+          })
         }
-
       );
 
 
-    /*
-    ========================================
-    TELEGRAM RESPONSE
-    ========================================
-    */
-
     const telegramData =
-      await telegramResponse
-        .json();
+      await telegramResponse.json();
 
 
     /*
@@ -1083,30 +906,23 @@ export default async function handler(req, res) {
     ========================================
     */
 
-    if (
-      !telegramData.ok
-    ) {
+    if (!telegramData.ok) {
 
       console.error(
         "Telegram API error:",
         telegramData
       );
 
-
       /*
       Заказ уже сохранён.
-      Поэтому не удаляем его.
+      Возвращаем понятную ошибку.
       */
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Telegram API error",
-
+          "Заказ сохранён, но Telegram не смог получить уведомление",
         orderId
-
       });
 
     }
@@ -1114,7 +930,7 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    УСПЕХ
+    УСПЕШНЫЙ ОТВЕТ
     ========================================
     */
 
@@ -1134,13 +950,10 @@ export default async function handler(req, res) {
 
       paymentMethod,
 
-      paymentMethodName:
-        normalizedPaymentMethod,
+      paymentMethodName,
 
       messageId:
-        telegramData
-          .result
-          .message_id,
+        telegramData.result.message_id,
 
       telegramConnected:
         Boolean(
@@ -1152,17 +965,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    /*
-    ========================================
-    ОШИБКА
-    ========================================
-    */
-
     console.error(
       "ORDER API ERROR:",
       error
     );
-
 
     return res.status(500).json({
 
@@ -1191,33 +997,22 @@ async function redisCommand(
 ) {
 
   const response =
-
     await fetch(
-
       url,
-
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
           Authorization:
             `Bearer ${token}`,
 
           "Content-Type":
             "application/json"
-
         },
 
         body:
-          JSON.stringify(
-            command
-          )
-
+          JSON.stringify(command)
       }
-
     );
 
 
@@ -1225,15 +1020,12 @@ async function redisCommand(
     await response.json();
 
 
-  if (
-    !response.ok
-  ) {
+  if (!response.ok) {
 
     console.error(
       "REDIS ERROR:",
       data
     );
-
 
     throw new Error(
       "Redis request failed"
