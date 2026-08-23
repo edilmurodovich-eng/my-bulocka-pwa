@@ -45,7 +45,8 @@ export default async function handler(req, res) {
     if (!token || !ownerChatId) {
       return res.status(500).json({
         ok: false,
-        error: "Telegram settings are not configured"
+        error:
+          "Telegram settings are not configured"
       });
     }
 
@@ -59,7 +60,8 @@ export default async function handler(req, res) {
     if (!redisUrl || !redisToken) {
       return res.status(500).json({
         ok: false,
-        error: "Redis is not configured"
+        error:
+          "Redis is not configured"
       });
     }
 
@@ -80,7 +82,8 @@ export default async function handler(req, res) {
     ) {
       return res.status(400).json({
         ok: false,
-        error: "Invalid order"
+        error:
+          "Invalid order"
       });
     }
 
@@ -117,7 +120,8 @@ export default async function handler(req, res) {
     ) {
       return res.status(400).json({
         ok: false,
-        error: "Missing order data"
+        error:
+          "Missing order data"
       });
     }
 
@@ -125,7 +129,8 @@ export default async function handler(req, res) {
     if (items.length > 50) {
       return res.status(400).json({
         ok: false,
-        error: "Too many order items"
+        error:
+          "Too many order items"
       });
     }
 
@@ -183,11 +188,13 @@ export default async function handler(req, res) {
 
     cash
     card
+
+    Также принимаются старые значения:
+
     cash_on_delivery
     card_on_delivery
 
-    Если клиент ничего не отправил,
-    используем cash.
+    Они автоматически преобразуются.
     ========================================
     */
 
@@ -217,27 +224,24 @@ export default async function handler(req, res) {
     };
 
 
-    const paymentMethod =
-      PAYMENT_METHODS[
-        rawPaymentMethod
-      ]
-        ? (
-            rawPaymentMethod ===
-            "cash_on_delivery"
-              ? "cash"
-              : rawPaymentMethod ===
-                "card_on_delivery"
-                  ? "card"
-                  : rawPaymentMethod
-          )
-        : "cash";
+    let paymentMethod = "cash";
+
+
+    if (
+      rawPaymentMethod === "card" ||
+      rawPaymentMethod === "card_on_delivery"
+    ) {
+
+      paymentMethod = "card";
+
+    }
 
 
     const paymentMethodName =
       PAYMENT_METHODS[
         rawPaymentMethod
       ] ||
-      "Наличными при получении";
+      PAYMENT_METHODS[paymentMethod];
 
 
     /*
@@ -269,11 +273,17 @@ export default async function handler(req, res) {
 
     for (const item of items) {
 
-      if (!item || typeof item !== "object") {
+      if (
+        !item ||
+        typeof item !== "object"
+      ) {
+
         return res.status(400).json({
           ok: false,
-          error: "Invalid order item"
+          error:
+            "Invalid order item"
         });
+
       }
 
 
@@ -321,7 +331,8 @@ export default async function handler(req, res) {
 
         return res.status(400).json({
           ok: false,
-          error: "Invalid quantity"
+          error:
+            "Invalid quantity"
         });
 
       }
@@ -370,7 +381,6 @@ export default async function handler(req, res) {
 
     2 булочки =
     кофе бесплатно
-
     ========================================
     */
 
@@ -568,7 +578,6 @@ export default async function handler(req, res) {
 
       orderId,
 
-
       /*
       КЛИЕНТ
       */
@@ -633,12 +642,11 @@ export default async function handler(req, res) {
 
 
       /*
-      TELEGRAM CODE
+      TELEGRAM
       */
 
       telegramConnectCode:
         cleanTelegramCode,
-
 
       telegramId:
         customerTelegramId,
@@ -702,7 +710,7 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    СОХРАНЯЕМ TELEGRAM CHAT
+    TELEGRAM CHAT КЛИЕНТА
     ========================================
     */
 
@@ -725,7 +733,7 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    ТЕКСТ ЗАКАЗА
+    ТЕКСТ ТОВАРОВ
     ========================================
     */
 
@@ -734,11 +742,18 @@ export default async function handler(req, res) {
 
     normalizedItems.forEach(item => {
 
-      const freeText =
+      let freeText = "";
+
+
+      if (
         item.id === 9 &&
         freeCoffee > 0
-          ? " 🎁"
-          : "";
+      ) {
+
+        freeText =
+          " 🎁";
+
+      }
 
 
       orderText +=
@@ -840,7 +855,7 @@ export default async function handler(req, res) {
 
     /*
     ========================================
-    КНОПКА
+    TELEGRAM КНОПКА
     ========================================
     */
 
@@ -892,6 +907,7 @@ export default async function handler(req, res) {
               keyboard
 
           })
+
         }
       );
 
@@ -913,16 +929,15 @@ export default async function handler(req, res) {
         telegramData
       );
 
-      /*
-      Заказ уже сохранён.
-      Возвращаем понятную ошибку.
-      */
-
       return res.status(500).json({
+
         ok: false,
+
         error:
           "Заказ сохранён, но Telegram не смог получить уведомление",
+
         orderId
+
       });
 
     }
