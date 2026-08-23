@@ -85,14 +85,31 @@
 
     header {
       text-align: center;
-      padding: 28px 16px 18px;
+      padding: 22px 16px 18px;
     }
 
 
     .logo {
-      font-size: 52px;
-      line-height: 1;
-      margin-bottom: 8px;
+      width: 155px;
+      height: 155px;
+
+      margin: 0 auto 10px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: contain;
+
+      border-radius: 24px;
     }
 
 
@@ -926,6 +943,26 @@
     }
 
 
+    /* ==========================
+       MOBILE LOGO
+    ========================== */
+
+    @media (max-width: 480px) {
+
+      .logo {
+        width: 140px;
+        height: 140px;
+
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+    }
+
+
   </style>
 
 </head>
@@ -941,16 +978,24 @@
 <header>
 
   <div class="logo">
-    🥐
+
+    <img
+      src="./logo.jpeg"
+      alt="Булочная — Вкус детства"
+    >
+
   </div>
+
 
   <h1>
     Булочная
   </h1>
 
+
   <div class="subtitle">
     Вкус детства
   </div>
+
 
   <div class="owner-badge">
     Свежая выпечка каждый день
