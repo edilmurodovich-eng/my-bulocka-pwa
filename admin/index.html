@@ -97,10 +97,15 @@
       font: inherit;
 
       outline: none;
+
+      background: white;
     }
 
     input:focus {
       border-color: #d9823b;
+      box-shadow:
+        0 0 0 3px
+        rgba(217,130,59,.12);
     }
 
     button {
@@ -119,6 +124,10 @@
       font-size: 15px;
 
       cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(.98);
     }
 
     .login button {
@@ -168,6 +177,8 @@
         );
 
       gap: 12px;
+
+      margin-bottom: 15px;
     }
 
     .stat {
@@ -202,11 +213,29 @@
       background: #fde3df;
     }
 
-    .expense-card {
-      background: #fffaf5;
+    .orange {
+      background: #fff0d9;
     }
 
-    .expense-grid {
+    .blue {
+      background: #e7f0ff;
+    }
+
+    .profit {
+      background: #dff7e7;
+    }
+
+    .loss {
+      background: #fde3df;
+    }
+
+    /*
+    ==========================================
+    РАСХОДЫ
+    ==========================================
+    */
+
+    .expenses-grid {
       display: grid;
 
       grid-template-columns:
@@ -218,43 +247,100 @@
       gap: 14px;
     }
 
-    .expense-field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+    .expense-card {
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background: #fff8ef;
+
+      border:
+        1px solid #f0dfcf;
     }
 
-    .expense-field label {
+    .expense-title {
+      font-size: 16px;
+
+      font-weight: 900;
+
+      margin-bottom: 10px;
+    }
+
+    .expense-description {
+      color: #8a6c5a;
+
+      font-size: 12px;
+
+      margin-bottom: 10px;
+    }
+
+    .expense-input {
+      font-size: 18px;
+
       font-weight: 800;
-      font-size: 14px;
     }
 
-    .expense-field input {
-      background: white;
+    .expense-actions {
+      display: flex;
+
+      gap: 10px;
+
+      margin-top: 12px;
+
+      flex-wrap: wrap;
     }
 
     .save-expenses {
-      margin-top: 14px;
-      width: 100%;
+      background: #3b8d55;
     }
 
-    .expense-message {
-      margin-top: 10px;
-      font-size: 13px;
-      font-weight: 700;
+    .clear-expenses {
+      background: #8a6c5a;
     }
 
-    .expense-message.success {
-      color: #287a24;
+    .expense-total {
+      margin-top: 15px;
+
+      padding: 16px;
+
+      border-radius: 16px;
+
+      background: #fde3df;
     }
 
-    .expense-message.error {
-      color: #b3261e;
+    .expense-total-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      font-weight: 800;
+
+      margin-bottom: 8px;
     }
 
-    .profit {
-      background: #e4f5df;
+    .expense-total-row:last-child {
+      margin-bottom: 0;
     }
+
+    .profit-box {
+      margin-top: 15px;
+
+      padding: 18px;
+
+      border-radius: 18px;
+
+      font-weight: 900;
+
+      font-size: 20px;
+    }
+
+    /*
+    ==========================================
+    TABLE
+    ==========================================
+    */
 
     .table-wrap {
       overflow-x: auto;
@@ -304,6 +390,18 @@
       color: #8a6c5a;
     }
 
+    .saved {
+      color: #3b8d55;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      margin-top: 8px;
+
+      display: none;
+    }
+
     @media (max-width: 600px) {
 
       body {
@@ -312,6 +410,14 @@
 
       h1 {
         font-size: 24px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+      }
+
+      .expense-actions button {
+        flex: 1;
       }
 
     }
@@ -324,7 +430,10 @@
 
 <div class="container">
 
-  <!-- LOGIN -->
+
+  <!-- ======================================
+       LOGIN
+  ====================================== -->
 
   <div
     id="login"
@@ -360,12 +469,19 @@
   </div>
 
 
-  <!-- DASHBOARD -->
+  <!-- ======================================
+       DASHBOARD
+  ====================================== -->
 
   <div
     id="dashboard"
     class="dashboard"
   >
+
+
+    <!-- ====================================
+         HEADER
+    ==================================== -->
 
     <div class="card">
 
@@ -395,7 +511,9 @@
     </div>
 
 
-    <!-- DATE -->
+    <!-- ====================================
+         DATE
+    ==================================== -->
 
     <div class="card">
 
@@ -408,6 +526,7 @@
         <input
           id="date"
           type="date"
+          onchange="loadAccounting()"
         >
 
         <button
@@ -421,9 +540,12 @@
     </div>
 
 
-    <!-- STATS -->
+    <!-- ====================================
+         STATS
+    ==================================== -->
 
     <div class="stats">
+
 
       <div class="stat">
 
@@ -520,156 +642,192 @@
 
       </div>
 
+
     </div>
 
 
-    <!-- EXPENSES -->
+    <!-- ====================================
+         РАСХОДЫ
+    ==================================== -->
 
-    <div class="card expense-card">
+    <div class="card">
 
       <h2>
-        💸 Расходы и зарплата
+        💰 Расходы за день
       </h2>
 
-      <p>
-        Укажите расходы за выбранную дату.
+      <p
+        style="
+          color:#8a6c5a;
+          font-size:13px;
+        "
+      >
+        Введите суммы вручную для выбранной даты.
+        Старые заказы при этом не изменяются.
       </p>
 
-      <div class="expense-grid">
 
-        <div class="expense-field">
-
-          <label for="otherExpenses">
-            💸 Прочие расходы
-          </label>
-
-          <input
-            id="otherExpenses"
-            type="number"
-            min="0"
-            step="100"
-            placeholder="0"
-            inputmode="numeric"
-          >
-
-        </div>
+      <div class="expenses-grid">
 
 
-        <div class="expense-field">
+        <!-- ЗАРПЛАТА -->
 
-          <label for="salary">
-            👷 Зарплата
-          </label>
+        <div class="expense-card">
+
+          <div class="expense-title">
+            👨‍🍳 Зарплата
+          </div>
+
+          <div class="expense-description">
+            Зарплата сотрудников за выбранный день
+          </div>
 
           <input
             id="salary"
+            class="expense-input"
             type="number"
             min="0"
-            step="100"
-            placeholder="0"
+            step="1000"
             inputmode="numeric"
+            placeholder="0"
+            oninput="calculateProfit()"
           >
 
         </div>
 
+
+        <!-- ПРОЧИЕ РАСХОДЫ -->
+
+        <div class="expense-card">
+
+          <div class="expense-title">
+            🧾 Прочие расходы
+          </div>
+
+          <div class="expense-description">
+            Остальные расходы за выбранный день
+          </div>
+
+          <input
+            id="otherExpenses"
+            class="expense-input"
+            type="number"
+            min="0"
+            step="1000"
+            inputmode="numeric"
+            placeholder="0"
+            oninput="calculateProfit()"
+          >
+
+        </div>
+
+
       </div>
 
 
-      <button
-        class="save-expenses"
-        onclick="saveExpenses()"
-      >
-        💾 Сохранить расходы
-      </button>
+      <div class="expense-actions">
+
+        <button
+          class="save-expenses"
+          onclick="saveExpenses()"
+        >
+          💾 Сохранить расходы
+        </button>
+
+        <button
+          class="clear-expenses"
+          onclick="clearExpenses()"
+        >
+          🗑 Очистить
+        </button>
+
+      </div>
 
 
       <div
-        id="expenseMessage"
-        class="expense-message"
-      ></div>
+        id="savedMessage"
+        class="saved"
+      >
+        ✅ Расходы сохранены
+      </div>
 
-    </div>
 
+      <div class="expense-total">
 
-    <!-- PROFIT -->
+        <div class="expense-total-row">
 
-    <div class="card profit">
+          <span>
+            Зарплата:
+          </span>
 
-      <h2>
-        💰 Финансовый результат
-      </h2>
-
-      <div class="stats">
-
-        <div class="stat">
-
-          <div class="stat-label">
-            Чистая выручка
-          </div>
-
-          <div
-            id="profitRevenue"
-            class="stat-value"
+          <span
+            id="salaryTotal"
           >
             0 so'm
-          </div>
+          </span>
 
         </div>
 
 
-        <div class="stat red">
+        <div class="expense-total-row">
 
-          <div class="stat-label">
-            Прочие расходы
-          </div>
+          <span>
+            Прочие расходы:
+          </span>
 
-          <div
-            id="profitExpenses"
-            class="stat-value"
+          <span
+            id="otherExpensesTotal"
           >
             0 so'm
-          </div>
+          </span>
 
         </div>
 
 
-        <div class="stat red">
+        <div
+          class="expense-total-row"
+          style="
+            padding-top:10px;
+            border-top:1px solid #e8cfc0;
+          "
+        >
 
-          <div class="stat-label">
-            Зарплата
-          </div>
+          <span>
+            Все расходы:
+          </span>
 
-          <div
-            id="profitSalary"
-            class="stat-value"
+          <span
+            id="allExpenses"
           >
             0 so'm
-          </div>
+          </span>
 
         </div>
 
+      </div>
 
-        <div class="stat green">
 
-          <div class="stat-label">
-            Чистая прибыль
-          </div>
+      <div
+        id="profitBox"
+        class="profit-box profit"
+      >
 
-          <div
-            id="netProfit"
-            class="stat-value"
-          >
-            0 so'm
-          </div>
+        📈 Чистая прибыль:
 
-        </div>
+        <span
+          id="netProfit"
+        >
+          0 so'm
+        </span>
 
       </div>
 
     </div>
 
 
-    <!-- PRODUCTS -->
+    <!-- ====================================
+         PRODUCTS
+    ==================================== -->
 
     <div class="card">
 
@@ -685,7 +843,9 @@
     </div>
 
 
-    <!-- ORDERS -->
+    <!-- ====================================
+         ORDERS
+    ==================================== -->
 
     <div class="card">
 
@@ -700,6 +860,7 @@
 
     </div>
 
+
   </div>
 
 </div>
@@ -710,11 +871,23 @@
 "use strict";
 
 
-let currentAccounting = null;
-let currentExpenses = {
-  otherExpenses: 0,
-  salary: 0
-};
+/*
+==========================================
+ГЛОБАЛЬНЫЕ ДАННЫЕ
+==========================================
+*/
+
+let accountingData = null;
+
+
+/*
+==========================================
+КЛЮЧ LOCALSTORAGE
+==========================================
+*/
+
+const EXPENSE_STORAGE_KEY =
+  "bulocka_accounting_expenses";
 
 
 /*
@@ -739,6 +912,16 @@ async function login() {
       );
 
   error.textContent = "";
+
+
+  if (!password) {
+
+    error.textContent =
+      "Введите пароль";
+
+    return;
+
+  }
 
 
   try {
@@ -770,10 +953,12 @@ async function login() {
       !response.ok ||
       !data.ok
     ) {
+
       throw new Error(
         data.error ||
         "Ошибка входа"
       );
+
     }
 
 
@@ -822,13 +1007,14 @@ async function checkAuth() {
       const data =
         await response.json();
 
+      accountingData =
+        data;
+
       renderAccounting(
         data
       );
 
-      await loadExpenses(
-        today()
-      );
+      loadSavedExpenses();
 
     } else {
 
@@ -885,12 +1071,16 @@ LOGOUT
 
 async function logout() {
 
-  await fetch(
-    "/api/admin/logout",
-    {
-      method: "POST"
-    }
-  );
+  try {
+
+    await fetch(
+      "/api/admin/logout",
+      {
+        method: "POST"
+      }
+    );
+
+  } catch {}
 
   showLogin();
 
@@ -975,284 +1165,29 @@ async function loadAccounting() {
     }
 
 
+    accountingData =
+      data;
+
+
     renderAccounting(
       data
     );
 
-    await loadExpenses(
-      date
-    );
+
+    /*
+    ======================================
+    Загружаем расходы именно этой даты
+    ======================================
+    */
+
+    loadSavedExpenses();
+
 
   } catch (error) {
 
     alert(
       error.message
     );
-
-  }
-
-}
-
-
-/*
-==========================================
-LOAD EXPENSES
-==========================================
-*/
-
-async function loadExpenses(
-  date
-) {
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/admin/expenses?date=" +
-        encodeURIComponent(
-          date
-        ),
-        {
-          cache: "no-store"
-        }
-      );
-
-
-    if (
-      response.status === 401
-    ) {
-
-      showLogin();
-
-      return;
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok ||
-      !data.ok
-    ) {
-
-      throw new Error(
-        data.error ||
-        "Ошибка загрузки расходов"
-      );
-
-    }
-
-
-    currentExpenses = {
-
-      otherExpenses:
-        Number(
-          data.otherExpenses
-        ) || 0,
-
-      salary:
-        Number(
-          data.salary
-        ) || 0
-
-    };
-
-
-    document
-      .getElementById(
-        "otherExpenses"
-      )
-      .value =
-      currentExpenses.otherExpenses ||
-      "";
-
-    document
-      .getElementById(
-        "salary"
-      )
-      .value =
-      currentExpenses.salary ||
-      "";
-
-
-    renderProfit();
-
-  } catch (error) {
-
-    console.error(
-      "EXPENSE LOAD ERROR:",
-      error
-    );
-
-  }
-
-}
-
-
-/*
-==========================================
-SAVE EXPENSES
-==========================================
-*/
-
-async function saveExpenses() {
-
-  const date =
-    document
-      .getElementById(
-        "date"
-      )
-      .value;
-
-
-  if (!date) {
-
-    alert(
-      "Выберите дату."
-    );
-
-    return;
-
-  }
-
-
-  const otherExpenses =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "otherExpenses"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const salary =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "salary"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const message =
-    document
-      .getElementById(
-        "expenseMessage"
-      );
-
-
-  message.className =
-    "expense-message";
-
-  message.textContent =
-    "Сохраняем...";
-
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/admin/expenses",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-
-              date,
-
-              otherExpenses,
-
-              salary
-
-            })
-
-          }
-        }
-      );
-
-
-    if (
-      response.status === 401
-    ) {
-
-      showLogin();
-
-      return;
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok ||
-      !data.ok
-    ) {
-
-      throw new Error(
-        data.error ||
-        "Ошибка сохранения"
-      );
-
-    }
-
-
-    currentExpenses = {
-
-      otherExpenses:
-        data.otherExpenses,
-
-      salary:
-        data.salary
-
-    };
-
-
-    renderProfit();
-
-
-    message.className =
-      "expense-message success";
-
-    message.textContent =
-      "✅ Сохранено";
-
-
-    setTimeout(
-      () => {
-        message.textContent = "";
-      },
-      2500
-    );
-
-
-  } catch (error) {
-
-    message.className =
-      "expense-message error";
-
-    message.textContent =
-      "❌ " +
-      error.message;
 
   }
 
@@ -1276,6 +1211,388 @@ function money(value) {
 
 /*
 ==========================================
+ПОЛУЧЕНИЕ ВЫБРАННОЙ ДАТЫ
+==========================================
+*/
+
+function selectedDate() {
+
+  return (
+    document
+      .getElementById(
+        "date"
+      )
+      .value ||
+    today()
+  );
+
+}
+
+
+/*
+==========================================
+ПОЛУЧЕНИЕ ВСЕХ РАСХОДОВ
+==========================================
+*/
+
+function getExpenses() {
+
+  try {
+
+    const raw =
+      localStorage.getItem(
+        EXPENSE_STORAGE_KEY
+      );
+
+    if (!raw) {
+      return {};
+    }
+
+    const data =
+      JSON.parse(raw);
+
+    if (
+      !data ||
+      typeof data !== "object"
+    ) {
+
+      return {};
+
+    }
+
+    return data;
+
+  } catch {
+
+    return {};
+
+  }
+
+}
+
+
+/*
+==========================================
+ЗАГРУЗКА РАСХОДОВ
+==========================================
+*/
+
+function loadSavedExpenses() {
+
+  const date =
+    selectedDate();
+
+  const expenses =
+    getExpenses();
+
+  const day =
+    expenses[date] || {
+      salary: 0,
+      otherExpenses: 0
+    };
+
+
+  document
+    .getElementById(
+      "salary"
+    )
+    .value =
+    Number(
+      day.salary || 0
+    ) || "";
+
+
+  document
+    .getElementById(
+      "otherExpenses"
+    )
+    .value =
+    Number(
+      day.otherExpenses || 0
+    ) || "";
+
+
+  calculateProfit();
+
+}
+
+
+/*
+==========================================
+СОХРАНЕНИЕ РАСХОДОВ
+==========================================
+*/
+
+function saveExpenses() {
+
+  const date =
+    selectedDate();
+
+
+  const salary =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "salary"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const otherExpenses =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "otherExpenses"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const expenses =
+    getExpenses();
+
+
+  expenses[date] = {
+
+    salary,
+
+    otherExpenses
+
+  };
+
+
+  localStorage.setItem(
+    EXPENSE_STORAGE_KEY,
+    JSON.stringify(
+      expenses
+    )
+  );
+
+
+  calculateProfit();
+
+
+  const saved =
+    document
+      .getElementById(
+        "savedMessage"
+      );
+
+
+  saved.style.display =
+    "block";
+
+
+  setTimeout(() => {
+
+    saved.style.display =
+      "none";
+
+  }, 2500);
+
+}
+
+
+/*
+==========================================
+ОЧИСТКА РАСХОДОВ
+==========================================
+*/
+
+function clearExpenses() {
+
+  const date =
+    selectedDate();
+
+
+  const confirmed =
+    confirm(
+      "Очистить зарплату и прочие расходы за " +
+      date +
+      "?"
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  const expenses =
+    getExpenses();
+
+
+  delete expenses[date];
+
+
+  localStorage.setItem(
+    EXPENSE_STORAGE_KEY,
+    JSON.stringify(
+      expenses
+    )
+  );
+
+
+  document
+    .getElementById(
+      "salary"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "otherExpenses"
+    )
+    .value = "";
+
+
+  calculateProfit();
+
+}
+
+
+/*
+==========================================
+РАСЧЁТ ПРИБЫЛИ
+==========================================
+*/
+
+function calculateProfit() {
+
+  const salary =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "salary"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const otherExpenses =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "otherExpenses"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const totalExpenses =
+    salary +
+    otherExpenses;
+
+
+  const revenue =
+    Number(
+      accountingData
+        ?.summary
+        ?.netRevenue
+    ) || 0;
+
+
+  const profit =
+    revenue -
+    totalExpenses;
+
+
+  document
+    .getElementById(
+      "salaryTotal"
+    )
+    .textContent =
+    money(
+      salary
+    );
+
+
+  document
+    .getElementById(
+      "otherExpensesTotal"
+    )
+    .textContent =
+    money(
+      otherExpenses
+    );
+
+
+  document
+    .getElementById(
+      "allExpenses"
+    )
+    .textContent =
+    money(
+      totalExpenses
+    );
+
+
+  document
+    .getElementById(
+      "netProfit"
+    )
+    .textContent =
+    money(
+      profit
+    );
+
+
+  const box =
+    document
+      .getElementById(
+        "profitBox"
+      );
+
+
+  if (profit >= 0) {
+
+    box.classList.remove(
+      "loss"
+    );
+
+    box.classList.add(
+      "profit"
+    );
+
+    box.innerHTML =
+      "📈 Чистая прибыль: " +
+      `<span id="netProfit">${money(profit)}</span>`;
+
+  } else {
+
+    box.classList.remove(
+      "profit"
+    );
+
+    box.classList.add(
+      "loss"
+    );
+
+    box.innerHTML =
+      "📉 Убыток: " +
+      `<span id="netProfit">${money(Math.abs(profit))}</span>`;
+
+  }
+
+}
+
+
+/*
+==========================================
 RENDER
 ==========================================
 */
@@ -1283,10 +1600,6 @@ RENDER
 function renderAccounting(
   data
 ) {
-
-  currentAccounting =
-    data;
-
 
   const summary =
     data.summary || {};
@@ -1358,107 +1671,7 @@ function renderAccounting(
   );
 
 
-  renderProfit();
-
-}
-
-
-/*
-==========================================
-RENDER PROFIT
-==========================================
-*/
-
-function renderProfit() {
-
-  const revenue =
-    Number(
-      currentAccounting
-        ?.summary
-        ?.netRevenue
-    ) || 0;
-
-
-  const expenses =
-    Number(
-      currentExpenses
-        .otherExpenses
-    ) || 0;
-
-
-  const salary =
-    Number(
-      currentExpenses
-        .salary
-    ) || 0;
-
-
-  const profit =
-    revenue -
-    expenses -
-    salary;
-
-
-  document
-    .getElementById(
-      "profitRevenue"
-    )
-    .textContent =
-    money(revenue);
-
-
-  document
-    .getElementById(
-      "profitExpenses"
-    )
-    .textContent =
-    money(expenses);
-
-
-  document
-    .getElementById(
-      "profitSalary"
-    )
-    .textContent =
-    money(salary);
-
-
-  const profitElement =
-    document
-      .getElementById(
-        "netProfit"
-      );
-
-
-  profitElement.textContent =
-    money(profit);
-
-
-  if (profit < 0) {
-
-    profitElement.parentElement
-      .classList.remove(
-        "green"
-      );
-
-    profitElement.parentElement
-      .classList.add(
-        "red"
-      );
-
-  } else {
-
-    profitElement.parentElement
-      .classList.remove(
-        "red"
-      );
-
-    profitElement.parentElement
-      .classList.add(
-        "green"
-      );
-
-  }
+  calculateProfit();
 
 }
 
@@ -1497,13 +1710,21 @@ function renderProducts(
 
         <tr>
 
-          <th>Товар</th>
+          <th>
+            Товар
+          </th>
 
-          <th>Цена</th>
+          <th>
+            Цена
+          </th>
 
-          <th>Количество</th>
+          <th>
+            Количество
+          </th>
 
-          <th>Выручка</th>
+          <th>
+            Выручка
+          </th>
 
         </tr>
 
@@ -1586,15 +1807,25 @@ function renderOrders(
 
         <tr>
 
-          <th>Заказ</th>
+          <th>
+            Заказ
+          </th>
 
-          <th>Клиент</th>
+          <th>
+            Клиент
+          </th>
 
-          <th>Сумма</th>
+          <th>
+            Сумма
+          </th>
 
-          <th>Статус</th>
+          <th>
+            Статус
+          </th>
 
-          <th>Время</th>
+          <th>
+            Время
+          </th>
 
         </tr>
 
@@ -1626,9 +1857,11 @@ function renderOrders(
               </td>
 
               <td class="status">
+
                 ${statusText(
                   order.status
                 )}
+
               </td>
 
               <td>
@@ -1683,6 +1916,7 @@ function statusText(
 
   };
 
+
   return (
     map[status] ||
     status ||
@@ -1705,6 +1939,7 @@ function formatDate(
   if (!value) {
     return "—";
   }
+
 
   return new Date(
     value
@@ -1754,6 +1989,32 @@ function escapeHTML(
     );
 
 }
+
+
+/*
+==========================================
+ENTER В ПАРОЛЕ
+==========================================
+*/
+
+document
+  .getElementById(
+    "password"
+  )
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        login();
+
+      }
+
+    }
+  );
 
 
 /*
