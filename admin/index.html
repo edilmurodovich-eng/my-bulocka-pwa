@@ -34,7 +34,6 @@
     💼 Бухгалтерия — Булочная
   </title>
 
-
   <link
     rel="icon"
     href="/admin/icon.svg"
@@ -46,18 +45,15 @@
     href="/admin/icon.svg"
   >
 
-
   <style>
 
     * {
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
       padding: 20px;
-
       background: #fff8ef;
       color: #3b2418;
 
@@ -68,33 +64,26 @@
         sans-serif;
     }
 
-
     .container {
       width: 100%;
       max-width: 1000px;
       margin: auto;
     }
 
-
     .login,
     .dashboard {
       display: none;
     }
-
 
     .login.show,
     .dashboard.show {
       display: block;
     }
 
-
     .card {
       background: white;
-
       border-radius: 22px;
-
       padding: 20px;
-
       margin-bottom: 15px;
 
       box-shadow:
@@ -102,28 +91,23 @@
         rgba(70,40,20,.08);
     }
 
-
     .login {
       max-width: 420px;
       margin: 60px auto;
     }
-
 
     h1 {
       margin-top: 0;
       font-size: 28px;
     }
 
-
     h2 {
       margin-top: 0;
       font-size: 20px;
     }
 
-
     input {
       width: 100%;
-
       padding: 14px;
 
       border:
@@ -132,10 +116,8 @@
       border-radius: 13px;
 
       font: inherit;
-
       outline: none;
     }
-
 
     input:focus {
       border-color: #d9823b;
@@ -145,72 +127,55 @@
         rgba(217,130,59,.12);
     }
 
-
     button {
       border: none;
-
       border-radius: 13px;
-
       padding: 13px 16px;
 
       background: #d9823b;
-
       color: white;
 
       font-weight: 800;
-
       font-size: 15px;
 
       cursor: pointer;
     }
 
-
     button:active {
       transform: scale(.98);
     }
-
 
     .login button {
       width: 100%;
       margin-top: 12px;
     }
 
-
     .top {
       display: flex;
-
       justify-content: space-between;
-
       align-items: center;
 
       gap: 10px;
-
       flex-wrap: wrap;
     }
-
 
     .logout {
       background: #3b2418;
     }
 
-
     .date-row {
       display: flex;
-
       gap: 10px;
 
       align-items: center;
-
       flex-wrap: wrap;
     }
-
 
     .date-row input {
       width: auto;
       flex: 1;
       min-width: 180px;
     }
-
 
     .stats {
       display: grid;
@@ -224,58 +189,43 @@
       gap: 12px;
     }
 
-
     .stat {
       padding: 18px;
-
       border-radius: 18px;
-
       background: #fff0d9;
     }
 
-
     .stat-label {
       color: #8a6c5a;
-
       font-size: 13px;
-
       font-weight: 700;
     }
 
-
     .stat-value {
       margin-top: 6px;
-
       font-size: 23px;
-
       font-weight: 900;
     }
-
 
     .green {
       background: #e4f5df;
     }
 
-
     .red {
       background: #fde3df;
     }
-
 
     .expense {
       background: #fff1df;
     }
 
-
     .salary {
       background: #eee6ff;
     }
 
-
     .profit {
       background: #dff5e5;
     }
-
 
     .expense-box {
       display: grid;
@@ -289,10 +239,8 @@
       gap: 15px;
     }
 
-
     .expense-card {
       padding: 18px;
-
       border-radius: 18px;
 
       background: #fff8ef;
@@ -301,105 +249,124 @@
         1px solid #ead9ca;
     }
 
-
     .expense-title {
       font-size: 17px;
-
       font-weight: 900;
-
       margin-bottom: 8px;
     }
 
-
     .expense-description {
       color: #8a6c5a;
-
       font-size: 13px;
-
       line-height: 1.45;
-
       margin-bottom: 12px;
     }
 
-
     .field-label {
       display: block;
-
       margin-bottom: 6px;
 
       font-size: 13px;
-
       font-weight: 800;
 
       color: #6f5140;
     }
 
-
     .expense-field {
       margin-bottom: 12px;
     }
 
-
     .money-input {
       display: flex;
-
       gap: 8px;
-
       align-items: center;
     }
-
 
     .money-input input {
       flex: 1;
       min-width: 0;
     }
 
-
     .currency {
       font-weight: 800;
-
       color: #8a6c5a;
-
       white-space: nowrap;
     }
 
-
     .save-expenses {
       margin-top: 15px;
-
       width: 100%;
     }
-
 
     .expense-status {
       margin-top: 10px;
 
       font-size: 13px;
-
       color: #51845b;
 
       min-height: 18px;
     }
 
+    .expense-history {
+      margin-top: 20px;
+    }
+
+    .expense-history-title {
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 12px 0;
+
+      border-bottom:
+        1px solid #eee2d8;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-name {
+      font-weight: 700;
+    }
+
+    .history-type {
+      color: #8a6c5a;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .history-money {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .history-empty {
+      color: #8a6c5a;
+      font-size: 13px;
+    }
 
     .table-wrap {
       overflow-x: auto;
     }
 
-
     table {
       width: 100%;
-
       border-collapse: collapse;
-
       min-width: 500px;
     }
-
 
     th,
     td {
       padding: 11px 8px;
-
       text-align: left;
 
       border-bottom:
@@ -408,25 +375,19 @@
       font-size: 13px;
     }
 
-
     th {
       color: #8a6c5a;
     }
-
 
     .status {
       font-weight: 800;
     }
 
-
     .error {
       color: #b3261e;
-
       margin-top: 10px;
-
       font-size: 13px;
     }
-
 
     @media (max-width: 600px) {
 
@@ -434,14 +395,16 @@
         padding: 12px;
       }
 
-
       h1 {
         font-size: 24px;
       }
 
-
       .expense-box {
         grid-template-columns: 1fr;
+      }
+
+      .history-item {
+        align-items: flex-start;
       }
 
     }
@@ -825,6 +788,21 @@
         class="expense-status"
       ></div>
 
+
+      <!-- ИСТОРИЯ РАСХОДОВ -->
+
+      <div class="expense-history">
+
+        <div class="expense-history-title">
+          📋 Сохранённые расходы за день
+        </div>
+
+        <div
+          id="expenseHistory"
+        ></div>
+
+      </div>
+
     </div>
 
 
@@ -926,7 +904,7 @@
 
 /*
 ==========================================
-ЛОКАЛЬНЫЕ РАСХОДЫ
+ЛОКАЛЬНОЕ ХРАНЕНИЕ РАСХОДОВ
 ==========================================
 */
 
@@ -940,6 +918,149 @@ function expenseStorageKey(date) {
     EXPENSE_STORAGE_PREFIX +
     date
   );
+
+}
+
+
+/*
+==========================================
+ПОЛУЧИТЬ ВСЕ РАСХОДЫ ЗА ДЕНЬ
+==========================================
+*/
+
+function getExpenses(date) {
+
+  if (!date) {
+    return [];
+  }
+
+
+  const saved =
+    localStorage.getItem(
+      expenseStorageKey(date)
+    );
+
+
+  if (!saved) {
+    return [];
+  }
+
+
+  try {
+
+    const parsed =
+      JSON.parse(saved);
+
+
+    /*
+    Новый формат:
+    массив записей.
+    */
+
+    if (Array.isArray(parsed)) {
+
+      return parsed;
+
+    }
+
+
+    /*
+    Совместимость со старым форматом.
+
+    Если раньше была сохранена
+    одна запись, автоматически
+    превращаем её в массив.
+    */
+
+    if (
+      parsed &&
+      typeof parsed === "object"
+    ) {
+
+      return [parsed];
+
+    }
+
+
+    return [];
+
+  } catch {
+
+    return [];
+
+  }
+
+}
+
+
+/*
+==========================================
+СОХРАНИТЬ ВСЕ РАСХОДЫ
+==========================================
+*/
+
+function setExpenses(
+  date,
+  expenses
+) {
+
+  localStorage.setItem(
+    expenseStorageKey(date),
+    JSON.stringify(expenses)
+  );
+
+}
+
+
+/*
+==========================================
+ПОЛУЧИТЬ ИТОГИ РАСХОДОВ
+==========================================
+*/
+
+function getExpenseTotals(
+  expenses
+) {
+
+  let otherExpenses = 0;
+  let salary = 0;
+
+
+  expenses.forEach(
+    item => {
+
+      otherExpenses +=
+        Math.max(
+          0,
+          Number(
+            item.otherExpenses
+          ) || 0
+        );
+
+
+      salary +=
+        Math.max(
+          0,
+          Number(
+            item.salary
+          ) || 0
+        );
+
+    }
+  );
+
+
+  return {
+
+    otherExpenses,
+
+    salary,
+
+    total:
+      otherExpenses +
+      salary
+
+  };
 
 }
 
@@ -1251,108 +1372,67 @@ function loadExpenses() {
   }
 
 
-  const saved =
-    localStorage.getItem(
-      expenseStorageKey(date)
-    );
+  const expenses =
+    getExpenses(date);
 
 
-  let expenses = {
+  /*
+  После открытия даты
+  поля ввода всегда пустые.
 
-    otherExpenseName: "",
+  Это важно:
+  сохранённые старые записи
+  не должны автоматически
+  попадать обратно в форму.
+  */
 
-    otherExpenses: 0,
-
-    salaryEmployee: "",
-
-    salary: 0
-
-  };
-
-
-  if (saved) {
-
-    try {
-
-      const parsed =
-        JSON.parse(saved);
+  clearExpenseFields();
 
 
-      expenses = {
-
-        otherExpenseName:
-          parsed.otherExpenseName ||
-          "",
-
-        otherExpenses:
-          Number(
-            parsed.otherExpenses
-          ) || 0,
-
-        salaryEmployee:
-          parsed.salaryEmployee ||
-          "",
-
-        salary:
-          Number(
-            parsed.salary
-          ) || 0
-
-      };
+  renderExpenseHistory(
+    expenses
+  );
 
 
-    } catch {
+  updateFinancialResult();
 
-      expenses = {
+}
 
-        otherExpenseName: "",
 
-        otherExpenses: 0,
+/*
+==========================================
+ОЧИСТИТЬ ПОЛЯ
+==========================================
+*/
 
-        salaryEmployee: "",
-
-        salary: 0
-
-      };
-
-    }
-
-  }
-
+function clearExpenseFields() {
 
   document
     .getElementById(
       "otherExpenseName"
     )
-    .value =
-    expenses.otherExpenseName;
+    .value = "";
 
 
   document
     .getElementById(
       "otherExpenses"
     )
-    .value =
-    expenses.otherExpenses || "";
+    .value = "";
 
 
   document
     .getElementById(
       "salaryEmployee"
     )
-    .value =
-    expenses.salaryEmployee;
+    .value = "";
 
 
   document
     .getElementById(
       "salary"
     )
-    .value =
-    expenses.salary || "";
-
-
-  updateFinancialResult();
+    .value = "";
 
 }
 
@@ -1372,7 +1452,13 @@ function saveExpenses() {
 
 
   if (!date) {
+
+    alert(
+      "Сначала выберите дату"
+    );
+
     return;
+
   }
 
 
@@ -1422,7 +1508,43 @@ function saveExpenses() {
     );
 
 
-  const data = {
+  /*
+  Проверяем, что пользователь
+  действительно что-то вводит.
+  */
+
+  if (
+    !otherExpenseName &&
+    otherExpenses === 0 &&
+    !salaryEmployee &&
+    salary === 0
+  ) {
+
+    alert(
+      "Введите расход или зарплату"
+    );
+
+    return;
+
+  }
+
+
+  /*
+  Получаем уже существующие
+  записи за этот день.
+  */
+
+  const expenses =
+    getExpenses(date);
+
+
+  /*
+  Добавляем НОВУЮ запись.
+
+  Старые записи не трогаем.
+  */
+
+  expenses.push({
 
     otherExpenseName,
 
@@ -1430,16 +1552,46 @@ function saveExpenses() {
 
     salaryEmployee,
 
-    salary
+    salary,
 
-  };
+    savedAt:
+      new Date().toISOString()
+
+  });
 
 
-  localStorage.setItem(
-    expenseStorageKey(date),
-    JSON.stringify(data)
+  /*
+  Сохраняем весь массив.
+  */
+
+  setExpenses(
+    date,
+    expenses
   );
 
+
+  /*
+  САМОЕ ВАЖНОЕ:
+
+  после сохранения очищаем
+  все поля формы.
+  */
+
+  clearExpenseFields();
+
+
+  /*
+  Обновляем историю.
+  */
+
+  renderExpenseHistory(
+    expenses
+  );
+
+
+  /*
+  Обновляем финансовый итог.
+  */
 
   updateFinancialResult();
 
@@ -1452,8 +1604,7 @@ function saveExpenses() {
 
 
   status.textContent =
-    "✅ Данные сохранены для " +
-    formatDateOnly(date);
+    "✅ Данные сохранены. Поля очищены.";
 
 
   setTimeout(
@@ -1470,11 +1621,145 @@ function saveExpenses() {
 
 /*
 ==========================================
+ИСТОРИЯ РАСХОДОВ
+==========================================
+*/
+
+function renderExpenseHistory(
+  expenses
+) {
+
+  const container =
+    document.getElementById(
+      "expenseHistory"
+    );
+
+
+  if (!expenses.length) {
+
+    container.innerHTML = `
+      <div class="history-empty">
+        За этот день расходы пока не сохранены.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    expenses
+      .map(
+        (item, index) => {
+
+          const other =
+            Number(
+              item.otherExpenses
+            ) || 0;
+
+
+          const salary =
+            Number(
+              item.salary
+            ) || 0;
+
+
+          const parts = [];
+
+
+          if (other > 0) {
+
+            parts.push(`
+              <div class="history-item">
+
+                <div>
+
+                  <div class="history-name">
+                    💸 ${escapeHTML(
+                      item.otherExpenseName ||
+                      "Прочий расход"
+                    )}
+                  </div>
+
+                  <div class="history-type">
+                    Прочие расходы
+                  </div>
+
+                </div>
+
+                <div class="history-money">
+                  ${money(other)}
+                </div>
+
+              </div>
+            `);
+
+          }
+
+
+          if (salary > 0) {
+
+            parts.push(`
+              <div class="history-item">
+
+                <div>
+
+                  <div class="history-name">
+                    👨‍🍳 ${escapeHTML(
+                      item.salaryEmployee ||
+                      "Сотрудник"
+                    )}
+                  </div>
+
+                  <div class="history-type">
+                    Зарплата
+                  </div>
+
+                </div>
+
+                <div class="history-money">
+                  ${money(salary)}
+                </div>
+
+              </div>
+            `);
+
+          }
+
+
+          return parts.join("");
+
+        }
+      )
+      .join("");
+
+}
+
+
+/*
+==========================================
 UPDATE FINANCIAL RESULT
 ==========================================
 */
 
 function updateFinancialResult() {
+
+  const date =
+    document
+      .getElementById("date")
+      .value;
+
+
+  const expenses =
+    getExpenses(date);
+
+
+  const totals =
+    getExpenseTotals(
+      expenses
+    );
+
 
   const netRevenue =
     Number(
@@ -1483,36 +1768,10 @@ function updateFinancialResult() {
     );
 
 
-  const otherExpenses =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "otherExpenses"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const salary =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "salary"
-          )
-          .value
-      ) || 0
-    );
-
-
   const profit =
     netRevenue -
-    otherExpenses -
-    salary;
+    totals.otherExpenses -
+    totals.salary;
 
 
   document
@@ -1521,7 +1780,7 @@ function updateFinancialResult() {
     )
     .textContent =
     money(
-      otherExpenses
+      totals.otherExpenses
     );
 
 
@@ -1531,7 +1790,7 @@ function updateFinancialResult() {
     )
     .textContent =
     money(
-      salary
+      totals.salary
     );
 
 
@@ -1768,11 +2027,6 @@ function getPaymentTotals(orders) {
           .trim();
 
 
-      /*
-      Отменённые заказы
-      не включаем в сумму.
-      */
-
       if (
         status === "cancelled"
       ) {
@@ -1811,7 +2065,6 @@ function getPaymentTotals(orders) {
 
       }
 
-
       else if (
         payment === "card" ||
         payment === "карта" ||
@@ -1845,15 +2098,6 @@ function getPaymentTotals(orders) {
 /*
 ==========================================
 ЗАКАЗЫ
-==========================================
-
-Здесь НЕ показываем отдельные заказы.
-
-Только:
-
-Наличными
-Картой
-Итого
 ==========================================
 */
 
@@ -2067,66 +2311,18 @@ function openReport() {
 
   /*
   ========================================
-  РАСХОДЫ
+  РАСХОДЫ ЗА ДЕНЬ
   ========================================
   */
 
-  const saved =
-    localStorage.getItem(
-      expenseStorageKey(date)
+  const expenses =
+    getExpenses(date);
+
+
+  const expenseTotals =
+    getExpenseTotals(
+      expenses
     );
-
-
-  let expenses = {
-
-    otherExpenseName: "",
-
-    otherExpenses: 0,
-
-    salaryEmployee: "",
-
-    salary: 0
-
-  };
-
-
-  if (saved) {
-
-    try {
-
-      const parsed =
-        JSON.parse(saved);
-
-
-      expenses = {
-
-        otherExpenseName:
-          parsed.otherExpenseName ||
-          "",
-
-        otherExpenses:
-          Number(
-            parsed.otherExpenses
-          ) || 0,
-
-        salaryEmployee:
-          parsed.salaryEmployee ||
-          "",
-
-        salary:
-          Number(
-            parsed.salary
-          ) || 0
-
-      };
-
-    } catch {
-
-      // Значения по умолчанию.
-
-    }
-
-  }
 
 
   /*
@@ -2139,13 +2335,13 @@ function openReport() {
     Number(
       summary.netRevenue || 0
     ) -
-    expenses.otherExpenses -
-    expenses.salary;
+    expenseTotals.otherExpenses -
+    expenseTotals.salary;
 
 
   /*
   ========================================
-  ОТКРЫВАЕМ ОТЧЁТ
+  ОКНО ОТЧЁТА
   ========================================
   */
 
@@ -2195,15 +2391,12 @@ function openReport() {
     box-sizing: border-box;
   }
 
-
   body {
 
     margin: 0;
-
     padding: 30px;
 
     background: #fff8ef;
-
     color: #3b2418;
 
     font-family:
@@ -2214,15 +2407,12 @@ function openReport() {
 
   }
 
-
   .report {
 
     max-width: 1000px;
-
     margin: auto;
 
   }
-
 
   .header {
 
@@ -2236,7 +2426,6 @@ function openReport() {
 
   }
 
-
   h1 {
 
     margin: 0 0 8px;
@@ -2244,7 +2433,6 @@ function openReport() {
     font-size: 28px;
 
   }
-
 
   h2 {
 
@@ -2254,7 +2442,6 @@ function openReport() {
 
   }
 
-
   .date {
 
     margin-top: 6px;
@@ -2262,7 +2449,6 @@ function openReport() {
     color: #8a6c5a;
 
   }
-
 
   .actions {
 
@@ -2275,7 +2461,6 @@ function openReport() {
     flex-wrap: wrap;
 
   }
-
 
   button {
 
@@ -2297,13 +2482,11 @@ function openReport() {
 
   }
 
-
   .back-button {
 
     background: #3b2418;
 
   }
-
 
   .stats {
 
@@ -2321,7 +2504,6 @@ function openReport() {
 
   }
 
-
   .stat {
 
     background: white;
@@ -2331,7 +2513,6 @@ function openReport() {
     border-radius: 18px;
 
   }
-
 
   .label {
 
@@ -2343,7 +2524,6 @@ function openReport() {
 
   }
 
-
   .value {
 
     margin-top: 6px;
@@ -2354,13 +2534,11 @@ function openReport() {
 
   }
 
-
   .expense {
 
     background: #fff1df;
 
   }
-
 
   .salary {
 
@@ -2368,13 +2546,11 @@ function openReport() {
 
   }
 
-
   .profit {
 
     background: #dff5e5;
 
   }
-
 
   .section {
 
@@ -2388,7 +2564,6 @@ function openReport() {
 
   }
 
-
   table {
 
     width: 100%;
@@ -2396,7 +2571,6 @@ function openReport() {
     border-collapse: collapse;
 
   }
-
 
   th,
   td {
@@ -2412,13 +2586,11 @@ function openReport() {
 
   }
 
-
   th {
 
     color: #8a6c5a;
 
   }
-
 
   .total-row th,
   .total-row td {
@@ -2433,13 +2605,11 @@ function openReport() {
 
   }
 
-
   .payment-total {
 
     background: #dff5e5;
 
   }
-
 
   .empty {
 
@@ -2447,6 +2617,50 @@ function openReport() {
 
   }
 
+  .history-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 10px 0;
+
+    border-bottom:
+      1px solid #eee2d8;
+
+  }
+
+  .history-item:last-child {
+
+    border-bottom: none;
+
+  }
+
+  .history-name {
+
+    font-weight: 700;
+
+  }
+
+  .history-type {
+
+    color: #8a6c5a;
+
+    font-size: 12px;
+
+    margin-top: 3px;
+
+  }
+
+  .history-money {
+
+    font-weight: 900;
+
+    white-space: nowrap;
+
+  }
 
   @media print {
 
@@ -2457,7 +2671,6 @@ function openReport() {
       background: white;
 
     }
-
 
     .actions {
 
@@ -2624,7 +2837,7 @@ function openReport() {
 
       <div class="value">
         ${money(
-          expenses.otherExpenses
+          expenseTotals.otherExpenses
         )}
       </div>
 
@@ -2639,7 +2852,7 @@ function openReport() {
 
       <div class="value">
         ${money(
-          expenses.salary
+          expenseTotals.salary
         )}
       </div>
 
@@ -2653,7 +2866,9 @@ function openReport() {
       </div>
 
       <div class="value">
-        ${money(profit)}
+        ${money(
+          profit
+        )}
       </div>
 
     </div>
@@ -2667,60 +2882,152 @@ function openReport() {
   <div class="section">
 
     <h2>
-      💰 Расходы
+      💰 Расходы за день
     </h2>
 
 
-    <table>
+    ${
+      expenses.length
 
-      <tbody>
+        ? `
 
-        <tr>
+          <table>
 
-          <th>
-            Прочий расход
-          </th>
+            <thead>
 
-          <td>
-            ${escapeHTML(
-              expenses.otherExpenseName ||
-              "—"
-            )}
-          </td>
+              <tr>
 
-          <td>
-            ${money(
-              expenses.otherExpenses
-            )}
-          </td>
+                <th>
+                  Тип
+                </th>
 
-        </tr>
+                <th>
+                  Наименование
+                </th>
+
+                <th>
+                  Сумма
+                </th>
+
+              </tr>
+
+            </thead>
 
 
-        <tr>
+            <tbody>
 
-          <th>
-            Сотрудник
-          </th>
+              ${expenses.map(
+                item => {
 
-          <td>
-            ${escapeHTML(
-              expenses.salaryEmployee ||
-              "—"
-            )}
-          </td>
+                  const other =
+                    Number(
+                      item.otherExpenses
+                    ) || 0;
 
-          <td>
-            ${money(
-              expenses.salary
-            )}
-          </td>
 
-        </tr>
+                  const salary =
+                    Number(
+                      item.salary
+                    ) || 0;
 
-      </tbody>
 
-    </table>
+                  let html = "";
+
+
+                  if (other > 0) {
+
+                    html += `
+
+                      <tr>
+
+                        <td>
+                          💸 Прочие расходы
+                        </td>
+
+                        <td>
+                          ${escapeHTML(
+                            item.otherExpenseName ||
+                            "Прочий расход"
+                          )}
+                        </td>
+
+                        <td>
+                          ${money(other)}
+                        </td>
+
+                      </tr>
+
+                    `;
+
+                  }
+
+
+                  if (salary > 0) {
+
+                    html += `
+
+                      <tr>
+
+                        <td>
+                          👨‍🍳 Зарплата
+                        </td>
+
+                        <td>
+                          ${escapeHTML(
+                            item.salaryEmployee ||
+                            "Сотрудник"
+                          )}
+                        </td>
+
+                        <td>
+                          ${money(salary)}
+                        </td>
+
+                      </tr>
+
+                    `;
+
+                  }
+
+
+                  return html;
+
+                }
+              ).join("")}
+
+            </tbody>
+
+
+            <tfoot>
+
+              <tr class="total-row">
+
+                <th colspan="2">
+                  Всего расходов
+                </th>
+
+                <td>
+                  ${money(
+                    expenseTotals.total
+                  )}
+                </td>
+
+              </tr>
+
+            </tfoot>
+
+          </table>
+
+        `
+
+        : `
+
+          <div class="empty">
+            Расходов за этот день нет.
+          </div>
+
+        `
+    }
 
   </div>
 
@@ -2818,7 +3125,7 @@ function openReport() {
   </div>
 
 
-  <!-- ЗАКАЗЫ / СПОСОБ ОПЛАТЫ -->
+  <!-- СПОСОБ ОПЛАТЫ -->
 
   <div class="section">
 
