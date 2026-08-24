@@ -1,0 +1,18 @@
+{
+  "name": "Бухгалтерия — Булочная",
+  "short_name": "Бухгалтерия",
+  "description": "Административная бухгалтерия пекарни «Булочная»",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "background_color": "#fff8ef",
+  "theme_color": "#3b2418",
+  "icons": [
+    {
+      "src": "/admin/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
