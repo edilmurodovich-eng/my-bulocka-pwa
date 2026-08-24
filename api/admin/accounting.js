@@ -39,12 +39,27 @@ export default async function handler(req, res) {
 
   try {
 
+    /*
+    ==========================================
+    ПРОВЕРКА АДМИНИСТРАТОРА
+    ==========================================
+    */
+
     if (!isAdminAuthenticated(req)) {
+
       return res.status(401).json({
         ok: false,
         error: "Unauthorized"
       });
+
     }
+
+
+    /*
+    ==========================================
+    REDIS
+    ==========================================
+    */
 
     const redisUrl =
       process.env.KV_REST_API_URL;
@@ -52,12 +67,22 @@ export default async function handler(req, res) {
     const redisToken =
       process.env.KV_REST_API_TOKEN;
 
+
     if (!redisUrl || !redisToken) {
+
       return res.status(500).json({
         ok: false,
         error: "Redis is not configured"
       });
+
     }
+
+
+    /*
+    ==========================================
+    ДАТА
+    ==========================================
+    */
 
     const requestedDate =
       String(
@@ -65,9 +90,10 @@ export default async function handler(req, res) {
         today()
       );
 
+
     /*
     ==========================================
-    ПОЛУЧАЕМ ЗАКАЗЫ
+    ПОЛУЧАЕМ СПИСОК ЗАКАЗОВ
     ==========================================
     */
 
@@ -83,12 +109,21 @@ export default async function handler(req, res) {
         ]
       );
 
+
     const orderIds =
       Array.isArray(indexResult)
         ? indexResult
         : [];
 
+
     const orders = [];
+
+
+    /*
+    ==========================================
+    ЧИТАЕМ ЗАКАЗЫ
+    ==========================================
+    */
 
     for (const orderId of orderIds) {
 
@@ -102,9 +137,11 @@ export default async function handler(req, res) {
           ]
         );
 
+
       if (!result) {
         continue;
       }
+
 
       try {
 
@@ -113,9 +150,11 @@ export default async function handler(req, res) {
             ? JSON.parse(result)
             : result;
 
+
         if (!order.createdAt) {
           continue;
         }
+
 
         const orderDate =
           new Date(
@@ -124,12 +163,16 @@ export default async function handler(req, res) {
             .toISOString()
             .slice(0, 10);
 
+
         if (
           orderDate ===
           requestedDate
         ) {
+
           orders.push(order);
+
         }
+
 
       } catch (error) {
 
@@ -151,27 +194,47 @@ export default async function handler(req, res) {
     */
 
     let grossRevenue = 0;
+
     let discounts = 0;
+
     let netRevenue = 0;
 
     let deliveredRevenue = 0;
+
     let deliveredOrders = 0;
 
     let totalOrders = 0;
+
     let cancelledOrders = 0;
 
+
+    /*
+    ==========================================
+    СТАТИСТИКА ТОВАРОВ
+    ==========================================
+    */
+
     const productStats = {};
+
 
     Object.keys(
       PRODUCT_NAMES
     ).forEach(id => {
 
       productStats[id] = {
+
         id: Number(id),
-        name: PRODUCT_NAMES[id],
-        price: PRICE_LIST[id],
+
+        name:
+          PRODUCT_NAMES[id],
+
+        price:
+          PRICE_LIST[id],
+
         quantity: 0,
+
         revenue: 0
+
       };
 
     });
@@ -187,9 +250,17 @@ export default async function handler(req, res) {
 
       totalOrders++;
 
+
       const status =
         order.status ||
         "new";
+
+
+      /*
+      ----------------------------------------
+      ОТМЕНЁННЫЙ ЗАКАЗ
+      ----------------------------------------
+      */
 
       if (
         status === "cancelled"
@@ -201,20 +272,42 @@ export default async function handler(req, res) {
 
       }
 
+
+      /*
+      ----------------------------------------
+      СУММА
+      ----------------------------------------
+      */
+
       const total =
-        Number(order.total) || 0;
+        Number(
+          order.total
+        ) || 0;
+
 
       const discount =
-        Number(order.discount) || 0;
+        Number(
+          order.discount
+        ) || 0;
+
 
       grossRevenue +=
         total + discount;
 
+
       discounts +=
         discount;
 
+
       netRevenue +=
         total;
+
+
+      /*
+      ----------------------------------------
+      ДОСТАВЛЕНО
+      ----------------------------------------
+      */
 
       if (
         status === "delivered"
@@ -228,6 +321,12 @@ export default async function handler(req, res) {
       }
 
 
+      /*
+      ----------------------------------------
+      ТОВАРЫ
+      ----------------------------------------
+      */
+
       if (
         Array.isArray(
           order.items
@@ -240,23 +339,28 @@ export default async function handler(req, res) {
             const id =
               String(item.id);
 
+
             if (
               !productStats[id]
             ) {
               return;
             }
 
+
             const quantity =
               Number(
                 item.quantity
               ) || 0;
 
+
             const price =
               PRICE_LIST[id] || 0;
+
 
             productStats[id]
               .quantity +=
               quantity;
+
 
             productStats[id]
               .revenue +=
@@ -273,13 +377,7 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    ПОЛУЧАЕМ РАСХОДЫ
-    ==========================================
-
-    ВАЖНО:
-    Это отдельный ключ.
-
-    Старые заказы НЕ изменяются.
+    РАСХОДЫ
     ==========================================
     */
 
@@ -293,10 +391,15 @@ export default async function handler(req, res) {
         ]
       );
 
+
     let expenses = {
+
       otherExpenses: 0,
+
       salary: 0
+
     };
+
 
     if (expenseResult) {
 
@@ -310,8 +413,11 @@ export default async function handler(req, res) {
       } catch {
 
         expenses = {
+
           otherExpenses: 0,
+
           salary: 0
+
         };
 
       }
@@ -327,6 +433,7 @@ export default async function handler(req, res) {
         ) || 0
       );
 
+
     const salary =
       Math.max(
         0,
@@ -338,13 +445,14 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    ЧИСТАЯ ПРИБЫЛЬ
+    ПРИБЫЛЬ
     ==========================================
     */
 
     const totalExpenses =
       otherExpenses +
       salary;
+
 
     const netProfit =
       netRevenue -
@@ -368,56 +476,37 @@ export default async function handler(req, res) {
 
     /*
     ==========================================
-    ОТВЕТ
+    ЗАКАЗЫ ДЛЯ ОТЧЁТА
+    ==========================================
+    
+    ВАЖНО:
+    Теперь передаём paymentMethod.
+    
+    Проверяются сразу несколько вариантов:
+    
+    paymentMethod
+    paymentType
+    payment
+    method
+    
+    Это сделано для совместимости
+    со старой структурой заказа.
     ==========================================
     */
 
-    return res.status(200).json({
+    const accountingOrders =
+      orders.map(
+        order => {
 
-      ok: true,
+          const paymentMethod =
+            order.paymentMethod ||
+            order.paymentType ||
+            order.payment ||
+            order.method ||
+            "Не указан";
 
-      date:
-        requestedDate,
 
-      summary: {
-
-        totalOrders,
-
-        cancelledOrders,
-
-        grossRevenue,
-
-        discounts,
-
-        netRevenue,
-
-        deliveredOrders,
-
-        deliveredRevenue,
-
-        otherExpenses,
-
-        salary,
-
-        totalExpenses,
-
-        netProfit
-
-      },
-
-      expenses: {
-
-        otherExpenses,
-
-        salary
-
-      },
-
-      products,
-
-      orders:
-        orders.map(
-          order => ({
+          return {
 
             orderId:
               order.orderId,
@@ -445,11 +534,72 @@ export default async function handler(req, res) {
             createdAt:
               order.createdAt,
 
+            paymentMethod,
+
             items:
               order.items || []
 
-          })
-        )
+          };
+
+        }
+      );
+
+
+    /*
+    ==========================================
+    ОТВЕТ
+    ==========================================
+    */
+
+    return res.status(200).json({
+
+      ok: true,
+
+      date:
+        requestedDate,
+
+
+      summary: {
+
+        totalOrders,
+
+        cancelledOrders,
+
+        grossRevenue,
+
+        discounts,
+
+        netRevenue,
+
+        deliveredOrders,
+
+        deliveredRevenue,
+
+        otherExpenses,
+
+        salary,
+
+        totalExpenses,
+
+        netProfit
+
+      },
+
+
+      expenses: {
+
+        otherExpenses,
+
+        salary
+
+      },
+
+
+      products,
+
+
+      orders:
+        accountingOrders
 
     });
 
@@ -460,9 +610,14 @@ export default async function handler(req, res) {
       error
     );
 
+
     return res.status(500).json({
+
       ok: false,
-      error: "Accounting error"
+
+      error:
+        "Accounting error"
+
     });
 
   }
@@ -481,26 +636,32 @@ function isAdminAuthenticated(req) {
   const secret =
     process.env.ADMIN_SESSION_SECRET;
 
+
   if (!secret) {
     return false;
   }
 
+
   const cookieHeader =
     req.headers.cookie || "";
+
 
   const cookies =
     parseCookies(
       cookieHeader
     );
 
+
   const session =
     cookies[
       COOKIE_NAME
     ];
 
+
   if (!session) {
     return false;
   }
+
 
   try {
 
@@ -512,8 +673,10 @@ function isAdminAuthenticated(req) {
         )
         .toString();
 
+
     const parts =
       decoded.split(":");
+
 
     if (
       parts.length !== 3
@@ -521,14 +684,18 @@ function isAdminAuthenticated(req) {
       return false;
     }
 
+
     const role =
       parts[0];
+
 
     const expiresAt =
       Number(parts[1]);
 
+
     const signature =
       parts[2];
+
 
     if (
       role !== "admin" ||
@@ -536,11 +703,15 @@ function isAdminAuthenticated(req) {
       Date.now() >
         expiresAt
     ) {
+
       return false;
+
     }
+
 
     const payload =
       `${role}:${expiresAt}`;
+
 
     const expected =
       crypto
@@ -551,18 +722,24 @@ function isAdminAuthenticated(req) {
         .update(payload)
         .digest("hex");
 
+
     const a =
       Buffer.from(signature);
 
+
     const b =
       Buffer.from(expected);
+
 
     if (
       a.length !==
       b.length
     ) {
+
       return false;
+
     }
+
 
     return crypto.timingSafeEqual(
       a,
@@ -605,6 +782,7 @@ function parseCookies(
 
   const result = {};
 
+
   header
     .split(";")
     .forEach(part => {
@@ -612,24 +790,29 @@ function parseCookies(
       const index =
         part.indexOf("=");
 
+
       if (index === -1) {
         return;
       }
+
 
       const key =
         part
           .slice(0, index)
           .trim();
 
+
       const value =
         part
           .slice(index + 1)
           .trim();
 
+
       result[key] =
         value;
 
     });
+
 
   return result;
 
@@ -673,8 +856,10 @@ async function redisCommand(
       }
     );
 
+
   const data =
     await response.json();
+
 
   if (!response.ok) {
 
@@ -683,11 +868,13 @@ async function redisCommand(
       data
     );
 
+
     throw new Error(
       "Redis request failed"
     );
 
   }
+
 
   return data.result;
 
