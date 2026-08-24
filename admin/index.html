@@ -99,6 +99,10 @@
       outline: none;
     }
 
+    input:focus {
+      border-color: #d9823b;
+    }
+
     button {
       border: none;
 
@@ -196,6 +200,60 @@
 
     .red {
       background: #fde3df;
+    }
+
+    .expense-card {
+      background: #fffaf5;
+    }
+
+    .expense-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(220px, 1fr)
+        );
+
+      gap: 14px;
+    }
+
+    .expense-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .expense-field label {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .expense-field input {
+      background: white;
+    }
+
+    .save-expenses {
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .expense-message {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .expense-message.success {
+      color: #287a24;
+    }
+
+    .expense-message.error {
+      color: #b3261e;
+    }
+
+    .profit {
+      background: #e4f5df;
     }
 
     .table-wrap {
@@ -465,6 +523,152 @@
     </div>
 
 
+    <!-- EXPENSES -->
+
+    <div class="card expense-card">
+
+      <h2>
+        💸 Расходы и зарплата
+      </h2>
+
+      <p>
+        Укажите расходы за выбранную дату.
+      </p>
+
+      <div class="expense-grid">
+
+        <div class="expense-field">
+
+          <label for="otherExpenses">
+            💸 Прочие расходы
+          </label>
+
+          <input
+            id="otherExpenses"
+            type="number"
+            min="0"
+            step="100"
+            placeholder="0"
+            inputmode="numeric"
+          >
+
+        </div>
+
+
+        <div class="expense-field">
+
+          <label for="salary">
+            👷 Зарплата
+          </label>
+
+          <input
+            id="salary"
+            type="number"
+            min="0"
+            step="100"
+            placeholder="0"
+            inputmode="numeric"
+          >
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="save-expenses"
+        onclick="saveExpenses()"
+      >
+        💾 Сохранить расходы
+      </button>
+
+
+      <div
+        id="expenseMessage"
+        class="expense-message"
+      ></div>
+
+    </div>
+
+
+    <!-- PROFIT -->
+
+    <div class="card profit">
+
+      <h2>
+        💰 Финансовый результат
+      </h2>
+
+      <div class="stats">
+
+        <div class="stat">
+
+          <div class="stat-label">
+            Чистая выручка
+          </div>
+
+          <div
+            id="profitRevenue"
+            class="stat-value"
+          >
+            0 so'm
+          </div>
+
+        </div>
+
+
+        <div class="stat red">
+
+          <div class="stat-label">
+            Прочие расходы
+          </div>
+
+          <div
+            id="profitExpenses"
+            class="stat-value"
+          >
+            0 so'm
+          </div>
+
+        </div>
+
+
+        <div class="stat red">
+
+          <div class="stat-label">
+            Зарплата
+          </div>
+
+          <div
+            id="profitSalary"
+            class="stat-value"
+          >
+            0 so'm
+          </div>
+
+        </div>
+
+
+        <div class="stat green">
+
+          <div class="stat-label">
+            Чистая прибыль
+          </div>
+
+          <div
+            id="netProfit"
+            class="stat-value"
+          >
+            0 so'm
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
     <!-- PRODUCTS -->
 
     <div class="card">
@@ -504,6 +708,13 @@
 <script>
 
 "use strict";
+
+
+let currentAccounting = null;
+let currentExpenses = {
+  otherExpenses: 0,
+  salary: 0
+};
 
 
 /*
@@ -568,6 +779,8 @@ async function login() {
 
     showDashboard();
 
+    await loadAccounting();
+
   } catch (error) {
 
     error.textContent =
@@ -611,6 +824,10 @@ async function checkAuth() {
 
       renderAccounting(
         data
+      );
+
+      await loadExpenses(
+        today()
       );
 
     } else {
@@ -762,11 +979,280 @@ async function loadAccounting() {
       data
     );
 
+    await loadExpenses(
+      date
+    );
+
   } catch (error) {
 
     alert(
       error.message
     );
+
+  }
+
+}
+
+
+/*
+==========================================
+LOAD EXPENSES
+==========================================
+*/
+
+async function loadExpenses(
+  date
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/expenses?date=" +
+        encodeURIComponent(
+          date
+        ),
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (
+      response.status === 401
+    ) {
+
+      showLogin();
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Ошибка загрузки расходов"
+      );
+
+    }
+
+
+    currentExpenses = {
+
+      otherExpenses:
+        Number(
+          data.otherExpenses
+        ) || 0,
+
+      salary:
+        Number(
+          data.salary
+        ) || 0
+
+    };
+
+
+    document
+      .getElementById(
+        "otherExpenses"
+      )
+      .value =
+      currentExpenses.otherExpenses ||
+      "";
+
+    document
+      .getElementById(
+        "salary"
+      )
+      .value =
+      currentExpenses.salary ||
+      "";
+
+
+    renderProfit();
+
+  } catch (error) {
+
+    console.error(
+      "EXPENSE LOAD ERROR:",
+      error
+    );
+
+  }
+
+}
+
+
+/*
+==========================================
+SAVE EXPENSES
+==========================================
+*/
+
+async function saveExpenses() {
+
+  const date =
+    document
+      .getElementById(
+        "date"
+      )
+      .value;
+
+
+  if (!date) {
+
+    alert(
+      "Выберите дату."
+    );
+
+    return;
+
+  }
+
+
+  const otherExpenses =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "otherExpenses"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const salary =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "salary"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const message =
+    document
+      .getElementById(
+        "expenseMessage"
+      );
+
+
+  message.className =
+    "expense-message";
+
+  message.textContent =
+    "Сохраняем...";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin/expenses",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              date,
+
+              otherExpenses,
+
+              salary
+
+            })
+
+          }
+        }
+      );
+
+
+    if (
+      response.status === 401
+    ) {
+
+      showLogin();
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Ошибка сохранения"
+      );
+
+    }
+
+
+    currentExpenses = {
+
+      otherExpenses:
+        data.otherExpenses,
+
+      salary:
+        data.salary
+
+    };
+
+
+    renderProfit();
+
+
+    message.className =
+      "expense-message success";
+
+    message.textContent =
+      "✅ Сохранено";
+
+
+    setTimeout(
+      () => {
+        message.textContent = "";
+      },
+      2500
+    );
+
+
+  } catch (error) {
+
+    message.className =
+      "expense-message error";
+
+    message.textContent =
+      "❌ " +
+      error.message;
 
   }
 
@@ -797,6 +1283,10 @@ RENDER
 function renderAccounting(
   data
 ) {
+
+  currentAccounting =
+    data;
+
 
   const summary =
     data.summary || {};
@@ -867,6 +1357,109 @@ function renderAccounting(
     data.orders || []
   );
 
+
+  renderProfit();
+
+}
+
+
+/*
+==========================================
+RENDER PROFIT
+==========================================
+*/
+
+function renderProfit() {
+
+  const revenue =
+    Number(
+      currentAccounting
+        ?.summary
+        ?.netRevenue
+    ) || 0;
+
+
+  const expenses =
+    Number(
+      currentExpenses
+        .otherExpenses
+    ) || 0;
+
+
+  const salary =
+    Number(
+      currentExpenses
+        .salary
+    ) || 0;
+
+
+  const profit =
+    revenue -
+    expenses -
+    salary;
+
+
+  document
+    .getElementById(
+      "profitRevenue"
+    )
+    .textContent =
+    money(revenue);
+
+
+  document
+    .getElementById(
+      "profitExpenses"
+    )
+    .textContent =
+    money(expenses);
+
+
+  document
+    .getElementById(
+      "profitSalary"
+    )
+    .textContent =
+    money(salary);
+
+
+  const profitElement =
+    document
+      .getElementById(
+        "netProfit"
+      );
+
+
+  profitElement.textContent =
+    money(profit);
+
+
+  if (profit < 0) {
+
+    profitElement.parentElement
+      .classList.remove(
+        "green"
+      );
+
+    profitElement.parentElement
+      .classList.add(
+        "red"
+      );
+
+  } else {
+
+    profitElement.parentElement
+      .classList.remove(
+        "red"
+      );
+
+    profitElement.parentElement
+      .classList.add(
+        "green"
+      );
+
+  }
+
 }
 
 
@@ -904,21 +1497,13 @@ function renderProducts(
 
         <tr>
 
-          <th>
-            Товар
-          </th>
+          <th>Товар</th>
 
-          <th>
-            Цена
-          </th>
+          <th>Цена</th>
 
-          <th>
-            Количество
-          </th>
+          <th>Количество</th>
 
-          <th>
-            Выручка
-          </th>
+          <th>Выручка</th>
 
         </tr>
 
@@ -1001,25 +1586,15 @@ function renderOrders(
 
         <tr>
 
-          <th>
-            Заказ
-          </th>
+          <th>Заказ</th>
 
-          <th>
-            Клиент
-          </th>
+          <th>Клиент</th>
 
-          <th>
-            Сумма
-          </th>
+          <th>Сумма</th>
 
-          <th>
-            Статус
-          </th>
+          <th>Статус</th>
 
-          <th>
-            Время
-          </th>
+          <th>Время</th>
 
         </tr>
 
@@ -1051,11 +1626,9 @@ function renderOrders(
               </td>
 
               <td class="status">
-
                 ${statusText(
                   order.status
                 )}
-
               </td>
 
               <td>
