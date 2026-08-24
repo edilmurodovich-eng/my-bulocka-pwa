@@ -35,11 +35,7 @@
   </title>
 
 
-  <!--
-  ==========================================
-  ИКОНКА БУХГАЛТЕРИИ
-  ==========================================
-  -->
+  <!-- ИКОНКА БУХГАЛТЕРИИ -->
 
   <link
     rel="icon"
@@ -59,15 +55,11 @@
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
-
       padding: 20px;
 
       background: #fff8ef;
-
       color: #3b2418;
 
       font-family:
@@ -75,39 +67,25 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
     }
-
 
     .container {
-
       width: 100%;
-
       max-width: 1000px;
-
       margin: auto;
-
     }
-
 
     .login,
     .dashboard {
-
       display: none;
-
     }
-
 
     .login.show,
     .dashboard.show {
-
       display: block;
-
     }
 
-
     .card {
-
       background: white;
 
       border-radius: 22px;
@@ -119,39 +97,24 @@
       box-shadow:
         0 5px 20px
         rgba(70,40,20,.08);
-
     }
-
 
     .login {
-
       max-width: 420px;
-
       margin: 60px auto;
-
     }
-
 
     h1 {
-
       margin-top: 0;
-
       font-size: 28px;
-
     }
-
 
     h2 {
-
       margin-top: 0;
-
       font-size: 20px;
-
     }
 
-
     input {
-
       width: 100%;
 
       padding: 14px;
@@ -164,23 +127,17 @@
       font: inherit;
 
       outline: none;
-
     }
 
-
     input:focus {
-
       border-color: #d9823b;
 
       box-shadow:
         0 0 0 3px
         rgba(217,130,59,.12);
-
     }
 
-
     button {
-
       border: none;
 
       border-radius: 13px;
@@ -196,28 +153,18 @@
       font-size: 15px;
 
       cursor: pointer;
-
     }
-
 
     button:active {
-
       transform: scale(.98);
-
     }
-
 
     .login button {
-
       width: 100%;
-
       margin-top: 12px;
-
     }
 
-
     .top {
-
       display: flex;
 
       justify-content: space-between;
@@ -227,19 +174,13 @@
       gap: 10px;
 
       flex-wrap: wrap;
-
     }
-
 
     .logout {
-
       background: #3b2418;
-
     }
 
-
     .date-row {
-
       display: flex;
 
       gap: 10px;
@@ -247,23 +188,15 @@
       align-items: center;
 
       flex-wrap: wrap;
-
     }
-
 
     .date-row input {
-
       width: auto;
-
       flex: 1;
-
       min-width: 180px;
-
     }
 
-
     .stats {
-
       display: grid;
 
       grid-template-columns:
@@ -273,80 +206,53 @@
         );
 
       gap: 12px;
-
     }
 
-
     .stat {
-
       padding: 18px;
 
       border-radius: 18px;
 
       background: #fff0d9;
-
     }
 
-
     .stat-label {
-
       color: #8a6c5a;
 
       font-size: 13px;
 
       font-weight: 700;
-
     }
 
-
     .stat-value {
-
       margin-top: 6px;
 
       font-size: 23px;
 
       font-weight: 900;
-
     }
-
 
     .green {
-
       background: #e4f5df;
-
     }
-
 
     .red {
-
       background: #fde3df;
-
     }
-
 
     .expense {
-
       background: #fff1df;
-
     }
-
 
     .salary {
-
       background: #eee6ff;
-
     }
-
 
     .profit {
-
       background: #dff5e5;
-
     }
 
-
     .expense-box {
-
       display: grid;
 
       grid-template-columns:
@@ -356,12 +262,9 @@
         );
 
       gap: 15px;
-
     }
 
-
     .expense-card {
-
       padding: 18px;
 
       border-radius: 18px;
@@ -370,23 +273,17 @@
 
       border:
         1px solid #ead9ca;
-
     }
 
-
     .expense-title {
-
       font-size: 17px;
 
       font-weight: 900;
 
       margin-bottom: 8px;
-
     }
 
-
     .expense-description {
-
       color: #8a6c5a;
 
       font-size: 13px;
@@ -394,52 +291,52 @@
       line-height: 1.45;
 
       margin-bottom: 12px;
-
     }
 
+    .field-label {
+      display: block;
+
+      margin-bottom: 6px;
+
+      font-size: 13px;
+
+      font-weight: 800;
+
+      color: #6f5140;
+    }
+
+    .expense-field {
+      margin-bottom: 12px;
+    }
 
     .money-input {
-
       display: flex;
 
       gap: 8px;
 
       align-items: center;
-
     }
-
 
     .money-input input {
-
       flex: 1;
-
       min-width: 0;
-
     }
 
-
     .currency {
-
       font-weight: 800;
 
       color: #8a6c5a;
 
       white-space: nowrap;
-
     }
 
-
     .save-expenses {
-
       margin-top: 15px;
 
       width: 100%;
-
     }
 
-
     .expense-status {
-
       margin-top: 10px;
 
       font-size: 13px;
@@ -447,31 +344,22 @@
       color: #51845b;
 
       min-height: 18px;
-
     }
-
 
     .table-wrap {
-
       overflow-x: auto;
-
     }
 
-
     table {
-
       width: 100%;
 
       border-collapse: collapse;
 
       min-width: 600px;
-
     }
-
 
     th,
     td {
-
       padding: 11px 8px;
 
       text-align: left;
@@ -480,55 +368,36 @@
         1px solid #eee2d8;
 
       font-size: 13px;
-
     }
-
 
     th {
-
       color: #8a6c5a;
-
     }
-
 
     .status {
-
       font-weight: 800;
-
     }
 
-
     .error {
-
       color: #b3261e;
 
       margin-top: 10px;
 
       font-size: 13px;
-
     }
-
 
     @media (max-width: 600px) {
 
       body {
-
         padding: 12px;
-
       }
-
 
       h1 {
-
         font-size: 24px;
-
       }
 
-
       .expense-box {
-
         grid-template-columns: 1fr;
-
       }
 
     }
@@ -544,11 +413,7 @@
 <div class="container">
 
 
-  <!--
-  ==========================================
-  LOGIN
-  ==========================================
-  -->
+  <!-- LOGIN -->
 
   <div
     id="login"
@@ -563,7 +428,6 @@
       «Булочная» — Вкус детства
     </p>
 
-
     <input
       id="password"
       type="password"
@@ -571,13 +435,11 @@
       autocomplete="current-password"
     >
 
-
     <button
       onclick="login()"
     >
       Войти
     </button>
-
 
     <div
       id="loginError"
@@ -587,12 +449,7 @@
   </div>
 
 
-
-  <!--
-  ==========================================
-  DASHBOARD
-  ==========================================
-  -->
+  <!-- DASHBOARD -->
 
   <div
     id="dashboard"
@@ -618,7 +475,6 @@
 
         </div>
 
-
         <button
           class="logout"
           onclick="logout()"
@@ -631,7 +487,6 @@
     </div>
 
 
-
     <!-- DATE -->
 
     <div class="card">
@@ -640,7 +495,6 @@
         📅 Период
       </h2>
 
-
       <div class="date-row">
 
         <input
@@ -648,7 +502,6 @@
           type="date"
           onchange="loadAccounting()"
         >
-
 
         <button
           onclick="loadAccounting()"
@@ -661,15 +514,9 @@
     </div>
 
 
-
-    <!--
-    ==========================================
-    ОСНОВНАЯ СТАТИСТИКА
-    ==========================================
-    -->
+    <!-- ОСНОВНАЯ СТАТИСТИКА -->
 
     <div class="stats">
-
 
       <div class="stat">
 
@@ -685,7 +532,6 @@
         </div>
 
       </div>
-
 
 
       <div class="stat">
@@ -704,7 +550,6 @@
       </div>
 
 
-
       <div class="stat">
 
         <div class="stat-label">
@@ -719,7 +564,6 @@
         </div>
 
       </div>
-
 
 
       <div class="stat green">
@@ -738,7 +582,6 @@
       </div>
 
 
-
       <div class="stat green">
 
         <div class="stat-label">
@@ -753,7 +596,6 @@
         </div>
 
       </div>
-
 
 
       <div class="stat red">
@@ -774,12 +616,7 @@
     </div>
 
 
-
-    <!--
-    ==========================================
-    РАСХОДЫ
-    ==========================================
-    -->
+    <!-- РАСХОДЫ -->
 
     <div class="card">
 
@@ -799,36 +636,66 @@
             💸 Прочие расходы
           </div>
 
-
           <div class="expense-description">
 
-            Аренда, коммунальные услуги,
-            упаковка, доставка, ремонт,
-            закупка мелочей и другие
-            расходы булочной.
+            Здесь указываем,
+            на что именно были потрачены деньги.
 
           </div>
 
 
-          <div class="money-input">
+          <!-- НОВОЕ: НАИМЕНОВАНИЕ -->
+
+          <div class="expense-field">
+
+            <label
+              class="field-label"
+              for="otherExpenseName"
+            >
+              Наименование расхода
+            </label>
 
             <input
-              id="otherExpenses"
-              type="number"
-              min="0"
-              step="1000"
-              inputmode="numeric"
-              placeholder="Введите сумму"
+              id="otherExpenseName"
+              type="text"
+              maxlength="200"
+              placeholder="Например: упаковка"
             >
 
-            <span class="currency">
-              so'm
-            </span>
+          </div>
+
+
+          <!-- СУММА -->
+
+          <div class="expense-field">
+
+            <label
+              class="field-label"
+              for="otherExpenses"
+            >
+              Сумма
+            </label>
+
+            <div class="money-input">
+
+              <input
+                id="otherExpenses"
+                type="number"
+                min="0"
+                step="1000"
+                inputmode="numeric"
+                placeholder="Введите сумму"
+              >
+
+              <span class="currency">
+                so'm
+              </span>
+
+            </div>
 
           </div>
 
         </div>
-
 
 
         <!-- ЗАРПЛАТА -->
@@ -839,30 +706,62 @@
             👨‍🍳 Зарплата
           </div>
 
-
           <div class="expense-description">
 
-            Зарплата сотрудников:
-            пекарей, продавцов,
-            курьеров и других работников.
+            Указываем ФИО сотрудника
+            и сумму его зарплаты.
 
           </div>
 
 
-          <div class="money-input">
+          <!-- НОВОЕ: ФИО -->
+
+          <div class="expense-field">
+
+            <label
+              class="field-label"
+              for="salaryEmployee"
+            >
+              ФИО сотрудника
+            </label>
 
             <input
-              id="salary"
-              type="number"
-              min="0"
-              step="1000"
-              inputmode="numeric"
-              placeholder="Введите сумму"
+              id="salaryEmployee"
+              type="text"
+              maxlength="200"
+              placeholder="Например: Иванов Иван Иванович"
             >
 
-            <span class="currency">
-              so'm
-            </span>
+          </div>
+
+
+          <!-- СУММА -->
+
+          <div class="expense-field">
+
+            <label
+              class="field-label"
+              for="salary"
+            >
+              Сумма
+            </label>
+
+            <div class="money-input">
+
+              <input
+                id="salary"
+                type="number"
+                min="0"
+                step="1000"
+                inputmode="numeric"
+                placeholder="Введите сумму"
+              >
+
+              <span class="currency">
+                so'm
+              </span>
+
+            </div>
 
           </div>
 
@@ -887,15 +786,9 @@
     </div>
 
 
-
-    <!--
-    ==========================================
-    ФИНАНСОВЫЙ ИТОГ
-    ==========================================
-    -->
+    <!-- ФИНАНСОВЫЙ ИТОГ -->
 
     <div class="stats">
-
 
       <div class="stat expense">
 
@@ -913,7 +806,6 @@
       </div>
 
 
-
       <div class="stat salary">
 
         <div class="stat-label">
@@ -928,7 +820,6 @@
         </div>
 
       </div>
-
 
 
       <div class="stat profit">
@@ -949,19 +840,13 @@
     </div>
 
 
-
-    <!--
-    ==========================================
-    ТОВАРЫ
-    ==========================================
-    -->
+    <!-- ТОВАРЫ -->
 
     <div class="card">
 
       <h2>
         🥐 Продажи товаров
       </h2>
-
 
       <div
         id="products"
@@ -971,19 +856,13 @@
     </div>
 
 
-
-    <!--
-    ==========================================
-    ЗАКАЗЫ
-    ==========================================
-    -->
+    <!-- ЗАКАЗЫ -->
 
     <div class="card">
 
       <h2>
         📦 Заказы
       </h2>
-
 
       <div
         id="orders"
@@ -996,7 +875,6 @@
   </div>
 
 </div>
-
 
 
 <script>
@@ -1014,9 +892,7 @@ const EXPENSE_STORAGE_PREFIX =
   "bulocka_accounting_expenses_";
 
 
-function expenseStorageKey(
-  date
-) {
+function expenseStorageKey(date) {
 
   return (
     EXPENSE_STORAGE_PREFIX +
@@ -1036,18 +912,12 @@ async function login() {
 
   const password =
     document
-      .getElementById(
-        "password"
-      )
+      .getElementById("password")
       .value;
-
 
   const error =
     document
-      .getElementById(
-        "loginError"
-      );
-
+      .getElementById("loginError");
 
   error.textContent = "";
 
@@ -1097,7 +967,9 @@ async function login() {
 
   } catch (error) {
 
-    error.textContent =
+    document
+      .getElementById("loginError")
+      .textContent =
       error.message;
 
   }
@@ -1127,31 +999,22 @@ async function checkAuth() {
       );
 
 
-    if (
-      response.ok
-    ) {
+    if (response.ok) {
 
       showDashboard();
-
 
       const data =
         await response.json();
 
-
-      renderAccounting(
-        data
-      );
-
+      renderAccounting(data);
 
       loadExpenses();
-
 
     } else {
 
       showLogin();
 
     }
-
 
   } catch {
 
@@ -1174,7 +1037,6 @@ function showLogin() {
     .getElementById("login")
     .classList.add("show");
 
-
   document
     .getElementById("dashboard")
     .classList.remove("show");
@@ -1187,7 +1049,6 @@ function showDashboard() {
   document
     .getElementById("login")
     .classList.remove("show");
-
 
   document
     .getElementById("dashboard")
@@ -1210,7 +1071,6 @@ async function logout() {
       method: "POST"
     }
   );
-
 
   showLogin();
 
@@ -1242,16 +1102,12 @@ async function loadAccounting() {
 
   const date =
     document
-      .getElementById(
-        "date"
-      )
+      .getElementById("date")
       .value;
 
 
   if (!date) {
-
     return;
-
   }
 
 
@@ -1260,9 +1116,7 @@ async function loadAccounting() {
     const response =
       await fetch(
         "/api/admin/accounting?date=" +
-        encodeURIComponent(
-          date
-        ),
+        encodeURIComponent(date),
         {
           cache: "no-store"
         }
@@ -1297,10 +1151,7 @@ async function loadAccounting() {
     }
 
 
-    renderAccounting(
-      data
-    );
-
+    renderAccounting(data);
 
     loadExpenses();
 
@@ -1322,16 +1173,10 @@ FORMAT MONEY
 ==========================================
 */
 
-function money(
-  value
-) {
+function money(value) {
 
-  return Number(
-    value || 0
-  )
-    .toLocaleString(
-      "ru-RU"
-    ) +
+  return Number(value || 0)
+    .toLocaleString("ru-RU") +
     " so'm";
 
 }
@@ -1347,30 +1192,47 @@ function loadExpenses() {
 
   const date =
     document
-      .getElementById(
-        "date"
-      )
+      .getElementById("date")
       .value;
 
 
   if (!date) {
-
     return;
-
   }
 
 
   const saved =
     localStorage.getItem(
-      expenseStorageKey(
-        date
-      )
+      expenseStorageKey(date)
     );
+
+
+  /*
+  Старый формат данных поддерживается:
+
+  {
+    otherExpenses: 10000,
+    salary: 50000
+  }
+
+  Новый формат:
+
+  {
+    otherExpenseName: "Упаковка",
+    otherExpenses: 10000,
+    salaryEmployee: "Иванов Иван Иванович",
+    salary: 50000
+  }
+  */
 
 
   let expenses = {
 
+    otherExpenseName: "",
+
     otherExpenses: 0,
+
+    salaryEmployee: "",
 
     salary: 0
 
@@ -1381,16 +1243,42 @@ function loadExpenses() {
 
     try {
 
-      expenses =
-        JSON.parse(
-          saved
-        );
+      const parsed =
+        JSON.parse(saved);
+
+
+      expenses = {
+
+        otherExpenseName:
+          parsed.otherExpenseName ||
+          "",
+
+        otherExpenses:
+          Number(
+            parsed.otherExpenses
+          ) || 0,
+
+        salaryEmployee:
+          parsed.salaryEmployee ||
+          "",
+
+        salary:
+          Number(
+            parsed.salary
+          ) || 0
+
+      };
+
 
     } catch {
 
       expenses = {
 
+        otherExpenseName: "",
+
         otherExpenses: 0,
+
+        salaryEmployee: "",
 
         salary: 0
 
@@ -1403,10 +1291,26 @@ function loadExpenses() {
 
   document
     .getElementById(
+      "otherExpenseName"
+    )
+    .value =
+    expenses.otherExpenseName;
+
+
+  document
+    .getElementById(
       "otherExpenses"
     )
     .value =
     expenses.otherExpenses || "";
+
+
+  document
+    .getElementById(
+      "salaryEmployee"
+    )
+    .value =
+    expenses.salaryEmployee;
 
 
   document
@@ -1432,17 +1336,23 @@ function saveExpenses() {
 
   const date =
     document
-      .getElementById(
-        "date"
-      )
+      .getElementById("date")
       .value;
 
 
   if (!date) {
-
     return;
-
   }
+
+
+  const otherExpenseName =
+    document
+      .getElementById(
+        "otherExpenseName"
+      )
+      .value
+      .trim()
+      .slice(0, 200);
 
 
   const otherExpenses =
@@ -1456,6 +1366,16 @@ function saveExpenses() {
           .value
       ) || 0
     );
+
+
+  const salaryEmployee =
+    document
+      .getElementById(
+        "salaryEmployee"
+      )
+      .value
+      .trim()
+      .slice(0, 200);
 
 
   const salary =
@@ -1473,20 +1393,25 @@ function saveExpenses() {
 
   const data = {
 
+    otherExpenseName,
+
     otherExpenses,
+
+    salaryEmployee,
 
     salary
 
   };
 
 
+  /*
+  Сохраняем в тот же localStorage,
+  поэтому старые данные не удаляются.
+  */
+
   localStorage.setItem(
-    expenseStorageKey(
-      date
-    ),
-    JSON.stringify(
-      data
-    )
+    expenseStorageKey(date),
+    JSON.stringify(data)
   );
 
 
@@ -1501,7 +1426,7 @@ function saveExpenses() {
 
 
   status.textContent =
-    "✅ Расходы сохранены для " +
+    "✅ Данные сохранены для " +
     formatDateOnly(date);
 
 
@@ -1602,9 +1527,7 @@ RENDER ACCOUNTING
 ==========================================
 */
 
-function renderAccounting(
-  data
-) {
+function renderAccounting(data) {
 
   const summary =
     data.summary || {};
@@ -1693,9 +1616,7 @@ PRODUCT TABLE
 ==========================================
 */
 
-function renderProducts(
-  products
-) {
+function renderProducts(products) {
 
   const container =
     document.getElementById(
@@ -1740,7 +1661,6 @@ function renderProducts(
         </tr>
 
       </thead>
-
 
       <tbody>
 
@@ -1791,9 +1711,7 @@ ORDERS TABLE
 ==========================================
 */
 
-function renderOrders(
-  orders
-) {
+function renderOrders(orders) {
 
   const container =
     document.getElementById(
@@ -1842,7 +1760,6 @@ function renderOrders(
         </tr>
 
       </thead>
-
 
       <tbody>
 
@@ -1903,9 +1820,7 @@ STATUS
 ==========================================
 */
 
-function statusText(
-  status
-) {
+function statusText(status) {
 
   const map = {
 
@@ -1945,26 +1860,21 @@ DATE FORMAT
 ==========================================
 */
 
-function formatDate(
-  value
-) {
+function formatDate(value) {
 
   if (!value) {
-
     return "—";
-
   }
 
 
-  return new Date(
-    value
-  ).toLocaleTimeString(
-    "ru-RU",
-    {
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  );
+  return new Date(value)
+    .toLocaleTimeString(
+      "ru-RU",
+      {
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
 
 }
 
@@ -1975,22 +1885,19 @@ DATE ONLY
 ==========================================
 */
 
-function formatDateOnly(
-  value
-) {
+function formatDateOnly(value) {
 
   if (!value) {
-
     return "";
-
   }
 
 
   return new Date(
     value + "T00:00:00"
-  ).toLocaleDateString(
-    "ru-RU"
-  );
+  )
+    .toLocaleDateString(
+      "ru-RU"
+    );
 
 }
 
@@ -2001,9 +1908,7 @@ HTML SECURITY
 ==========================================
 */
 
-function escapeHTML(
-  value
-) {
+function escapeHTML(value) {
 
   return String(
     value ?? ""
