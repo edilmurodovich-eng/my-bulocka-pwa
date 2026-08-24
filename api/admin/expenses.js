@@ -10,40 +10,19 @@ export default async function handler(
 ) {
 
   /*
-  ========================================
-  AUTH
-  ========================================
+  ==========================================
+  ПРОВЕРКА МЕТОДА
+  ==========================================
   */
 
-  if (!isAdminAuthenticated(req)) {
+  if (
+    req.method !== "GET" &&
+    req.method !== "POST"
+  ) {
 
-    return res.status(401).json({
+    return res.status(405).json({
       ok: false,
-      error: "Unauthorized"
-    });
-
-  }
-
-
-  /*
-  ========================================
-  ENV
-  ========================================
-  */
-
-  const redisUrl =
-    process.env.KV_REST_API_URL;
-
-  const redisToken =
-    process.env.KV_REST_API_TOKEN;
-
-
-  if (!redisUrl || !redisToken) {
-
-    return res.status(500).json({
-      ok: false,
-      error:
-        "Redis is not configured"
+      error: "Method not allowed"
     });
 
   }
@@ -52,28 +31,65 @@ export default async function handler(
   try {
 
     /*
-    ======================================
-    GET
-    ======================================
+    ========================================
+    АВТОРИЗАЦИЯ
+    ========================================
     */
 
-    if (req.method === "GET") {
+    if (
+      !isAdminAuthenticated(req)
+    ) {
+
+      return res.status(401).json({
+        ok: false,
+        error: "Unauthorized"
+      });
+
+    }
+
+
+    /*
+    ========================================
+    REDIS
+    ========================================
+    */
+
+    const redisUrl =
+      process.env.KV_REST_API_URL;
+
+    const redisToken =
+      process.env.KV_REST_API_TOKEN;
+
+
+    if (
+      !redisUrl ||
+      !redisToken
+    ) {
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Redis is not configured"
+      });
+
+    }
+
+
+    /*
+    ========================================
+    GET
+    ========================================
+    */
+
+    if (
+      req.method === "GET"
+    ) {
 
       const date =
-        normalizeDate(
-          req.query.date
+        String(
+          req.query.date ||
+          today()
         );
-
-
-      if (!date) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Invalid date"
-        });
-
-      }
 
 
       const result =
@@ -82,15 +98,19 @@ export default async function handler(
           redisToken,
           [
             "GET",
-            `expenses:${date}`
+            `accounting:expenses:${date}`
           ]
         );
 
 
       let expenses = {
+
         date,
+
         otherExpenses: 0,
+
         salary: 0
+
       };
 
 
@@ -98,18 +118,37 @@ export default async function handler(
 
         try {
 
-          expenses =
+          const saved =
             typeof result === "string"
               ? JSON.parse(result)
               : result;
 
-        } catch {
 
           expenses = {
+
             date,
-            otherExpenses: 0,
-            salary: 0
+
+            otherExpenses:
+              Math.max(
+                0,
+                Number(
+                  saved.otherExpenses
+                ) || 0
+              ),
+
+            salary:
+              Math.max(
+                0,
+                Number(
+                  saved.salary
+                ) || 0
+              )
+
           };
+
+        } catch {
+
+          // оставляем нули
 
         }
 
@@ -120,17 +159,7 @@ export default async function handler(
 
         ok: true,
 
-        date,
-
-        otherExpenses:
-          Number(
-            expenses.otherExpenses
-          ) || 0,
-
-        salary:
-          Number(
-            expenses.salary
-          ) || 0
+        expenses
 
       });
 
@@ -138,174 +167,132 @@ export default async function handler(
 
 
     /*
-    ======================================
+    ========================================
     POST
-    ======================================
+    ========================================
     */
 
-    if (req.method === "POST") {
-
-      const body =
-        req.body || {};
+    const body =
+      req.body || {};
 
 
-      const date =
-        normalizeDate(
-          body.date
-        );
-
-
-      if (!date) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Invalid date"
-        });
-
-      }
-
-
-      let otherExpenses =
-        Number(
-          body.otherExpenses
-        );
-
-
-      let salary =
-        Number(
-          body.salary
-        );
-
-
-      /*
-      ------------------------------------
-      ПРОВЕРКА ЧИСЕЛ
-      ------------------------------------
-      */
-
-      if (
-        !Number.isFinite(
-          otherExpenses
-        ) ||
-        otherExpenses < 0
-      ) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Invalid other expenses"
-        });
-
-      }
-
-
-      if (
-        !Number.isFinite(
-          salary
-        ) ||
-        salary < 0
-      ) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Invalid salary"
-        });
-
-      }
-
-
-      /*
-      ------------------------------------
-      ОКРУГЛЕНИЕ
-      ------------------------------------
-      */
-
-      otherExpenses =
-        Math.round(
-          otherExpenses
-        );
-
-
-      salary =
-        Math.round(
-          salary
-        );
-
-
-      /*
-      ------------------------------------
-      СОХРАНЕНИЕ
-      ------------------------------------
-      */
-
-      const expenses = {
-
-        date,
-
-        otherExpenses,
-
-        salary,
-
-        updatedAt:
-          new Date().toISOString()
-
-      };
-
-
-      await redisCommand(
-        redisUrl,
-        redisToken,
-        [
-          "SET",
-
-          `expenses:${date}`,
-
-          JSON.stringify(
-            expenses
-          ),
-
-          "EX",
-
-          "31536000"
-        ]
+    const date =
+      String(
+        body.date ||
+        today()
       );
 
 
-      /*
-      ------------------------------------
-      ОТВЕТ
-      ------------------------------------
-      */
+    /*
+    ========================================
+    ПРОВЕРКА ДАТЫ
+    ========================================
+    */
 
-      return res.status(200).json({
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(
+        date
+      )
+    ) {
 
-        ok: true,
-
-        date,
-
-        otherExpenses,
-
-        salary
-
+      return res.status(400).json({
+        ok: false,
+        error: "Invalid date"
       });
 
     }
 
 
     /*
-    ======================================
-    METHOD NOT ALLOWED
-    ======================================
+    ========================================
+    СУММЫ
+    ========================================
     */
 
-    return res.status(405).json({
+    const otherExpenses =
+      Math.max(
+        0,
+        Math.round(
+          Number(
+            body.otherExpenses
+          ) || 0
+        )
+      );
 
-      ok: false,
 
-      error:
-        "Method not allowed"
+    const salary =
+      Math.max(
+        0,
+        Math.round(
+          Number(
+            body.salary
+          ) || 0
+        )
+      );
+
+
+    /*
+    ========================================
+    СОХРАНЯЕМ
+
+    ВАЖНО:
+
+    Мы НЕ изменяем:
+
+    order:...
+    orders:index
+
+    Только:
+
+    accounting:expenses:YYYY-MM-DD
+    ========================================
+    */
+
+    const expenses = {
+
+      date,
+
+      otherExpenses,
+
+      salary,
+
+      updatedAt:
+        new Date().toISOString()
+
+    };
+
+
+    await redisCommand(
+      redisUrl,
+      redisToken,
+      [
+        "SET",
+
+        `accounting:expenses:${date}`,
+
+        JSON.stringify(
+          expenses
+        ),
+
+        "EX",
+
+        "31536000"
+
+      ]
+    );
+
+
+    /*
+    ========================================
+    ОТВЕТ
+    ========================================
+    */
+
+    return res.status(200).json({
+
+      ok: true,
+
+      expenses
 
     });
 
@@ -313,10 +300,9 @@ export default async function handler(
   } catch (error) {
 
     console.error(
-      "EXPENSES API ERROR:",
+      "EXPENSES ERROR:",
       error
     );
-
 
     return res.status(500).json({
 
@@ -334,54 +320,6 @@ export default async function handler(
 
 /*
 ==========================================
-DATE
-==========================================
-*/
-
-function normalizeDate(
-  value
-) {
-
-  const date =
-    String(
-      value || ""
-    ).trim();
-
-
-  if (
-    !/^\d{4}-\d{2}-\d{2}$/
-      .test(date)
-  ) {
-
-    return null;
-
-  }
-
-
-  const parsed =
-    new Date(
-      `${date}T00:00:00Z`
-    );
-
-
-  if (
-    Number.isNaN(
-      parsed.getTime()
-    )
-  ) {
-
-    return null;
-
-  }
-
-
-  return date;
-
-}
-
-
-/*
-==========================================
 ADMIN AUTH
 ==========================================
 */
@@ -391,9 +329,7 @@ function isAdminAuthenticated(
 ) {
 
   const secret =
-    process.env
-      .ADMIN_SESSION_SECRET;
-
+    process.env.ADMIN_SESSION_SECRET;
 
   if (!secret) {
     return false;
@@ -439,21 +375,15 @@ function isAdminAuthenticated(
     if (
       parts.length !== 3
     ) {
-
       return false;
-
     }
 
 
     const role =
       parts[0];
 
-
     const expiresAt =
-      Number(
-        parts[1]
-      );
-
+      Number(parts[1]);
 
     const signature =
       parts[2];
@@ -490,7 +420,6 @@ function isAdminAuthenticated(
         signature
       );
 
-
     const b =
       Buffer.from(
         expected
@@ -511,6 +440,7 @@ function isAdminAuthenticated(
       a,
       b
     );
+
 
   } catch {
 
@@ -536,47 +466,60 @@ function parseCookies(
 
   header
     .split(";")
-    .forEach(
-      part => {
+    .forEach(part => {
 
-        const index =
-          part.indexOf("=");
-
-
-        if (
-          index === -1
-        ) {
-
-          return;
-
-        }
+      const index =
+        part.indexOf("=");
 
 
-        const key =
-          part
-            .slice(
-              0,
-              index
-            )
-            .trim();
+      if (
+        index === -1
+      ) {
 
-
-        const value =
-          part
-            .slice(
-              index + 1
-            )
-            .trim();
-
-
-        result[key] =
-          value;
+        return;
 
       }
-    );
+
+
+      const key =
+        part
+          .slice(
+            0,
+            index
+          )
+          .trim();
+
+
+      const value =
+        part
+          .slice(
+            index + 1
+          )
+          .trim();
+
+
+      result[key] =
+        value;
+
+    });
 
 
   return result;
+
+}
+
+
+/*
+==========================================
+DATE
+==========================================
+*/
+
+function today() {
+
+  return new Date()
+    .toISOString()
+    .slice(0, 10);
 
 }
 
@@ -598,8 +541,7 @@ async function redisCommand(
       url,
       {
 
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
 
@@ -630,7 +572,6 @@ async function redisCommand(
       "REDIS ERROR:",
       data
     );
-
 
     throw new Error(
       "Redis request failed"
