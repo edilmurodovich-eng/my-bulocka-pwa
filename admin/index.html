@@ -53,6 +53,7 @@
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
       padding: 20px;
@@ -67,21 +68,25 @@
         sans-serif;
     }
 
+
     .container {
       width: 100%;
       max-width: 1000px;
       margin: auto;
     }
 
+
     .login,
     .dashboard {
       display: none;
     }
 
+
     .login.show,
     .dashboard.show {
       display: block;
     }
+
 
     .card {
       background: white;
@@ -97,20 +102,24 @@
         rgba(70,40,20,.08);
     }
 
+
     .login {
       max-width: 420px;
       margin: 60px auto;
     }
+
 
     h1 {
       margin-top: 0;
       font-size: 28px;
     }
 
+
     h2 {
       margin-top: 0;
       font-size: 20px;
     }
+
 
     input {
       width: 100%;
@@ -127,6 +136,7 @@
       outline: none;
     }
 
+
     input:focus {
       border-color: #d9823b;
 
@@ -134,6 +144,7 @@
         0 0 0 3px
         rgba(217,130,59,.12);
     }
+
 
     button {
       border: none;
@@ -153,14 +164,17 @@
       cursor: pointer;
     }
 
+
     button:active {
       transform: scale(.98);
     }
+
 
     .login button {
       width: 100%;
       margin-top: 12px;
     }
+
 
     .top {
       display: flex;
@@ -174,9 +188,11 @@
       flex-wrap: wrap;
     }
 
+
     .logout {
       background: #3b2418;
     }
+
 
     .date-row {
       display: flex;
@@ -188,11 +204,13 @@
       flex-wrap: wrap;
     }
 
+
     .date-row input {
       width: auto;
       flex: 1;
       min-width: 180px;
     }
+
 
     .stats {
       display: grid;
@@ -206,6 +224,7 @@
       gap: 12px;
     }
 
+
     .stat {
       padding: 18px;
 
@@ -213,6 +232,7 @@
 
       background: #fff0d9;
     }
+
 
     .stat-label {
       color: #8a6c5a;
@@ -222,6 +242,7 @@
       font-weight: 700;
     }
 
+
     .stat-value {
       margin-top: 6px;
 
@@ -230,25 +251,31 @@
       font-weight: 900;
     }
 
+
     .green {
       background: #e4f5df;
     }
+
 
     .red {
       background: #fde3df;
     }
 
+
     .expense {
       background: #fff1df;
     }
+
 
     .salary {
       background: #eee6ff;
     }
 
+
     .profit {
       background: #dff5e5;
     }
+
 
     .expense-box {
       display: grid;
@@ -262,6 +289,7 @@
       gap: 15px;
     }
 
+
     .expense-card {
       padding: 18px;
 
@@ -273,6 +301,7 @@
         1px solid #ead9ca;
     }
 
+
     .expense-title {
       font-size: 17px;
 
@@ -280,6 +309,7 @@
 
       margin-bottom: 8px;
     }
+
 
     .expense-description {
       color: #8a6c5a;
@@ -290,6 +320,7 @@
 
       margin-bottom: 12px;
     }
+
 
     .field-label {
       display: block;
@@ -303,9 +334,11 @@
       color: #6f5140;
     }
 
+
     .expense-field {
       margin-bottom: 12px;
     }
+
 
     .money-input {
       display: flex;
@@ -315,10 +348,12 @@
       align-items: center;
     }
 
+
     .money-input input {
       flex: 1;
       min-width: 0;
     }
+
 
     .currency {
       font-weight: 800;
@@ -328,11 +363,13 @@
       white-space: nowrap;
     }
 
+
     .save-expenses {
       margin-top: 15px;
 
       width: 100%;
     }
+
 
     .expense-status {
       margin-top: 10px;
@@ -344,17 +381,20 @@
       min-height: 18px;
     }
 
+
     .table-wrap {
       overflow-x: auto;
     }
+
 
     table {
       width: 100%;
 
       border-collapse: collapse;
 
-      min-width: 600px;
+      min-width: 500px;
     }
+
 
     th,
     td {
@@ -368,13 +408,16 @@
       font-size: 13px;
     }
 
+
     th {
       color: #8a6c5a;
     }
 
+
     .status {
       font-weight: 800;
     }
+
 
     .error {
       color: #b3261e;
@@ -384,15 +427,18 @@
       font-size: 13px;
     }
 
+
     @media (max-width: 600px) {
 
       body {
         padding: 12px;
       }
 
+
       h1 {
         font-size: 24px;
       }
+
 
       .expense-box {
         grid-template-columns: 1fr;
@@ -911,9 +957,11 @@ async function login() {
       .getElementById("password")
       .value;
 
+
   const error =
     document
       .getElementById("loginError");
+
 
   error.textContent = "";
 
@@ -1002,15 +1050,18 @@ async function checkAuth() {
       const data =
         await response.json();
 
+
       renderAccounting(data);
 
       loadExpenses();
+
 
     } else {
 
       showLogin();
 
     }
+
 
   } catch {
 
@@ -1033,6 +1084,7 @@ function showLogin() {
     .getElementById("login")
     .classList.add("show");
 
+
   document
     .getElementById("dashboard")
     .classList.remove("show");
@@ -1045,6 +1097,7 @@ function showDashboard() {
   document
     .getElementById("login")
     .classList.remove("show");
+
 
   document
     .getElementById("dashboard")
@@ -1067,6 +1120,7 @@ async function logout() {
       method: "POST"
     }
   );
+
 
   showLogin();
 
@@ -1505,16 +1559,13 @@ function renderAccounting(data) {
     data.summary || {};
 
 
-  /*
-  Сохраняем данные текущего отчёта,
-  чтобы кнопка "Отчёт" могла их использовать.
-  */
-
   window.currentAccountingSummary =
     summary;
 
+
   window.currentAccountingProducts =
     data.products || [];
+
 
   window.currentAccountingOrders =
     data.orders || [];
@@ -1694,7 +1745,115 @@ function renderProducts(products) {
 
 /*
 ==========================================
-ORDERS TABLE
+ОБЩАЯ СУММА ПО СПОСОБАМ ОПЛАТЫ
+==========================================
+*/
+
+function getPaymentTotals(orders) {
+
+  let cashTotal = 0;
+
+  let cardTotal = 0;
+
+
+  orders.forEach(
+    order => {
+
+      const status =
+        String(
+          order.status ||
+          ""
+        )
+          .toLowerCase()
+          .trim();
+
+
+      /*
+      Отменённые заказы
+      не включаем в сумму.
+      */
+
+      if (
+        status === "cancelled"
+      ) {
+
+        return;
+
+      }
+
+
+      const total =
+        Number(
+          order.total
+        ) || 0;
+
+
+      const payment =
+        String(
+          order.paymentMethod ||
+          order.paymentType ||
+          order.payment ||
+          order.method ||
+          ""
+        )
+          .toLowerCase()
+          .trim();
+
+
+      if (
+        payment === "cash" ||
+        payment === "наличные" ||
+        payment === "наличными" ||
+        payment === "naqd"
+      ) {
+
+        cashTotal += total;
+
+      }
+
+
+      else if (
+        payment === "card" ||
+        payment === "карта" ||
+        payment === "картой" ||
+        payment === "karta"
+      ) {
+
+        cardTotal += total;
+
+      }
+
+    }
+  );
+
+
+  return {
+
+    cashTotal,
+
+    cardTotal,
+
+    total:
+      cashTotal +
+      cardTotal
+
+  };
+
+}
+
+
+/*
+==========================================
+ЗАКАЗЫ
+==========================================
+
+Здесь НЕ показываем отдельные заказы.
+
+Только:
+
+Наличными
+Картой
+Итого
 ==========================================
 */
 
@@ -1706,137 +1865,73 @@ function renderOrders(orders) {
     );
 
 
-  if (!orders.length) {
-
-    container.innerHTML =
-      "<p>Заказов за этот день нет.</p>";
-
-    return;
-
-  }
+  const totals =
+    getPaymentTotals(
+      orders
+    );
 
 
   container.innerHTML = `
 
     <table>
 
-      <thead>
+      <tbody>
 
         <tr>
 
           <th>
-            Заказ
+            💵 Наличными
           </th>
 
-          <th>
-            Клиент
-          </th>
-
-          <th>
-            Сумма
-          </th>
-
-          <th>
-            Статус
-          </th>
-
-          <th>
-            Время
-          </th>
+          <td>
+            <strong>
+              ${money(
+                totals.cashTotal
+              )}
+            </strong>
+          </td>
 
         </tr>
 
-      </thead>
 
-      <tbody>
+        <tr>
 
-        ${orders.map(
-          order => `
+          <th>
+            💳 Картой
+          </th>
 
-            <tr>
+          <td>
+            <strong>
+              ${money(
+                totals.cardTotal
+              )}
+            </strong>
+          </td>
 
-              <td>
-                ${escapeHTML(
-                  order.orderId
-                )}
-              </td>
+        </tr>
 
-              <td>
-                ${escapeHTML(
-                  order.name
-                )}
-              </td>
 
-              <td>
-                ${money(
-                  order.total
-                )}
-              </td>
+        <tr>
 
-              <td class="status">
+          <th>
+            📊 Итого
+          </th>
 
-                ${statusText(
-                  order.status
-                )}
+          <td>
+            <strong>
+              ${money(
+                totals.total
+              )}
+            </strong>
+          </td>
 
-              </td>
-
-              <td>
-                ${formatDate(
-                  order.createdAt
-                )}
-              </td>
-
-            </tr>
-
-          `
-        ).join("")}
+        </tr>
 
       </tbody>
 
     </table>
 
   `;
-
-}
-
-
-/*
-==========================================
-STATUS
-==========================================
-*/
-
-function statusText(status) {
-
-  const map = {
-
-    new:
-      "🟡 Новый",
-
-    accepted:
-      "🟢 Принят",
-
-    cooking:
-      "🍳 Готовится",
-
-    courier:
-      "🛵 Курьер",
-
-    delivered:
-      "✅ Доставлен",
-
-    cancelled:
-      "❌ Отменён"
-
-  };
-
-
-  return (
-    map[status] ||
-    status ||
-    "Неизвестно"
-  );
 
 }
 
@@ -1949,20 +2044,32 @@ function openReport() {
   }
 
 
-  /*
-  На всякий случай обновляем
-  бухгалтерские данные перед отчётом.
-  */
-
   const summary =
-    window.currentAccountingSummary || {};
+    window.currentAccountingSummary ||
+    {};
+
 
   const products =
-    window.currentAccountingProducts || [];
+    window.currentAccountingProducts ||
+    [];
+
 
   const orders =
-    window.currentAccountingOrders || [];
+    window.currentAccountingOrders ||
+    [];
 
+
+  const paymentTotals =
+    getPaymentTotals(
+      orders
+    );
+
+
+  /*
+  ========================================
+  РАСХОДЫ
+  ========================================
+  */
 
   const saved =
     localStorage.getItem(
@@ -2015,12 +2122,18 @@ function openReport() {
 
     } catch {
 
-      // Используем значения по умолчанию.
+      // Значения по умолчанию.
 
     }
 
   }
 
+
+  /*
+  ========================================
+  ПРИБЫЛЬ
+  ========================================
+  */
 
   const profit =
     Number(
@@ -2029,6 +2142,12 @@ function openReport() {
     expenses.otherExpenses -
     expenses.salary;
 
+
+  /*
+  ========================================
+  ОТКРЫВАЕМ ОТЧЁТ
+  ========================================
+  */
 
   const reportWindow =
     window.open(
@@ -2069,11 +2188,13 @@ function openReport() {
   )}
 </title>
 
+
 <style>
 
   * {
     box-sizing: border-box;
   }
+
 
   body {
 
@@ -2093,6 +2214,7 @@ function openReport() {
 
   }
 
+
   .report {
 
     max-width: 1000px;
@@ -2100,6 +2222,7 @@ function openReport() {
     margin: auto;
 
   }
+
 
   .header {
 
@@ -2113,6 +2236,7 @@ function openReport() {
 
   }
 
+
   h1 {
 
     margin: 0 0 8px;
@@ -2120,6 +2244,7 @@ function openReport() {
     font-size: 28px;
 
   }
+
 
   h2 {
 
@@ -2129,6 +2254,7 @@ function openReport() {
 
   }
 
+
   .date {
 
     margin-top: 6px;
@@ -2137,11 +2263,19 @@ function openReport() {
 
   }
 
+
   .actions {
 
     margin-bottom: 20px;
 
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
   }
+
 
   button {
 
@@ -2163,6 +2297,14 @@ function openReport() {
 
   }
 
+
+  .back-button {
+
+    background: #3b2418;
+
+  }
+
+
   .stats {
 
     display: grid;
@@ -2179,6 +2321,7 @@ function openReport() {
 
   }
 
+
   .stat {
 
     background: white;
@@ -2188,6 +2331,7 @@ function openReport() {
     border-radius: 18px;
 
   }
+
 
   .label {
 
@@ -2199,6 +2343,7 @@ function openReport() {
 
   }
 
+
   .value {
 
     margin-top: 6px;
@@ -2209,11 +2354,13 @@ function openReport() {
 
   }
 
+
   .expense {
 
     background: #fff1df;
 
   }
+
 
   .salary {
 
@@ -2221,11 +2368,13 @@ function openReport() {
 
   }
 
+
   .profit {
 
     background: #dff5e5;
 
   }
+
 
   .section {
 
@@ -2239,6 +2388,7 @@ function openReport() {
 
   }
 
+
   table {
 
     width: 100%;
@@ -2247,19 +2397,21 @@ function openReport() {
 
   }
 
+
   th,
   td {
 
-    padding: 10px 8px;
+    padding: 12px 8px;
 
     text-align: left;
 
     border-bottom:
       1px solid #eee2d8;
 
-    font-size: 13px;
+    font-size: 14px;
 
   }
+
 
   th {
 
@@ -2267,11 +2419,34 @@ function openReport() {
 
   }
 
+
+  .total-row th,
+  .total-row td {
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    border-bottom: none;
+
+    padding-top: 18px;
+
+  }
+
+
+  .payment-total {
+
+    background: #dff5e5;
+
+  }
+
+
   .empty {
 
     color: #8a6c5a;
 
   }
+
 
   @media print {
 
@@ -2282,6 +2457,7 @@ function openReport() {
       background: white;
 
     }
+
 
     .actions {
 
@@ -2302,22 +2478,28 @@ function openReport() {
 <div class="report">
 
 
+  <!-- КНОПКИ -->
+
   <div class="actions">
 
-  <button
-    onclick="window.close()"
-  >
-    ← Назад
-  </button>
+    <button
+      class="back-button"
+      onclick="window.close()"
+    >
+      ← Назад
+    </button>
 
-  <button
-    onclick="window.print()"
-  >
-    🖨️ Печать / PDF
-  </button>
 
-</div>
+    <button
+      onclick="window.print()"
+    >
+      🖨️ Печать / PDF
+    </button>
 
+  </div>
+
+
+  <!-- ЗАГОЛОВОК -->
 
   <div class="header">
 
@@ -2325,9 +2507,11 @@ function openReport() {
       💼 Бухгалтерский отчёт
     </h1>
 
+
     <div>
       «Булочная» — Вкус детства
     </div>
+
 
     <div class="date">
 
@@ -2340,6 +2524,8 @@ function openReport() {
 
   </div>
 
+
+  <!-- ОСНОВНЫЕ ПОКАЗАТЕЛИ -->
 
   <div class="stats">
 
@@ -2476,6 +2662,8 @@ function openReport() {
   </div>
 
 
+  <!-- РАСХОДЫ -->
+
   <div class="section">
 
     <h2>
@@ -2536,6 +2724,8 @@ function openReport() {
 
   </div>
 
+
+  <!-- ПРОДАЖИ ТОВАРОВ -->
 
   <div class="section">
 
@@ -2628,144 +2818,76 @@ function openReport() {
   </div>
 
 
- <div class="section">
+  <!-- ЗАКАЗЫ / СПОСОБ ОПЛАТЫ -->
 
-  <h2>
-    📦 Заказы
-  </h2>
+  <div class="section">
 
-  ${
-    orders.length
-
-      ? `
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Сумма
-              </th>
-
-              <th>
-                Способ оплаты
-              </th>
-
-              <th>
-                Время
-              </th>
-
-            </tr>
-
-          </thead>
+    <h2>
+      📦 Заказы
+    </h2>
 
 
-          <tbody>
+    <table>
 
-            ${orders.map(
-              order => {
-
-                /*
-                Поддерживаем несколько возможных
-                названий поля оплаты в API.
-                */
-
-                const paymentMethod =
-                  order.paymentMethod ||
-                  order.payment_method ||
-                  order.payment ||
-                  order.method ||
-                  "";
+      <tbody>
 
 
-                let paymentText = "—";
+        <tr>
+
+          <th>
+            💵 Наличными
+          </th>
+
+          <td>
+            <strong>
+              ${money(
+                paymentTotals.cashTotal
+              )}
+            </strong>
+          </td>
+
+        </tr>
 
 
-                const payment =
-                  String(
-                    paymentMethod
-                  )
-                  .toLowerCase()
-                  .trim();
+        <tr>
+
+          <th>
+            💳 Картой
+          </th>
+
+          <td>
+            <strong>
+              ${money(
+                paymentTotals.cardTotal
+              )}
+            </strong>
+          </td>
+
+        </tr>
 
 
-                if (
-                  payment === "cash" ||
-                  payment === "наличные" ||
-                  payment === "нал" ||
-                  payment === "cash_payment"
-                ) {
+        <tr class="total-row payment-total">
 
-                  paymentText =
-                    "💵 Наличные";
+          <th>
+            📊 Итого
+          </th>
 
-                } else if (
-                  payment === "card" ||
-                  payment === "карта" ||
-                  payment === "картой" ||
-                  payment === "card_payment"
-                ) {
+          <td>
+            <strong>
+              ${money(
+                paymentTotals.total
+              )}
+            </strong>
+          </td>
 
-                  paymentText =
-                    "💳 Карта";
-
-                } else if (payment) {
-
-                  paymentText =
-                    escapeHTML(
-                      paymentMethod
-                    );
-
-                }
+        </tr>
 
 
-                return `
+      </tbody>
 
-                  <tr>
+    </table>
 
-                    <td>
-                      <strong>
-                        ${money(
-                          order.total
-                        )}
-                      </strong>
-                    </td>
-
-                    <td>
-                      ${paymentText}
-                    </td>
-
-                    <td>
-                      ${formatDate(
-                        order.createdAt
-                      )}
-                    </td>
-
-                  </tr>
-
-                `;
-
-              }
-            ).join("")}
-
-          </tbody>
-
-        </table>
-
-      `
-
-      : `
-
-        <div class="empty">
-          Заказов за этот день нет.
-        </div>
-
-      `
-  }
-
-</div>
+  </div>
 
 
 </div>
