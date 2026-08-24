@@ -2622,78 +2622,113 @@ function openReport() {
   </div>
 
 
-  <div class="section">
+ <div class="section">
 
-    <h2>
-      📦 Заказы
-    </h2>
+  <h2>
+    📦 Заказы
+  </h2>
 
+  ${
+    orders.length
 
-    ${
-      orders.length
+      ? `
 
-        ? `
+        <table>
 
-          <table>
+          <thead>
 
-            <thead>
+            <tr>
 
-              <tr>
+              <th>
+                Сумма
+              </th>
 
-                <th>
-                  Заказ
-                </th>
+              <th>
+                Способ оплаты
+              </th>
 
-                <th>
-                  Клиент
-                </th>
+              <th>
+                Время
+              </th>
 
-                <th>
-                  Сумма
-                </th>
+            </tr>
 
-                <th>
-                  Статус
-                </th>
-
-                <th>
-                  Время
-                </th>
-
-              </tr>
-
-            </thead>
+          </thead>
 
 
-            <tbody>
+          <tbody>
 
-              ${orders.map(
-                order => `
+            ${orders.map(
+              order => {
+
+                /*
+                Поддерживаем несколько возможных
+                названий поля оплаты в API.
+                */
+
+                const paymentMethod =
+                  order.paymentMethod ||
+                  order.payment_method ||
+                  order.payment ||
+                  order.method ||
+                  "";
+
+
+                let paymentText = "—";
+
+
+                const payment =
+                  String(
+                    paymentMethod
+                  )
+                  .toLowerCase()
+                  .trim();
+
+
+                if (
+                  payment === "cash" ||
+                  payment === "наличные" ||
+                  payment === "нал" ||
+                  payment === "cash_payment"
+                ) {
+
+                  paymentText =
+                    "💵 Наличные";
+
+                } else if (
+                  payment === "card" ||
+                  payment === "карта" ||
+                  payment === "картой" ||
+                  payment === "card_payment"
+                ) {
+
+                  paymentText =
+                    "💳 Карта";
+
+                } else if (payment) {
+
+                  paymentText =
+                    escapeHTML(
+                      paymentMethod
+                    );
+
+                }
+
+
+                return `
 
                   <tr>
 
                     <td>
-                      ${escapeHTML(
-                        order.orderId
-                      )}
+                      <strong>
+                        ${money(
+                          order.total
+                        )}
+                      </strong>
                     </td>
 
                     <td>
-                      ${escapeHTML(
-                        order.name
-                      )}
-                    </td>
-
-                    <td>
-                      ${money(
-                        order.total
-                      )}
-                    </td>
-
-                    <td>
-                      ${statusText(
-                        order.status
-                      )}
+                      ${paymentText}
                     </td>
 
                     <td>
@@ -2704,25 +2739,27 @@ function openReport() {
 
                   </tr>
 
-                `
-              ).join("")}
+                `;
 
-            </tbody>
+              }
+            ).join("")}
 
-          </table>
+          </tbody>
 
-        `
+        </table>
 
-        : `
+      `
 
-          <div class="empty">
-            Заказов за этот день нет.
-          </div>
+      : `
 
-        `
-    }
+        <div class="empty">
+          Заказов за этот день нет.
+        </div>
 
-  </div>
+      `
+  }
+
+</div>
 
 
 </div>
