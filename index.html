@@ -117,9 +117,7 @@
 
     #splash-screen.hide {
       opacity: 0;
-
       visibility: hidden;
-
       pointer-events: none;
     }
 
@@ -177,16 +175,12 @@
 
       0% {
         opacity: 0;
-
-        transform:
-          scale(.82);
+        transform: scale(.82);
       }
 
       100% {
         opacity: 1;
-
-        transform:
-          scale(1);
+        transform: scale(1);
       }
 
     }
@@ -868,6 +862,62 @@
     }
 
 
+    /* ==========================
+       PAYMENT
+    ========================== */
+
+    .payment-methods {
+      display: grid;
+
+      gap: 10px;
+
+      margin-top: 8px;
+    }
+
+
+    .payment-option {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin: 0;
+
+      padding: 13px;
+
+      border:
+        1px solid #dfcdbc;
+
+      border-radius: 13px;
+
+      background: white;
+
+      cursor: pointer;
+
+      font-weight: 700;
+    }
+
+
+    .payment-option input {
+      width: 20px;
+      height: 20px;
+
+      margin: 0;
+
+      padding: 0;
+
+      flex-shrink: 0;
+
+      accent-color: #d9823b;
+    }
+
+
+    .payment-option span {
+      flex: 1;
+    }
+
+
     .order-button {
       width: 100%;
 
@@ -1069,6 +1119,63 @@
     }
 
 
+    /* ==========================
+       CANCEL ORDER
+    ========================== */
+
+    .cancel-order-button {
+      width: 100%;
+
+      margin-top: 12px;
+
+      padding: 13px;
+
+      border:
+        1px solid #e0b8a8;
+
+      border-radius: 15px;
+
+      background: #fff;
+
+      color: #b84c32;
+
+      font-size: 15px;
+
+      font-weight: 800;
+    }
+
+
+    .cancel-order-button:active {
+      transform: scale(.98);
+    }
+
+
+    .cancel-order-button:disabled {
+      opacity: .6;
+
+      cursor: default;
+    }
+
+
+    .cancelled-status {
+      margin-top: 15px;
+
+      padding: 15px;
+
+      border-radius: 15px;
+
+      background: #f8e2dc;
+
+      color: #9b3d2b;
+
+      text-align: center;
+
+      font-size: 15px;
+
+      font-weight: 800;
+    }
+
+
     .new-order-button {
       width: 100%;
 
@@ -1091,7 +1198,7 @@
 
 
     /* ==========================
-       МОБИЛЬНАЯ АДАПТАЦИЯ
+       MOBILE
     ========================== */
 
     @media (max-width: 420px) {
@@ -1283,9 +1390,9 @@
 
   <div class="footer-owner">
     Владельцы: Саминов Эркин Дилмуродович,
-               Дилмуродова Хилола Эркиновна,
-               Дилмуродова Диёра Эркиновна,
-               Дилмуродов Мухаммад Эркинович
+    Дилмуродова Хилола Эркиновна,
+    Дилмуродова Диёра Эркиновна,
+    Дилмуродов Мухаммад Эркинович
   </div>
 
 </div>
@@ -1428,6 +1535,46 @@
       ></textarea>
 
 
+      <label>
+        Способ оплаты
+      </label>
+
+
+      <div class="payment-methods">
+
+        <label class="payment-option">
+
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="cash"
+            checked
+          >
+
+          <span>
+            💵 Наличными при получении
+          </span>
+
+        </label>
+
+
+        <label class="payment-option">
+
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="card"
+          >
+
+          <span>
+            💳 Картой при получении
+          </span>
+
+        </label>
+
+      </div>
+
+
       <button
         class="order-button"
         onclick="placeOrder()"
@@ -1549,6 +1696,9 @@ let currentOrderId =
   localStorage.getItem(
     "currentOrderId"
   );
+
+
+let currentOrderPhone = "";
 
 
 /* ==========================================
@@ -2196,6 +2346,15 @@ function getStatusInfo(status) {
       description:
         "Ваш заказ успешно доставлен. Спасибо за покупку! ❤️",
       step: 4
+    },
+
+
+    cancelled: {
+      icon: "❌",
+      title: "Заказ отменён",
+      description:
+        "Заказ был отменён. Если это произошло по ошибке, оформите новый заказ.",
+      step: -1
     }
 
   };
@@ -2205,6 +2364,28 @@ function getStatusInfo(status) {
     statuses[status] ||
     statuses.new
   );
+
+}
+
+
+/* ==========================================
+   PAYMENT NAME
+========================================== */
+
+function getPaymentName(
+  paymentMethod
+) {
+
+  if (
+    paymentMethod === "card"
+  ) {
+
+    return "💳 Картой при получении";
+
+  }
+
+
+  return "💵 Наличными при получении";
 
 }
 
@@ -2220,6 +2401,54 @@ function trackingHTML(
 
   const info =
     getStatusInfo(status);
+
+
+  if (
+    status === "cancelled"
+  ) {
+
+    return `
+
+      <div class="tracking">
+
+        <div class="tracking-title">
+          📦 Отслеживание заказа
+        </div>
+
+
+        <div class="tracking-number">
+          Заказ: <b>${orderId}</b>
+        </div>
+
+
+        <div class="cancelled-status">
+
+          ❌ Заказ отменён
+
+          <br>
+
+          <span style="
+            font-size:12px;
+            font-weight:600;
+          ">
+            Заказ больше не обрабатывается.
+          </span>
+
+        </div>
+
+
+        <button
+          class="new-order-button"
+          onclick="startNewOrder()"
+        >
+          🥐 Сделать новый заказ
+        </button>
+
+      </div>
+
+    `;
+
+  }
 
 
   const steps = [
@@ -2254,6 +2483,11 @@ function trackingHTML(
     }
 
   ];
+
+
+  const canCancel =
+    status === "new" ||
+    status === "accepted";
 
 
   return `
@@ -2359,6 +2593,26 @@ function trackingHTML(
         🔄 Статус обновляется автоматически
       </div>
 
+
+      ${
+        canCancel
+
+          ? `
+
+            <button
+              class="cancel-order-button"
+              id="cancelOrderButton"
+              onclick="cancelCurrentOrder()"
+            >
+              ❌ Отменить заказ
+            </button>
+
+          `
+
+          : ""
+
+      }
+
     </div>
 
 
@@ -2406,17 +2660,33 @@ function showTracking(
       <div class="success">
 
         <div class="success-icon">
-          🥐
+          ${
+            status === "cancelled"
+              ? "❌"
+              : "🥐"
+          }
         </div>
 
 
         <h3>
-          Заказ отправлен!
+
+          ${
+            status === "cancelled"
+              ? "Заказ отменён"
+              : "Заказ отправлен!"
+          }
+
         </h3>
 
 
         <p>
-          Ваш заказ принят системой.
+
+          ${
+            status === "cancelled"
+              ? "Заказ больше не обрабатывается."
+              : "Ваш заказ принят системой."
+          }
+
         </p>
 
 
@@ -2494,8 +2764,8 @@ async function loadOrderStatus(
 
 
     if (
-      status ===
-      "delivered"
+      status === "delivered" ||
+      status === "cancelled"
     ) {
 
       stopTracking();
@@ -2507,6 +2777,164 @@ async function loadOrderStatus(
     console.error(
       "ORDER STATUS FETCH ERROR:",
       error
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   CANCEL ORDER
+========================================== */
+
+async function cancelCurrentOrder() {
+
+  if (!currentOrderId) {
+
+    return;
+
+  }
+
+
+  const confirmed =
+    confirm(
+      "Вы действительно хотите отменить заказ?\n\n" +
+      "После отмены заказ больше не будет обрабатываться."
+    );
+
+
+  if (!confirmed) {
+
+    return;
+
+  }
+
+
+  if (!currentOrderPhone) {
+
+    const phone =
+      prompt(
+        "Для подтверждения отмены введите номер телефона, который был указан при оформлении заказа:"
+      );
+
+
+    if (!phone) {
+
+      return;
+
+    }
+
+
+    currentOrderPhone =
+      phone.trim();
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "cancelOrderButton"
+    );
+
+
+  if (button) {
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "⏳ Отменяем заказ...";
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/order-cancel",
+        {
+
+          method:
+            "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              orderId:
+                currentOrderId,
+
+              phone:
+                currentOrderPhone
+
+            })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Не удалось отменить заказ"
+      );
+
+    }
+
+
+    stopTracking();
+
+
+    showTracking(
+      currentOrderId,
+      "cancelled"
+    );
+
+
+    alert(
+      "Заказ успешно отменён."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "ORDER CANCEL ERROR:",
+      error
+    );
+
+
+    if (button) {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "❌ Отменить заказ";
+
+    }
+
+
+    alert(
+      error.message ||
+      "Не удалось отменить заказ.\n\n" +
+      "Попробуйте ещё раз."
     );
 
   }
@@ -2597,6 +3025,10 @@ function startNewOrder() {
     null;
 
 
+  currentOrderPhone =
+    "";
+
+
   localStorage.removeItem(
     "currentOrderId"
   );
@@ -2659,6 +3091,46 @@ function startNewOrder() {
       id="customerComment"
       placeholder="Например: позвонить перед доставкой"
     ></textarea>
+
+
+    <label>
+      Способ оплаты
+    </label>
+
+
+    <div class="payment-methods">
+
+      <label class="payment-option">
+
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="cash"
+          checked
+        >
+
+        <span>
+          💵 Наличными при получении
+        </span>
+
+      </label>
+
+
+      <label class="payment-option">
+
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="card"
+        >
+
+        <span>
+          💳 Картой при получении
+        </span>
+
+      </label>
+
+    </div>
 
 
     <button
@@ -2728,6 +3200,18 @@ async function placeOrder() {
       .trim();
 
 
+  const paymentElement =
+    document.querySelector(
+      'input[name="paymentMethod"]:checked'
+    );
+
+
+  const paymentMethod =
+    paymentElement
+      ? paymentElement.value
+      : "cash";
+
+
   if (!name) {
 
     alert(
@@ -2759,6 +3243,10 @@ async function placeOrder() {
     return;
 
   }
+
+
+  currentOrderPhone =
+    phone;
 
 
   const items =
@@ -2799,6 +3287,8 @@ async function placeOrder() {
     address,
 
     comment,
+
+    paymentMethod,
 
     items,
 
