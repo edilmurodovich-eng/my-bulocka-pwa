@@ -1,7 +1,6 @@
 import crypto from "crypto";
 
-const COOKIE_NAME =
-  "bulocka_admin_session";
+const COOKIE_NAME = "bulocka_admin_session";
 
 const PRICE_LIST = {
   1: 7000,
@@ -30,6 +29,7 @@ const PRODUCT_NAMES = {
 };
 
 export default async function handler(req, res) {
+
   if (req.method !== "GET") {
     return res.status(405).json({
       ok: false,
@@ -38,6 +38,7 @@ export default async function handler(req, res) {
   }
 
   try {
+
     if (!isAdminAuthenticated(req)) {
       return res.status(401).json({
         ok: false,
@@ -64,6 +65,12 @@ export default async function handler(req, res) {
         today()
       );
 
+    /*
+    ==========================================
+    ПОЛУЧАЕМ ЗАКАЗЫ
+    ==========================================
+    */
+
     const indexResult =
       await redisCommand(
         redisUrl,
@@ -84,6 +91,7 @@ export default async function handler(req, res) {
     const orders = [];
 
     for (const orderId of orderIds) {
+
       const result =
         await redisCommand(
           redisUrl,
@@ -99,6 +107,7 @@ export default async function handler(req, res) {
       }
 
       try {
+
         const order =
           typeof result === "string"
             ? JSON.parse(result)
@@ -122,13 +131,18 @@ export default async function handler(req, res) {
           orders.push(order);
         }
 
-      } catch {
+      } catch (error) {
+
         console.error(
           "INVALID ORDER:",
-          orderId
+          orderId,
+          error
         );
+
       }
+
     }
+
 
     /*
     ==========================================
@@ -151,6 +165,7 @@ export default async function handler(req, res) {
     Object.keys(
       PRODUCT_NAMES
     ).forEach(id => {
+
       productStats[id] = {
         id: Number(id),
         name: PRODUCT_NAMES[id],
@@ -158,22 +173,32 @@ export default async function handler(req, res) {
         quantity: 0,
         revenue: 0
       };
+
     });
 
+
+    /*
+    ==========================================
+    ОБРАБОТКА ЗАКАЗОВ
+    ==========================================
+    */
+
     orders.forEach(order => {
+
       totalOrders++;
 
       const status =
         order.status ||
         "new";
 
-      const isCancelled =
-        status ===
-        "cancelled";
+      if (
+        status === "cancelled"
+      ) {
 
-      if (isCancelled) {
         cancelledOrders++;
+
         return;
+
       }
 
       const total =
@@ -192,22 +217,26 @@ export default async function handler(req, res) {
         total;
 
       if (
-        status ===
-        "delivered"
+        status === "delivered"
       ) {
+
         deliveredOrders++;
 
         deliveredRevenue +=
           total;
+
       }
+
 
       if (
         Array.isArray(
           order.items
         )
       ) {
+
         order.items.forEach(
           item => {
+
             const id =
               String(item.id);
 
@@ -233,10 +262,100 @@ export default async function handler(req, res) {
               .revenue +=
               price *
               quantity;
+
           }
         );
+
       }
+
     });
+
+
+    /*
+    ==========================================
+    ПОЛУЧАЕМ РАСХОДЫ
+    ==========================================
+
+    ВАЖНО:
+    Это отдельный ключ.
+
+    Старые заказы НЕ изменяются.
+    ==========================================
+    */
+
+    const expenseResult =
+      await redisCommand(
+        redisUrl,
+        redisToken,
+        [
+          "GET",
+          `accounting:expenses:${requestedDate}`
+        ]
+      );
+
+    let expenses = {
+      otherExpenses: 0,
+      salary: 0
+    };
+
+    if (expenseResult) {
+
+      try {
+
+        expenses =
+          typeof expenseResult === "string"
+            ? JSON.parse(expenseResult)
+            : expenseResult;
+
+      } catch {
+
+        expenses = {
+          otherExpenses: 0,
+          salary: 0
+        };
+
+      }
+
+    }
+
+
+    const otherExpenses =
+      Math.max(
+        0,
+        Number(
+          expenses.otherExpenses
+        ) || 0
+      );
+
+    const salary =
+      Math.max(
+        0,
+        Number(
+          expenses.salary
+        ) || 0
+      );
+
+
+    /*
+    ==========================================
+    ЧИСТАЯ ПРИБЫЛЬ
+    ==========================================
+    */
+
+    const totalExpenses =
+      otherExpenses +
+      salary;
+
+    const netProfit =
+      netRevenue -
+      totalExpenses;
+
+
+    /*
+    ==========================================
+    ТОВАРЫ
+    ==========================================
+    */
 
     const products =
       Object.values(
@@ -246,53 +365,96 @@ export default async function handler(req, res) {
           item.quantity > 0
       );
 
+
+    /*
+    ==========================================
+    ОТВЕТ
+    ==========================================
+    */
+
     return res.status(200).json({
+
       ok: true,
 
       date:
         requestedDate,
 
       summary: {
+
         totalOrders,
+
         cancelledOrders,
+
         grossRevenue,
+
         discounts,
+
         netRevenue,
+
         deliveredOrders,
-        deliveredRevenue
+
+        deliveredRevenue,
+
+        otherExpenses,
+
+        salary,
+
+        totalExpenses,
+
+        netProfit
+
+      },
+
+      expenses: {
+
+        otherExpenses,
+
+        salary
+
       },
 
       products,
 
       orders:
-        orders.map(order => ({
-          orderId:
-            order.orderId,
+        orders.map(
+          order => ({
 
-          name:
-            order.name,
+            orderId:
+              order.orderId,
 
-          phone:
-            order.phone,
+            name:
+              order.name,
 
-          total:
-            Number(order.total) || 0,
+            phone:
+              order.phone,
 
-          discount:
-            Number(order.discount) || 0,
+            total:
+              Number(
+                order.total
+              ) || 0,
 
-          status:
-            order.status || "new",
+            discount:
+              Number(
+                order.discount
+              ) || 0,
 
-          createdAt:
-            order.createdAt,
+            status:
+              order.status ||
+              "new",
 
-          items:
-            order.items || []
-        }))
+            createdAt:
+              order.createdAt,
+
+            items:
+              order.items || []
+
+          })
+        )
+
     });
 
   } catch (error) {
+
     console.error(
       "ACCOUNTING ERROR:",
       error
@@ -302,7 +464,9 @@ export default async function handler(req, res) {
       ok: false,
       error: "Accounting error"
     });
+
   }
+
 }
 
 
@@ -313,6 +477,7 @@ ADMIN AUTH
 */
 
 function isAdminAuthenticated(req) {
+
   const secret =
     process.env.ADMIN_SESSION_SECRET;
 
@@ -338,6 +503,7 @@ function isAdminAuthenticated(req) {
   }
 
   try {
+
     const decoded =
       Buffer
         .from(
@@ -386,14 +552,10 @@ function isAdminAuthenticated(req) {
         .digest("hex");
 
     const a =
-      Buffer.from(
-        signature
-      );
+      Buffer.from(signature);
 
     const b =
-      Buffer.from(
-        expected
-      );
+      Buffer.from(expected);
 
     if (
       a.length !==
@@ -408,8 +570,11 @@ function isAdminAuthenticated(req) {
     );
 
   } catch {
+
     return false;
+
   }
+
 }
 
 
@@ -420,9 +585,11 @@ DATE
 */
 
 function today() {
+
   return new Date()
     .toISOString()
     .slice(0, 10);
+
 }
 
 
@@ -435,11 +602,13 @@ COOKIES
 function parseCookies(
   header
 ) {
+
   const result = {};
 
   header
     .split(";")
     .forEach(part => {
+
       const index =
         part.indexOf("=");
 
@@ -459,9 +628,11 @@ function parseCookies(
 
       result[key] =
         value;
+
     });
 
   return result;
+
 }
 
 
@@ -476,22 +647,29 @@ async function redisCommand(
   token,
   command
 ) {
+
   const response =
     await fetch(
       url,
       {
+
         method: "POST",
 
         headers: {
+
           Authorization:
             `Bearer ${token}`,
 
           "Content-Type":
             "application/json"
+
         },
 
         body:
-          JSON.stringify(command)
+          JSON.stringify(
+            command
+          )
+
       }
     );
 
@@ -499,6 +677,7 @@ async function redisCommand(
     await response.json();
 
   if (!response.ok) {
+
     console.error(
       "REDIS ERROR:",
       data
@@ -507,7 +686,9 @@ async function redisCommand(
     throw new Error(
       "Redis request failed"
     );
+
   }
 
   return data.result;
+
 }
