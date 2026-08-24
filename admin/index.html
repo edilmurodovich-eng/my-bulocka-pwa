@@ -12,7 +12,7 @@
 
   <meta
     name="theme-color"
-    content="#3b2418"
+    content="#fff8ef"
   >
 
   <meta
@@ -27,28 +27,30 @@
 
   <meta
     name="apple-mobile-web-app-title"
-    content="Бухгалтерия"
+    content="💼 Бухгалтерия"
   >
 
+  <title>
+    💼 Бухгалтерия — Булочная
+  </title>
+
+
+  <!--
+  ==========================================
+  ИКОНКА БУХГАЛТЕРИИ
+  ==========================================
+  -->
+
   <link
-    rel="manifest"
-    href="/admin/manifest.json"
+    rel="icon"
+    href="/admin/icon.svg"
+    type="image/svg+xml"
   >
 
   <link
     rel="apple-touch-icon"
     href="/admin/icon.svg"
   >
-
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="/admin/icon.svg"
-  >
-
-  <title>
-    Бухгалтерия — Булочная
-  </title>
 
 
   <style>
@@ -57,11 +59,15 @@
       box-sizing: border-box;
     }
 
+
     body {
+
       margin: 0;
+
       padding: 20px;
 
       background: #fff8ef;
+
       color: #3b2418;
 
       font-family:
@@ -69,25 +75,39 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
     }
 
+
     .container {
+
       width: 100%;
+
       max-width: 1000px;
+
       margin: auto;
+
     }
+
 
     .login,
     .dashboard {
+
       display: none;
+
     }
+
 
     .login.show,
     .dashboard.show {
+
       display: block;
+
     }
 
+
     .card {
+
       background: white;
 
       border-radius: 22px;
@@ -99,24 +119,39 @@
       box-shadow:
         0 5px 20px
         rgba(70,40,20,.08);
+
     }
+
 
     .login {
+
       max-width: 420px;
+
       margin: 60px auto;
+
     }
+
 
     h1 {
+
       margin-top: 0;
+
       font-size: 28px;
+
     }
+
 
     h2 {
+
       margin-top: 0;
+
       font-size: 20px;
+
     }
 
+
     input {
+
       width: 100%;
 
       padding: 14px;
@@ -129,9 +164,23 @@
       font: inherit;
 
       outline: none;
+
     }
 
+
+    input:focus {
+
+      border-color: #d9823b;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(217,130,59,.12);
+
+    }
+
+
     button {
+
       border: none;
 
       border-radius: 13px;
@@ -147,14 +196,28 @@
       font-size: 15px;
 
       cursor: pointer;
+
     }
+
+
+    button:active {
+
+      transform: scale(.98);
+
+    }
+
 
     .login button {
+
       width: 100%;
+
       margin-top: 12px;
+
     }
 
+
     .top {
+
       display: flex;
 
       justify-content: space-between;
@@ -164,13 +227,19 @@
       gap: 10px;
 
       flex-wrap: wrap;
+
     }
+
 
     .logout {
+
       background: #3b2418;
+
     }
 
+
     .date-row {
+
       display: flex;
 
       gap: 10px;
@@ -178,15 +247,23 @@
       align-items: center;
 
       flex-wrap: wrap;
+
     }
+
 
     .date-row input {
+
       width: auto;
+
       flex: 1;
+
       min-width: 180px;
+
     }
 
+
     .stats {
+
       display: grid;
 
       grid-template-columns:
@@ -196,54 +273,205 @@
         );
 
       gap: 12px;
+
     }
 
+
     .stat {
+
       padding: 18px;
 
       border-radius: 18px;
 
       background: #fff0d9;
+
     }
 
+
     .stat-label {
+
       color: #8a6c5a;
 
       font-size: 13px;
 
       font-weight: 700;
+
     }
 
+
     .stat-value {
+
       margin-top: 6px;
 
       font-size: 23px;
 
       font-weight: 900;
+
     }
+
 
     .green {
+
       background: #e4f5df;
+
     }
+
 
     .red {
+
       background: #fde3df;
+
     }
+
+
+    .expense {
+
+      background: #fff1df;
+
+    }
+
+
+    .salary {
+
+      background: #eee6ff;
+
+    }
+
+
+    .profit {
+
+      background: #dff5e5;
+
+    }
+
+
+    .expense-box {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap: 15px;
+
+    }
+
+
+    .expense-card {
+
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background: #fff8ef;
+
+      border:
+        1px solid #ead9ca;
+
+    }
+
+
+    .expense-title {
+
+      font-size: 17px;
+
+      font-weight: 900;
+
+      margin-bottom: 8px;
+
+    }
+
+
+    .expense-description {
+
+      color: #8a6c5a;
+
+      font-size: 13px;
+
+      line-height: 1.45;
+
+      margin-bottom: 12px;
+
+    }
+
+
+    .money-input {
+
+      display: flex;
+
+      gap: 8px;
+
+      align-items: center;
+
+    }
+
+
+    .money-input input {
+
+      flex: 1;
+
+      min-width: 0;
+
+    }
+
+
+    .currency {
+
+      font-weight: 800;
+
+      color: #8a6c5a;
+
+      white-space: nowrap;
+
+    }
+
+
+    .save-expenses {
+
+      margin-top: 15px;
+
+      width: 100%;
+
+    }
+
+
+    .expense-status {
+
+      margin-top: 10px;
+
+      font-size: 13px;
+
+      color: #51845b;
+
+      min-height: 18px;
+
+    }
+
 
     .table-wrap {
+
       overflow-x: auto;
+
     }
 
+
     table {
+
       width: 100%;
 
       border-collapse: collapse;
 
       min-width: 600px;
+
     }
+
 
     th,
     td {
+
       padding: 11px 8px;
 
       text-align: left;
@@ -252,40 +480,55 @@
         1px solid #eee2d8;
 
       font-size: 13px;
+
     }
+
 
     th {
+
       color: #8a6c5a;
+
     }
+
 
     .status {
+
       font-weight: 800;
+
     }
 
+
     .error {
+
       color: #b3261e;
 
       margin-top: 10px;
 
       font-size: 13px;
+
     }
 
-    .loading {
-      text-align: center;
-
-      padding: 20px;
-
-      color: #8a6c5a;
-    }
 
     @media (max-width: 600px) {
 
       body {
+
         padding: 12px;
+
       }
 
+
       h1 {
+
         font-size: 24px;
+
+      }
+
+
+      .expense-box {
+
+        grid-template-columns: 1fr;
+
       }
 
     }
@@ -297,10 +540,15 @@
 
 <body>
 
+
 <div class="container">
 
 
-  <!-- LOGIN -->
+  <!--
+  ==========================================
+  LOGIN
+  ==========================================
+  -->
 
   <div
     id="login"
@@ -315,6 +563,7 @@
       «Булочная» — Вкус детства
     </p>
 
+
     <input
       id="password"
       type="password"
@@ -322,11 +571,13 @@
       autocomplete="current-password"
     >
 
+
     <button
       onclick="login()"
     >
       Войти
     </button>
+
 
     <div
       id="loginError"
@@ -336,12 +587,20 @@
   </div>
 
 
-  <!-- DASHBOARD -->
+
+  <!--
+  ==========================================
+  DASHBOARD
+  ==========================================
+  -->
 
   <div
     id="dashboard"
     class="dashboard"
   >
+
+
+    <!-- HEADER -->
 
     <div class="card">
 
@@ -354,10 +613,11 @@
           </h1>
 
           <div>
-            «Булочная»
+            «Булочная» — Вкус детства
           </div>
 
         </div>
+
 
         <button
           class="logout"
@@ -371,6 +631,7 @@
     </div>
 
 
+
     <!-- DATE -->
 
     <div class="card">
@@ -379,12 +640,15 @@
         📅 Период
       </h2>
 
+
       <div class="date-row">
 
         <input
           id="date"
           type="date"
+          onchange="loadAccounting()"
         >
+
 
         <button
           onclick="loadAccounting()"
@@ -397,9 +661,15 @@
     </div>
 
 
-    <!-- STATS -->
+
+    <!--
+    ==========================================
+    ОСНОВНАЯ СТАТИСТИКА
+    ==========================================
+    -->
 
     <div class="stats">
+
 
       <div class="stat">
 
@@ -415,6 +685,7 @@
         </div>
 
       </div>
+
 
 
       <div class="stat">
@@ -433,6 +704,7 @@
       </div>
 
 
+
       <div class="stat">
 
         <div class="stat-label">
@@ -447,6 +719,7 @@
         </div>
 
       </div>
+
 
 
       <div class="stat green">
@@ -465,6 +738,7 @@
       </div>
 
 
+
       <div class="stat green">
 
         <div class="stat-label">
@@ -479,6 +753,7 @@
         </div>
 
       </div>
+
 
 
       <div class="stat red">
@@ -499,13 +774,194 @@
     </div>
 
 
-    <!-- PRODUCTS -->
+
+    <!--
+    ==========================================
+    РАСХОДЫ
+    ==========================================
+    -->
+
+    <div class="card">
+
+      <h2>
+        💰 Расходы за день
+      </h2>
+
+
+      <div class="expense-box">
+
+
+        <!-- ПРОЧИЕ РАСХОДЫ -->
+
+        <div class="expense-card">
+
+          <div class="expense-title">
+            💸 Прочие расходы
+          </div>
+
+
+          <div class="expense-description">
+
+            Аренда, коммунальные услуги,
+            упаковка, доставка, ремонт,
+            закупка мелочей и другие
+            расходы булочной.
+
+          </div>
+
+
+          <div class="money-input">
+
+            <input
+              id="otherExpenses"
+              type="number"
+              min="0"
+              step="1000"
+              inputmode="numeric"
+              placeholder="Введите сумму"
+            >
+
+            <span class="currency">
+              so'm
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- ЗАРПЛАТА -->
+
+        <div class="expense-card">
+
+          <div class="expense-title">
+            👨‍🍳 Зарплата
+          </div>
+
+
+          <div class="expense-description">
+
+            Зарплата сотрудников:
+            пекарей, продавцов,
+            курьеров и других работников.
+
+          </div>
+
+
+          <div class="money-input">
+
+            <input
+              id="salary"
+              type="number"
+              min="0"
+              step="1000"
+              inputmode="numeric"
+              placeholder="Введите сумму"
+            >
+
+            <span class="currency">
+              so'm
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="save-expenses"
+        onclick="saveExpenses()"
+      >
+        💾 Сохранить расходы
+      </button>
+
+
+      <div
+        id="expenseStatus"
+        class="expense-status"
+      ></div>
+
+    </div>
+
+
+
+    <!--
+    ==========================================
+    ФИНАНСОВЫЙ ИТОГ
+    ==========================================
+    -->
+
+    <div class="stats">
+
+
+      <div class="stat expense">
+
+        <div class="stat-label">
+          💸 Прочие расходы
+        </div>
+
+        <div
+          id="summaryOtherExpenses"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+
+      <div class="stat salary">
+
+        <div class="stat-label">
+          👨‍🍳 Зарплата
+        </div>
+
+        <div
+          id="summarySalary"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+
+
+      <div class="stat profit">
+
+        <div class="stat-label">
+          📊 Прибыль
+        </div>
+
+        <div
+          id="profit"
+          class="stat-value"
+        >
+          0 so'm
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!--
+    ==========================================
+    ТОВАРЫ
+    ==========================================
+    -->
 
     <div class="card">
 
       <h2>
         🥐 Продажи товаров
       </h2>
+
 
       <div
         id="products"
@@ -515,13 +971,19 @@
     </div>
 
 
-    <!-- ORDERS -->
+
+    <!--
+    ==========================================
+    ЗАКАЗЫ
+    ==========================================
+    -->
 
     <div class="card">
 
       <h2>
         📦 Заказы
       </h2>
+
 
       <div
         id="orders"
@@ -530,14 +992,38 @@
 
     </div>
 
+
   </div>
 
 </div>
 
 
+
 <script>
 
 "use strict";
+
+
+/*
+==========================================
+ЛОКАЛЬНЫЕ РАСХОДЫ
+==========================================
+*/
+
+const EXPENSE_STORAGE_PREFIX =
+  "bulocka_accounting_expenses_";
+
+
+function expenseStorageKey(
+  date
+) {
+
+  return (
+    EXPENSE_STORAGE_PREFIX +
+    date
+  );
+
+}
 
 
 /*
@@ -555,11 +1041,13 @@ async function login() {
       )
       .value;
 
+
   const error =
     document
       .getElementById(
         "loginError"
       );
+
 
   error.textContent = "";
 
@@ -604,13 +1092,12 @@ async function login() {
 
     showDashboard();
 
+    loadAccounting();
+
+
   } catch (error) {
 
-    document
-      .getElementById(
-        "loginError"
-      )
-      .textContent =
+    error.textContent =
       error.message;
 
   }
@@ -646,18 +1133,25 @@ async function checkAuth() {
 
       showDashboard();
 
+
       const data =
         await response.json();
+
 
       renderAccounting(
         data
       );
+
+
+      loadExpenses();
+
 
     } else {
 
       showLogin();
 
     }
+
 
   } catch {
 
@@ -680,6 +1174,7 @@ function showLogin() {
     .getElementById("login")
     .classList.add("show");
 
+
   document
     .getElementById("dashboard")
     .classList.remove("show");
@@ -692,6 +1187,7 @@ function showDashboard() {
   document
     .getElementById("login")
     .classList.remove("show");
+
 
   document
     .getElementById("dashboard")
@@ -714,6 +1210,7 @@ async function logout() {
       method: "POST"
     }
   );
+
 
   showLogin();
 
@@ -752,7 +1249,9 @@ async function loadAccounting() {
 
 
   if (!date) {
+
     return;
+
   }
 
 
@@ -802,6 +1301,10 @@ async function loadAccounting() {
       data
     );
 
+
+    loadExpenses();
+
+
   } catch (error) {
 
     alert(
@@ -819,10 +1322,16 @@ FORMAT MONEY
 ==========================================
 */
 
-function money(value) {
+function money(
+  value
+) {
 
-  return Number(value || 0)
-    .toLocaleString("ru-RU") +
+  return Number(
+    value || 0
+  )
+    .toLocaleString(
+      "ru-RU"
+    ) +
     " so'm";
 
 }
@@ -830,7 +1339,266 @@ function money(value) {
 
 /*
 ==========================================
-RENDER
+LOAD EXPENSES
+==========================================
+*/
+
+function loadExpenses() {
+
+  const date =
+    document
+      .getElementById(
+        "date"
+      )
+      .value;
+
+
+  if (!date) {
+
+    return;
+
+  }
+
+
+  const saved =
+    localStorage.getItem(
+      expenseStorageKey(
+        date
+      )
+    );
+
+
+  let expenses = {
+
+    otherExpenses: 0,
+
+    salary: 0
+
+  };
+
+
+  if (saved) {
+
+    try {
+
+      expenses =
+        JSON.parse(
+          saved
+        );
+
+    } catch {
+
+      expenses = {
+
+        otherExpenses: 0,
+
+        salary: 0
+
+      };
+
+    }
+
+  }
+
+
+  document
+    .getElementById(
+      "otherExpenses"
+    )
+    .value =
+    expenses.otherExpenses || "";
+
+
+  document
+    .getElementById(
+      "salary"
+    )
+    .value =
+    expenses.salary || "";
+
+
+  updateFinancialResult();
+
+}
+
+
+/*
+==========================================
+SAVE EXPENSES
+==========================================
+*/
+
+function saveExpenses() {
+
+  const date =
+    document
+      .getElementById(
+        "date"
+      )
+      .value;
+
+
+  if (!date) {
+
+    return;
+
+  }
+
+
+  const otherExpenses =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "otherExpenses"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const salary =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "salary"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const data = {
+
+    otherExpenses,
+
+    salary
+
+  };
+
+
+  localStorage.setItem(
+    expenseStorageKey(
+      date
+    ),
+    JSON.stringify(
+      data
+    )
+  );
+
+
+  updateFinancialResult();
+
+
+  const status =
+    document
+      .getElementById(
+        "expenseStatus"
+      );
+
+
+  status.textContent =
+    "✅ Расходы сохранены для " +
+    formatDateOnly(date);
+
+
+  setTimeout(
+    () => {
+
+      status.textContent = "";
+
+    },
+    3000
+  );
+
+}
+
+
+/*
+==========================================
+UPDATE FINANCIAL RESULT
+==========================================
+*/
+
+function updateFinancialResult() {
+
+  const netRevenue =
+    Number(
+      window.currentNetRevenue ||
+      0
+    );
+
+
+  const otherExpenses =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "otherExpenses"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const salary =
+    Math.max(
+      0,
+      Number(
+        document
+          .getElementById(
+            "salary"
+          )
+          .value
+      ) || 0
+    );
+
+
+  const profit =
+    netRevenue -
+    otherExpenses -
+    salary;
+
+
+  document
+    .getElementById(
+      "summaryOtherExpenses"
+    )
+    .textContent =
+    money(
+      otherExpenses
+    );
+
+
+  document
+    .getElementById(
+      "summarySalary"
+    )
+    .textContent =
+    money(
+      salary
+    );
+
+
+  document
+    .getElementById(
+      "profit"
+    )
+    .textContent =
+    money(
+      profit
+    );
+
+}
+
+
+/*
+==========================================
+RENDER ACCOUNTING
 ==========================================
 */
 
@@ -840,6 +1608,12 @@ function renderAccounting(
 
   const summary =
     data.summary || {};
+
+
+  window.currentNetRevenue =
+    Number(
+      summary.netRevenue
+    ) || 0;
 
 
   document
@@ -907,6 +1681,9 @@ function renderAccounting(
     data.orders || []
   );
 
+
+  loadExpenses();
+
 }
 
 
@@ -944,14 +1721,26 @@ function renderProducts(
 
         <tr>
 
-          <th>Товар</th>
-          <th>Цена</th>
-          <th>Количество</th>
-          <th>Выручка</th>
+          <th>
+            Товар
+          </th>
+
+          <th>
+            Цена
+          </th>
+
+          <th>
+            Количество
+          </th>
+
+          <th>
+            Выручка
+          </th>
 
         </tr>
 
       </thead>
+
 
       <tbody>
 
@@ -1030,15 +1819,30 @@ function renderOrders(
 
         <tr>
 
-          <th>Заказ</th>
-          <th>Клиент</th>
-          <th>Сумма</th>
-          <th>Статус</th>
-          <th>Время</th>
+          <th>
+            Заказ
+          </th>
+
+          <th>
+            Клиент
+          </th>
+
+          <th>
+            Сумма
+          </th>
+
+          <th>
+            Статус
+          </th>
+
+          <th>
+            Время
+          </th>
 
         </tr>
 
       </thead>
+
 
       <tbody>
 
@@ -1066,9 +1870,11 @@ function renderOrders(
               </td>
 
               <td class="status">
+
                 ${statusText(
                   order.status
                 )}
+
               </td>
 
               <td>
@@ -1144,7 +1950,9 @@ function formatDate(
 ) {
 
   if (!value) {
+
     return "—";
+
   }
 
 
@@ -1156,6 +1964,32 @@ function formatDate(
       hour: "2-digit",
       minute: "2-digit"
     }
+  );
+
+}
+
+
+/*
+==========================================
+DATE ONLY
+==========================================
+*/
+
+function formatDateOnly(
+  value
+) {
+
+  if (!value) {
+
+    return "";
+
+  }
+
+
+  return new Date(
+    value + "T00:00:00"
+  ).toLocaleDateString(
+    "ru-RU"
   );
 
 }
@@ -1196,6 +2030,32 @@ function escapeHTML(
     );
 
 }
+
+
+/*
+==========================================
+INPUT EVENTS
+==========================================
+*/
+
+document
+  .getElementById(
+    "otherExpenses"
+  )
+  .addEventListener(
+    "input",
+    updateFinancialResult
+  );
+
+
+document
+  .getElementById(
+    "salary"
+  )
+  .addEventListener(
+    "input",
+    updateFinancialResult
+  );
 
 
 /*
