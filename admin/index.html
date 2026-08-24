@@ -12,12 +12,44 @@
 
   <meta
     name="theme-color"
-    content="#fff8ef"
+    content="#3b2418"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Бухгалтерия"
+  >
+
+  <link
+    rel="manifest"
+    href="/admin/manifest.json"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="/admin/icon.svg"
+  >
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="/admin/icon.svg"
   >
 
   <title>
     Бухгалтерия — Булочная
   </title>
+
 
   <style>
 
@@ -97,15 +129,6 @@
       font: inherit;
 
       outline: none;
-
-      background: white;
-    }
-
-    input:focus {
-      border-color: #d9823b;
-      box-shadow:
-        0 0 0 3px
-        rgba(217,130,59,.12);
     }
 
     button {
@@ -124,10 +147,6 @@
       font-size: 15px;
 
       cursor: pointer;
-    }
-
-    button:active {
-      transform: scale(.98);
     }
 
     .login button {
@@ -177,8 +196,6 @@
         );
 
       gap: 12px;
-
-      margin-bottom: 15px;
     }
 
     .stat {
@@ -212,135 +229,6 @@
     .red {
       background: #fde3df;
     }
-
-    .orange {
-      background: #fff0d9;
-    }
-
-    .blue {
-      background: #e7f0ff;
-    }
-
-    .profit {
-      background: #dff7e7;
-    }
-
-    .loss {
-      background: #fde3df;
-    }
-
-    /*
-    ==========================================
-    РАСХОДЫ
-    ==========================================
-    */
-
-    .expenses-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(220px, 1fr)
-        );
-
-      gap: 14px;
-    }
-
-    .expense-card {
-      padding: 18px;
-
-      border-radius: 18px;
-
-      background: #fff8ef;
-
-      border:
-        1px solid #f0dfcf;
-    }
-
-    .expense-title {
-      font-size: 16px;
-
-      font-weight: 900;
-
-      margin-bottom: 10px;
-    }
-
-    .expense-description {
-      color: #8a6c5a;
-
-      font-size: 12px;
-
-      margin-bottom: 10px;
-    }
-
-    .expense-input {
-      font-size: 18px;
-
-      font-weight: 800;
-    }
-
-    .expense-actions {
-      display: flex;
-
-      gap: 10px;
-
-      margin-top: 12px;
-
-      flex-wrap: wrap;
-    }
-
-    .save-expenses {
-      background: #3b8d55;
-    }
-
-    .clear-expenses {
-      background: #8a6c5a;
-    }
-
-    .expense-total {
-      margin-top: 15px;
-
-      padding: 16px;
-
-      border-radius: 16px;
-
-      background: #fde3df;
-    }
-
-    .expense-total-row {
-      display: flex;
-
-      justify-content: space-between;
-
-      gap: 10px;
-
-      font-weight: 800;
-
-      margin-bottom: 8px;
-    }
-
-    .expense-total-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .profit-box {
-      margin-top: 15px;
-
-      padding: 18px;
-
-      border-radius: 18px;
-
-      font-weight: 900;
-
-      font-size: 20px;
-    }
-
-    /*
-    ==========================================
-    TABLE
-    ==========================================
-    */
 
     .table-wrap {
       overflow-x: auto;
@@ -390,18 +278,6 @@
       color: #8a6c5a;
     }
 
-    .saved {
-      color: #3b8d55;
-
-      font-size: 13px;
-
-      font-weight: 700;
-
-      margin-top: 8px;
-
-      display: none;
-    }
-
     @media (max-width: 600px) {
 
       body {
@@ -412,28 +288,19 @@
         font-size: 24px;
       }
 
-      .stat-value {
-        font-size: 20px;
-      }
-
-      .expense-actions button {
-        flex: 1;
-      }
-
     }
 
   </style>
 
 </head>
 
+
 <body>
 
 <div class="container">
 
 
-  <!-- ======================================
-       LOGIN
-  ====================================== -->
+  <!-- LOGIN -->
 
   <div
     id="login"
@@ -441,7 +308,7 @@
   >
 
     <h1>
-      🔐 Бухгалтерия
+      💼 Бухгалтерия
     </h1>
 
     <p>
@@ -469,19 +336,12 @@
   </div>
 
 
-  <!-- ======================================
-       DASHBOARD
-  ====================================== -->
+  <!-- DASHBOARD -->
 
   <div
     id="dashboard"
     class="dashboard"
   >
-
-
-    <!-- ====================================
-         HEADER
-    ==================================== -->
 
     <div class="card">
 
@@ -490,7 +350,7 @@
         <div>
 
           <h1>
-            📊 Бухгалтерия
+            💼 Бухгалтерия
           </h1>
 
           <div>
@@ -511,9 +371,7 @@
     </div>
 
 
-    <!-- ====================================
-         DATE
-    ==================================== -->
+    <!-- DATE -->
 
     <div class="card">
 
@@ -526,7 +384,6 @@
         <input
           id="date"
           type="date"
-          onchange="loadAccounting()"
         >
 
         <button
@@ -540,12 +397,9 @@
     </div>
 
 
-    <!-- ====================================
-         STATS
-    ==================================== -->
+    <!-- STATS -->
 
     <div class="stats">
-
 
       <div class="stat">
 
@@ -642,192 +496,10 @@
 
       </div>
 
-
     </div>
 
 
-    <!-- ====================================
-         РАСХОДЫ
-    ==================================== -->
-
-    <div class="card">
-
-      <h2>
-        💰 Расходы за день
-      </h2>
-
-      <p
-        style="
-          color:#8a6c5a;
-          font-size:13px;
-        "
-      >
-        Введите суммы вручную для выбранной даты.
-        Старые заказы при этом не изменяются.
-      </p>
-
-
-      <div class="expenses-grid">
-
-
-        <!-- ЗАРПЛАТА -->
-
-        <div class="expense-card">
-
-          <div class="expense-title">
-            👨‍🍳 Зарплата
-          </div>
-
-          <div class="expense-description">
-            Зарплата сотрудников за выбранный день
-          </div>
-
-          <input
-            id="salary"
-            class="expense-input"
-            type="number"
-            min="0"
-            step="1000"
-            inputmode="numeric"
-            placeholder="0"
-            oninput="calculateProfit()"
-          >
-
-        </div>
-
-
-        <!-- ПРОЧИЕ РАСХОДЫ -->
-
-        <div class="expense-card">
-
-          <div class="expense-title">
-            🧾 Прочие расходы
-          </div>
-
-          <div class="expense-description">
-            Остальные расходы за выбранный день
-          </div>
-
-          <input
-            id="otherExpenses"
-            class="expense-input"
-            type="number"
-            min="0"
-            step="1000"
-            inputmode="numeric"
-            placeholder="0"
-            oninput="calculateProfit()"
-          >
-
-        </div>
-
-
-      </div>
-
-
-      <div class="expense-actions">
-
-        <button
-          class="save-expenses"
-          onclick="saveExpenses()"
-        >
-          💾 Сохранить расходы
-        </button>
-
-        <button
-          class="clear-expenses"
-          onclick="clearExpenses()"
-        >
-          🗑 Очистить
-        </button>
-
-      </div>
-
-
-      <div
-        id="savedMessage"
-        class="saved"
-      >
-        ✅ Расходы сохранены
-      </div>
-
-
-      <div class="expense-total">
-
-        <div class="expense-total-row">
-
-          <span>
-            Зарплата:
-          </span>
-
-          <span
-            id="salaryTotal"
-          >
-            0 so'm
-          </span>
-
-        </div>
-
-
-        <div class="expense-total-row">
-
-          <span>
-            Прочие расходы:
-          </span>
-
-          <span
-            id="otherExpensesTotal"
-          >
-            0 so'm
-          </span>
-
-        </div>
-
-
-        <div
-          class="expense-total-row"
-          style="
-            padding-top:10px;
-            border-top:1px solid #e8cfc0;
-          "
-        >
-
-          <span>
-            Все расходы:
-          </span>
-
-          <span
-            id="allExpenses"
-          >
-            0 so'm
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="profitBox"
-        class="profit-box profit"
-      >
-
-        📈 Чистая прибыль:
-
-        <span
-          id="netProfit"
-        >
-          0 so'm
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <!-- ====================================
-         PRODUCTS
-    ==================================== -->
+    <!-- PRODUCTS -->
 
     <div class="card">
 
@@ -843,9 +515,7 @@
     </div>
 
 
-    <!-- ====================================
-         ORDERS
-    ==================================== -->
+    <!-- ORDERS -->
 
     <div class="card">
 
@@ -860,7 +530,6 @@
 
     </div>
 
-
   </div>
 
 </div>
@@ -869,25 +538,6 @@
 <script>
 
 "use strict";
-
-
-/*
-==========================================
-ГЛОБАЛЬНЫЕ ДАННЫЕ
-==========================================
-*/
-
-let accountingData = null;
-
-
-/*
-==========================================
-КЛЮЧ LOCALSTORAGE
-==========================================
-*/
-
-const EXPENSE_STORAGE_KEY =
-  "bulocka_accounting_expenses";
 
 
 /*
@@ -912,16 +562,6 @@ async function login() {
       );
 
   error.textContent = "";
-
-
-  if (!password) {
-
-    error.textContent =
-      "Введите пароль";
-
-    return;
-
-  }
 
 
   try {
@@ -964,11 +604,13 @@ async function login() {
 
     showDashboard();
 
-    await loadAccounting();
-
   } catch (error) {
 
-    error.textContent =
+    document
+      .getElementById(
+        "loginError"
+      )
+      .textContent =
       error.message;
 
   }
@@ -1007,14 +649,9 @@ async function checkAuth() {
       const data =
         await response.json();
 
-      accountingData =
-        data;
-
       renderAccounting(
         data
       );
-
-      loadSavedExpenses();
 
     } else {
 
@@ -1071,16 +708,12 @@ LOGOUT
 
 async function logout() {
 
-  try {
-
-    await fetch(
-      "/api/admin/logout",
-      {
-        method: "POST"
-      }
-    );
-
-  } catch {}
+  await fetch(
+    "/api/admin/logout",
+    {
+      method: "POST"
+    }
+  );
 
   showLogin();
 
@@ -1165,23 +798,9 @@ async function loadAccounting() {
     }
 
 
-    accountingData =
-      data;
-
-
     renderAccounting(
       data
     );
-
-
-    /*
-    ======================================
-    Загружаем расходы именно этой даты
-    ======================================
-    */
-
-    loadSavedExpenses();
-
 
   } catch (error) {
 
@@ -1205,388 +824,6 @@ function money(value) {
   return Number(value || 0)
     .toLocaleString("ru-RU") +
     " so'm";
-
-}
-
-
-/*
-==========================================
-ПОЛУЧЕНИЕ ВЫБРАННОЙ ДАТЫ
-==========================================
-*/
-
-function selectedDate() {
-
-  return (
-    document
-      .getElementById(
-        "date"
-      )
-      .value ||
-    today()
-  );
-
-}
-
-
-/*
-==========================================
-ПОЛУЧЕНИЕ ВСЕХ РАСХОДОВ
-==========================================
-*/
-
-function getExpenses() {
-
-  try {
-
-    const raw =
-      localStorage.getItem(
-        EXPENSE_STORAGE_KEY
-      );
-
-    if (!raw) {
-      return {};
-    }
-
-    const data =
-      JSON.parse(raw);
-
-    if (
-      !data ||
-      typeof data !== "object"
-    ) {
-
-      return {};
-
-    }
-
-    return data;
-
-  } catch {
-
-    return {};
-
-  }
-
-}
-
-
-/*
-==========================================
-ЗАГРУЗКА РАСХОДОВ
-==========================================
-*/
-
-function loadSavedExpenses() {
-
-  const date =
-    selectedDate();
-
-  const expenses =
-    getExpenses();
-
-  const day =
-    expenses[date] || {
-      salary: 0,
-      otherExpenses: 0
-    };
-
-
-  document
-    .getElementById(
-      "salary"
-    )
-    .value =
-    Number(
-      day.salary || 0
-    ) || "";
-
-
-  document
-    .getElementById(
-      "otherExpenses"
-    )
-    .value =
-    Number(
-      day.otherExpenses || 0
-    ) || "";
-
-
-  calculateProfit();
-
-}
-
-
-/*
-==========================================
-СОХРАНЕНИЕ РАСХОДОВ
-==========================================
-*/
-
-function saveExpenses() {
-
-  const date =
-    selectedDate();
-
-
-  const salary =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "salary"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const otherExpenses =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "otherExpenses"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const expenses =
-    getExpenses();
-
-
-  expenses[date] = {
-
-    salary,
-
-    otherExpenses
-
-  };
-
-
-  localStorage.setItem(
-    EXPENSE_STORAGE_KEY,
-    JSON.stringify(
-      expenses
-    )
-  );
-
-
-  calculateProfit();
-
-
-  const saved =
-    document
-      .getElementById(
-        "savedMessage"
-      );
-
-
-  saved.style.display =
-    "block";
-
-
-  setTimeout(() => {
-
-    saved.style.display =
-      "none";
-
-  }, 2500);
-
-}
-
-
-/*
-==========================================
-ОЧИСТКА РАСХОДОВ
-==========================================
-*/
-
-function clearExpenses() {
-
-  const date =
-    selectedDate();
-
-
-  const confirmed =
-    confirm(
-      "Очистить зарплату и прочие расходы за " +
-      date +
-      "?"
-    );
-
-
-  if (!confirmed) {
-    return;
-  }
-
-
-  const expenses =
-    getExpenses();
-
-
-  delete expenses[date];
-
-
-  localStorage.setItem(
-    EXPENSE_STORAGE_KEY,
-    JSON.stringify(
-      expenses
-    )
-  );
-
-
-  document
-    .getElementById(
-      "salary"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "otherExpenses"
-    )
-    .value = "";
-
-
-  calculateProfit();
-
-}
-
-
-/*
-==========================================
-РАСЧЁТ ПРИБЫЛИ
-==========================================
-*/
-
-function calculateProfit() {
-
-  const salary =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "salary"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const otherExpenses =
-    Math.max(
-      0,
-      Number(
-        document
-          .getElementById(
-            "otherExpenses"
-          )
-          .value
-      ) || 0
-    );
-
-
-  const totalExpenses =
-    salary +
-    otherExpenses;
-
-
-  const revenue =
-    Number(
-      accountingData
-        ?.summary
-        ?.netRevenue
-    ) || 0;
-
-
-  const profit =
-    revenue -
-    totalExpenses;
-
-
-  document
-    .getElementById(
-      "salaryTotal"
-    )
-    .textContent =
-    money(
-      salary
-    );
-
-
-  document
-    .getElementById(
-      "otherExpensesTotal"
-    )
-    .textContent =
-    money(
-      otherExpenses
-    );
-
-
-  document
-    .getElementById(
-      "allExpenses"
-    )
-    .textContent =
-    money(
-      totalExpenses
-    );
-
-
-  document
-    .getElementById(
-      "netProfit"
-    )
-    .textContent =
-    money(
-      profit
-    );
-
-
-  const box =
-    document
-      .getElementById(
-        "profitBox"
-      );
-
-
-  if (profit >= 0) {
-
-    box.classList.remove(
-      "loss"
-    );
-
-    box.classList.add(
-      "profit"
-    );
-
-    box.innerHTML =
-      "📈 Чистая прибыль: " +
-      `<span id="netProfit">${money(profit)}</span>`;
-
-  } else {
-
-    box.classList.remove(
-      "profit"
-    );
-
-    box.classList.add(
-      "loss"
-    );
-
-    box.innerHTML =
-      "📉 Убыток: " +
-      `<span id="netProfit">${money(Math.abs(profit))}</span>`;
-
-  }
 
 }
 
@@ -1670,9 +907,6 @@ function renderAccounting(
     data.orders || []
   );
 
-
-  calculateProfit();
-
 }
 
 
@@ -1710,21 +944,10 @@ function renderProducts(
 
         <tr>
 
-          <th>
-            Товар
-          </th>
-
-          <th>
-            Цена
-          </th>
-
-          <th>
-            Количество
-          </th>
-
-          <th>
-            Выручка
-          </th>
+          <th>Товар</th>
+          <th>Цена</th>
+          <th>Количество</th>
+          <th>Выручка</th>
 
         </tr>
 
@@ -1807,25 +1030,11 @@ function renderOrders(
 
         <tr>
 
-          <th>
-            Заказ
-          </th>
-
-          <th>
-            Клиент
-          </th>
-
-          <th>
-            Сумма
-          </th>
-
-          <th>
-            Статус
-          </th>
-
-          <th>
-            Время
-          </th>
+          <th>Заказ</th>
+          <th>Клиент</th>
+          <th>Сумма</th>
+          <th>Статус</th>
+          <th>Время</th>
 
         </tr>
 
@@ -1857,11 +1066,9 @@ function renderOrders(
               </td>
 
               <td class="status">
-
                 ${statusText(
                   order.status
                 )}
-
               </td>
 
               <td>
@@ -1989,32 +1196,6 @@ function escapeHTML(
     );
 
 }
-
-
-/*
-==========================================
-ENTER В ПАРОЛЕ
-==========================================
-*/
-
-document
-  .getElementById(
-    "password"
-  )
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        login();
-
-      }
-
-    }
-  );
 
 
 /*
